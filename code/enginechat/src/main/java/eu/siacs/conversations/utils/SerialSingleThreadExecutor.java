@@ -2,7 +2,6 @@ package eu.siacs.conversations.utils;
 
 import android.os.Looper;
 
-import java.io.Serializable;
 import java.util.ArrayDeque;
 import java.util.Queue;
 import java.util.concurrent.Executor;

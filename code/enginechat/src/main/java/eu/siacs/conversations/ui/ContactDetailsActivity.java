@@ -43,7 +43,6 @@ import eu.siacs.conversations.crypto.axolotl.XmppAxolotlSession;
 import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.ListItem;
-import eu.siacs.conversations.entities.Presence;
 import eu.siacs.conversations.services.XmppConnectionService.OnAccountUpdate;
 import eu.siacs.conversations.services.XmppConnectionService.OnRosterUpdate;
 import eu.siacs.conversations.utils.CryptoHelper;

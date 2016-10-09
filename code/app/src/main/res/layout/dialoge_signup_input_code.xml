@@ -27,7 +27,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/margin_2"
             android:fontFamily="sans-serif-light"
-            android:text="Please enter the 4-digit code received by text messages. This is required to verify your identity and ensure security."
+            android:text="Please enter the 4-digit code received by text message. This is required to verify your identity and insure security."
             android:textColor="@color/who_do_u_blue"
             android:textSize="@dimen/textsize_label_4" />
 

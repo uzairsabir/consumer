@@ -20,7 +20,6 @@ import eu.siacs.conversations.entities.ListItem;
 import eu.siacs.conversations.entities.Message;
 import eu.siacs.conversations.entities.Presence;
 import eu.siacs.conversations.entities.Transferable;
-import eu.siacs.conversations.ui.XmppActivity;
 import eu.siacs.conversations.xmpp.jid.Jid;
 
 public class UIHelper {

@@ -64,7 +64,7 @@ android {
         versionCode 172
         versionName "1.14.1"
         archivesBaseName += "-$versionName"
-      //  applicationId "eu.siacs.conversations"
+      //  applicationId "eu.siacs.chat"
     }
 
     dexOptions {

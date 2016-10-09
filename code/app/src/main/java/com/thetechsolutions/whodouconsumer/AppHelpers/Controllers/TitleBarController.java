@@ -124,7 +124,7 @@ public class TitleBarController {
             if (((HomeMainActivity) activity).pager.getCurrentItem() == 0) {
 
 
-                new BottomSheet.Builder(activity, R.style.BottomSheet_StyleDialog).title("How would you like to add them ?")
+                new BottomSheet.Builder(activity, R.style.BottomSheet_StyleDialog).title("How would you like to add someone ?")
                         .sheet(R.menu.sheet_menu).listener(new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
@@ -156,7 +156,7 @@ public class TitleBarController {
             } else if (((HomeMainActivity) activity).pager.getCurrentItem() == 1) {
 
 
-                new BottomSheet.Builder(activity, R.style.BottomSheet_StyleDialog).title("How would you like to add them ?")
+                new BottomSheet.Builder(activity, R.style.BottomSheet_StyleDialog).title("How would you like to add someone ?")
                         .sheet(R.menu.sheet_menu_other).listener(new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {

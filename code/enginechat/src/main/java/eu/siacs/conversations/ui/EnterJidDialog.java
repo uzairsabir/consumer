@@ -3,7 +3,6 @@ package eu.siacs.conversations.ui;
 import android.app.AlertDialog;
 import android.app.Dialog;
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.ArrayAdapter;

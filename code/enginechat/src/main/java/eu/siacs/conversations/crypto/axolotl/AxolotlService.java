@@ -21,7 +21,6 @@ import org.whispersystems.libaxolotl.state.PreKeyRecord;
 import org.whispersystems.libaxolotl.state.SignedPreKeyRecord;
 import org.whispersystems.libaxolotl.util.KeyHelper;
 
-import java.io.Serializable;
 import java.security.PrivateKey;
 import java.security.Security;
 import java.security.Signature;
@@ -52,7 +51,7 @@ import eu.siacs.conversations.xmpp.stanzas.IqPacket;
 
 public class AxolotlService implements OnAdvancedStreamFeaturesLoaded {
 
-	public static final String PEP_PREFIX = "eu.siacs.conversations.axolotl";
+	public static final String PEP_PREFIX = "eu.siacs.chat.axolotl";
 	public static final String PEP_DEVICE_LIST = PEP_PREFIX + ".devicelist";
 	public static final String PEP_DEVICE_LIST_NOTIFY = PEP_DEVICE_LIST + "+notify";
 	public static final String PEP_BUNDLES = PEP_PREFIX + ".bundles";

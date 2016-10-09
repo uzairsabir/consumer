@@ -198,7 +198,7 @@
             android:parentActivityName=".ui.SettingsActivity">
             <meta-data
                 android:name="android.support.PARENT_ACTIVITY"
-                android:value="eu.siacs.conversations.ui.SettingsActivity" />
+                android:value=".ui.SettingsActivity" />
         </activity>
         <activity android:name="com.soundcloud.android.crop.CropImageActivity" />
 

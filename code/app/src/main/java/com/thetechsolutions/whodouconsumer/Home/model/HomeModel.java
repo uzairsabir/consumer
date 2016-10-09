@@ -134,7 +134,7 @@ public class HomeModel {
                                          String user_address, String user_city, String user_state, String user_country,
                                          String email_address, String zip_code, String subcategory_id,int pos
     ) {
-        String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+        String id = String.valueOf(RealmDataRetrive.getProfile().getUsername());
 
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("user_id", id));
@@ -147,7 +147,7 @@ public class HomeModel {
         params.add(new BasicNameValuePair("user_country", user_country));
         params.add(new BasicNameValuePair("email_address", email_address));
         params.add(new BasicNameValuePair("zip_code", zip_code));
-        if (pos== 1) {
+        if (HomeCreateNewContactActivity.tab_pos == 1) {
             params.add(new BasicNameValuePair("subcategory_id", ""));
             params.add(new BasicNameValuePair("user_type", AppConstants.APP_TYPE));
         } else {

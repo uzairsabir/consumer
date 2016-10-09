@@ -74,9 +74,9 @@ import eu.siacs.conversations.xmpp.jid.Jid;
 public class ConversationActivity extends XmppActivity
         implements OnAccountUpdate, OnConversationUpdate, OnRosterUpdate, OnUpdateBlocklist, XmppConnectionService.OnShowErrorToast {
 
-    public static final String ACTION_VIEW_CONVERSATION = "eu.siacs.conversations.action.VIEW";
+    public static final String ACTION_VIEW_CONVERSATION = "eu.siacs.chat.action.VIEW";
     public static final String CONVERSATION = "conversationUuid";
-    public static final String EXTRA_DOWNLOAD_UUID = "eu.siacs.conversations.download_uuid";
+    public static final String EXTRA_DOWNLOAD_UUID = "eu.siacs.chat.download_uuid";
     public static final String TEXT = "text";
     public static final String NICK = "nick";
     public static final String PRIVATE_MESSAGE = "pm";
@@ -570,11 +570,11 @@ public class ConversationActivity extends XmppActivity
                         break;
                     case ATTACHMENT_CHOICE_RECORD_VOICE:
                         intent.setAction(MediaStore.Audio.Media.RECORD_SOUND_ACTION);
-                        fallbackPackageId = "eu.siacs.conversations.voicerecorder";
+                        fallbackPackageId = "eu.siacs.chat.voicerecorder";
                         break;
                     case ATTACHMENT_CHOICE_LOCATION:
-                        intent.setAction("eu.siacs.conversations.location.request");
-                        fallbackPackageId = "eu.siacs.conversations.sharelocation";
+                        intent.setAction("eu.siacs.chat.location.request");
+                        fallbackPackageId = "eu.siacs.chat.sharelocation";
                         break;
                 }
                 if (intent.resolveActivity(getPackageManager()) != null) {
@@ -848,7 +848,7 @@ public class ConversationActivity extends XmppActivity
         if (new Intent(MediaStore.Audio.Media.RECORD_SOUND_ACTION).resolveActivity(getPackageManager()) == null) {
             attachFilePopup.getMenu().findItem(R.id.attach_record_voice).setVisible(false);
         }
-        if (new Intent("eu.siacs.conversations.location.request").resolveActivity(getPackageManager()) == null) {
+        if (new Intent("eu.siacs.chat.location.request").resolveActivity(getPackageManager()) == null) {
             attachFilePopup.getMenu().findItem(R.id.attach_location).setVisible(false);
         }
         attachFilePopup.setOnMenuItemClickListener(new OnMenuItemClickListener() {
@@ -1790,7 +1790,7 @@ public class ConversationActivity extends XmppActivity
             invalidateOptionsMenu();
             Log.d("opening 6", " StartConversationActivity");
         } else {
-            Log.d(Config.LOGTAG, "not updating conversations fragment because conversations list size was 0");
+            Log.d(Config.LOGTAG, "not updating chat fragment because chat list size was 0");
         }
     }
 

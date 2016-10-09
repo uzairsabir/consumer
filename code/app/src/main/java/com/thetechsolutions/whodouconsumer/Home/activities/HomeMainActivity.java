@@ -88,10 +88,11 @@ public class HomeMainActivity extends FragmentActivityController implements Meth
     @Override
     protected void onResume() {
         super.onResume();
-        BottomMenuController.getInstance(activity).setBottomMenu(activity);
+        //BottomMenuController.getInstance(activity).setBottomMenu(activity);
 
 
     }
+
 
     @Override
     public void viewUpdate() {

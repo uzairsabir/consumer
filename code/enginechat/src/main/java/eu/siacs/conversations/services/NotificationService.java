@@ -50,7 +50,7 @@ import eu.siacs.conversations.utils.UIHelper;
 
 public class NotificationService {
 
-    private static final String CONVERSATIONS_GROUP = "eu.siacs.conversations";
+    private static final String CONVERSATIONS_GROUP = "eu.siacs.chat";
     private final XmppConnectionService mXmppConnectionService;
 
     private final LinkedHashMap<String, ArrayList<Message>> notifications = new LinkedHashMap<>();

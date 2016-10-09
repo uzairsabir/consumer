@@ -68,7 +68,6 @@ import java.io.FileNotFoundException;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -83,9 +82,7 @@ import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.entities.Message;
 import eu.siacs.conversations.entities.MucOptions;
-import eu.siacs.conversations.entities.Presence;
 import eu.siacs.conversations.entities.Presences;
-import eu.siacs.conversations.entities.ServiceDiscoveryResult;
 import eu.siacs.conversations.services.AvatarService;
 import eu.siacs.conversations.services.XmppConnectionService;
 import eu.siacs.conversations.services.XmppConnectionService.XmppConnectionBinder;
@@ -1132,7 +1129,7 @@ public abstract class XmppActivity extends Activity {
 				public NdefMessage createNdefMessage(NfcEvent nfcEvent) {
 					return new NdefMessage(new NdefRecord[]{
 							NdefRecord.createUri(getShareableUri()),
-							NdefRecord.createApplicationRecord("eu.siacs.conversations")
+							NdefRecord.createApplicationRecord("eu.siacs.chat")
 					});
 				}
 			}, this);

@@ -16,7 +16,6 @@ import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ScheduleDT;
 import com.thetechsolutions.whodouconsumer.R;
 
-import org.bouncycastle.jce.exception.ExtCertificateEncodingException;
 import org.vanguardmatrix.engine.utils.MyLogs;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
 

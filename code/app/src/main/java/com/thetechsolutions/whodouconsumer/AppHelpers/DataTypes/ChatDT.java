@@ -1,14 +1,5 @@
 package com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-
-import eu.siacs.conversations.Config;
-import eu.siacs.conversations.crypto.PgpDecryptionService;
-import eu.siacs.conversations.entities.Conversation;
-import eu.siacs.conversations.entities.Message;
-import io.realm.RealmList;
 import io.realm.RealmObject;
 import io.realm.annotations.PrimaryKey;
 

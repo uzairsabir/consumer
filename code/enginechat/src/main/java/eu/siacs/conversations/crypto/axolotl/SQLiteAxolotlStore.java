@@ -15,7 +15,6 @@ import org.whispersystems.libaxolotl.state.SessionRecord;
 import org.whispersystems.libaxolotl.state.SignedPreKeyRecord;
 import org.whispersystems.libaxolotl.util.KeyHelper;
 
-import java.io.Serializable;
 import java.security.cert.X509Certificate;
 import java.util.List;
 import java.util.Set;

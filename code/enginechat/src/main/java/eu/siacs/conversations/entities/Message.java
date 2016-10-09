@@ -8,7 +8,6 @@ import java.net.MalformedURLException;
 import java.net.URL;
 
 import eu.siacs.conversations.Config;
-import eu.siacs.conversations.crypto.axolotl.XmppAxolotlSession;
 import eu.siacs.conversations.utils.CryptoHelper;
 import eu.siacs.conversations.utils.GeoHelper;
 import eu.siacs.conversations.utils.MimeUtils;

@@ -30,7 +30,7 @@ import eu.siacs.conversations.xmpp.jid.Jid;
 
 
 public class Conversation extends AbstractEntity implements Serializable, Blockable, Comparable<Conversation> {
-    public static final String TABLENAME = "conversations";
+    public static final String TABLENAME = "chat";
 
     public static final int STATUS_AVAILABLE = 0;
     public static final int STATUS_ARCHIVED = 1;

@@ -154,6 +154,12 @@ public class ContactsController {
 
                 try {
                     HomeMainActivity.activity.finish();
+                    HomeMainActivity.activity.finish();
+                }catch (Exception e){
+
+                }
+                try {
+
                     ListenerController.openHomeActivity(activity, 0);
 
 

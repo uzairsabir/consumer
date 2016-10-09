@@ -16,10 +16,6 @@ import org.vanguardmatrix.engine.android.webservice.WebService;
 
 import java.util.ArrayList;
 
-import eu.siacs.conversations.entities.Account;
-import eu.siacs.conversations.ui.ConversationActivity;
-import eu.siacs.conversations.ui.MagicCreateActivity;
-
 /**
  * Created by Uzair on 8/14/2016.
  */

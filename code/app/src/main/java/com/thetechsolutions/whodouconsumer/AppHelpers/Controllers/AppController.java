@@ -29,7 +29,6 @@ import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Comparator;
 import java.util.HashSet;
 import java.util.List;
@@ -199,7 +198,7 @@ public class AppController {
                     .show();
         } else {
             if (vendorOrconsumer == 0) {
-                activity.startActivity(ConversationActivity.createIntent(activity, profileDT.getUsername() + "_v", profileDT.getImage_url(), contactNumber + "_c", contactName, contactAvatar));
+                activity.startActivity(ConversationActivity.createIntent(activity, profileDT.getUsername() + "_c", profileDT.getImage_url(), contactNumber + "_v", contactName, contactAvatar));
 
             } else {
                 activity.startActivity(ConversationActivity.createIntent(activity, profileDT.getUsername() + "_c", profileDT.getImage_url(), contactNumber + "_c", contactName, contactAvatar));
