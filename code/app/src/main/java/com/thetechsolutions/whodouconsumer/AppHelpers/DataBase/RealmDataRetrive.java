@@ -144,14 +144,15 @@ public class RealmDataRetrive {
     public static RealmResults<SettingsPreferenceDT> getSettingsPreferenceList() {
 
         final Realm realm = Realm.getDefaultInstance();
-        return realm.where(SettingsPreferenceDT.class).findAll().distinct("group_name");
+        MyLogs.printinfo(" group "+realm.where(SettingsPreferenceDT.class).findAll().size());
+        return realm.where(SettingsPreferenceDT.class).findAll().distinct("group");
 
     }
 
     public static RealmResults<SettingsPreferenceDT> getSettingsPreferenceItemList(String group_name) {
 
         final Realm realm = Realm.getDefaultInstance();
-        return realm.where(SettingsPreferenceDT.class).equalTo("group_name", group_name).findAll();
+        return realm.where(SettingsPreferenceDT.class).equalTo("group", group_name).findAll();
 
     }
 

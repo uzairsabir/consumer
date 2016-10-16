@@ -124,6 +124,13 @@ public class HomeFriendsProviderListAdapter extends ItemViewHolder<ProviderDT> {
             }
         });
 
+        sourceImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UtilityFunctions.showFullImage(activity, item.getFirst_name() + " " + item.getLast_name(), item.getImage_url(), null, 0);
+            }
+        });
+
 
     }
 

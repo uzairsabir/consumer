@@ -23,7 +23,7 @@
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
             android:layout_marginBottom="@dimen/margin_3"
-            android:text="Let's Get Started >"
+            android:text="Let's Get it Started >"
             android:textColor="@color/who_do_u_light_blue"
             android:textSize="@dimen/textsize_title_4"></TextView>
 

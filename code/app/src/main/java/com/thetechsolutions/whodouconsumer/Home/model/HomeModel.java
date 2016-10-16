@@ -13,6 +13,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.vanguardmatrix.engine.android.AppPreferences;
 import org.vanguardmatrix.engine.android.webservice.WebService;
+import org.vanguardmatrix.engine.utils.MyLogs;
+import org.vanguardmatrix.engine.utils.UtilityFunctions;
 
 import java.util.ArrayList;
 
@@ -25,9 +27,10 @@ public class HomeModel {
     public static boolean createProvider(String providerName, String first_name, String last_name,
                                          String user_address, String user_city, String user_state, String user_country,
                                          String email_address, String zip_code, String subcategory_id,
-                                         String is_registered_user
+                                         String is_registered_user, String imageUrl
     ) {
         String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+
 
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("user_id", id));
@@ -41,12 +44,15 @@ public class HomeModel {
         params.add(new BasicNameValuePair("user_country", user_country));
         params.add(new BasicNameValuePair("email_address", email_address));
         params.add(new BasicNameValuePair("zip_code", zip_code));
+        String type = "";
         if (HomeCreateNewContactActivity.tab_pos == 1) {
             params.add(new BasicNameValuePair("subcategory_id", ""));
             params.add(new BasicNameValuePair("user_type", AppConstants.APP_TYPE));
+            type = AppConstants.APP_TYPE;
         } else {
             params.add(new BasicNameValuePair("subcategory_id", subcategory_id));
             params.add(new BasicNameValuePair("user_type", AppConstants.VENDOR_TYPE));
+            type = AppConstants.VENDOR_TYPE;
         }
 
         params.add(new BasicNameValuePair("created_by", AppPreferences.getString(AppPreferences.PREF_USER_NUMBER)));
@@ -59,30 +65,21 @@ public class HomeModel {
                     .extractJSONObject();
 
             if (WebService.getResponseCode(resultJson) == 0) {
+                if (!UtilityFunctions.isEmpty(imageUrl)) {
 
-//                try {
-//                    RealmDataInsert.insertConsumerProviders(providerName, HomeCreateNewContactActivity.tab_pos);
-//                } catch (Exception e) {
-//
-//                }
-//
-//
-//                try {
-//                    RealmDataInsert.insertVendorProfile(resultJson.getJSONArray(AppConstants.BODY), HomeCreateNewContactActivity.tab_pos);
-//
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//
-//                try {
-//                    AppController.insertIntoContact(first_name, last_name, user_city, zip_code, user_country, providerName, email_address);
-//
-//                } catch (Exception e) {
-//                    e.printStackTrace();
-//
-//                }
+                    try {
+                        MyLogs.printinfo("calling_image " +type);
+                        String friendId = resultJson.getJSONArray("body").getJSONObject(0).getString("id");
+                        return uploadImage(friendId, type, imageUrl);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
 
-                return true;
+                } else {
+                    return true;
+                }
+
+
             }
 
         } catch (OutOfMemoryError e) {
@@ -132,7 +129,7 @@ public class HomeModel {
 
     public static boolean updateProvider(String providerName, String first_name, String last_name,
                                          String user_address, String user_city, String user_state, String user_country,
-                                         String email_address, String zip_code, String subcategory_id,int pos
+                                         String email_address, String zip_code, String subcategory_id, int pos,String imageUrl
     ) {
         String id = String.valueOf(RealmDataRetrive.getProfile().getUsername());
 
@@ -147,12 +144,15 @@ public class HomeModel {
         params.add(new BasicNameValuePair("user_country", user_country));
         params.add(new BasicNameValuePair("email_address", email_address));
         params.add(new BasicNameValuePair("zip_code", zip_code));
-        if (HomeCreateNewContactActivity.tab_pos == 1) {
+        String type = "";
+        if (pos == 1) {
             params.add(new BasicNameValuePair("subcategory_id", ""));
             params.add(new BasicNameValuePair("user_type", AppConstants.APP_TYPE));
+            type = AppConstants.APP_TYPE;
         } else {
             params.add(new BasicNameValuePair("subcategory_id", subcategory_id));
             params.add(new BasicNameValuePair("user_type", AppConstants.VENDOR_TYPE));
+            type = AppConstants.VENDOR_TYPE;
         }
         JSONObject resultJson;
         try {
@@ -162,9 +162,22 @@ public class HomeModel {
                     .extractJSONObject();
 
             if (WebService.getResponseCode(resultJson) == 0) {
+                if (!UtilityFunctions.isEmpty(imageUrl)) {
+
+                    try {
+                        MyLogs.printinfo("calling_image " +type);
+                        String friendId = resultJson.getJSONArray("body").getJSONObject(0).getString("id");
+                        return uploadImage(friendId, type, imageUrl);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+
+                } else {
+                    return true;
+                }
 
 
-                return true;
+               // return true;
             }
 
         } catch (OutOfMemoryError e) {
@@ -177,6 +190,7 @@ public class HomeModel {
 
 
     public static boolean getMyProviders() {
+        //AppPreferences.getString(AppPreferences.User_i)
         String id = String.valueOf(RealmDataRetrive.getProfile().getId());
 
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -372,34 +386,7 @@ public class HomeModel {
                             e.printStackTrace();
                         }
 
-//                        try {
-//                            RealmDataInsert.insertVendorProfile(resultJson.getJSONArray(AppConstants.BODY), 2);
-//
-//                        } catch (JSONException e) {
-//                            //   e.printStackTrace();
-//                        }
 
-//                        try {
-//                            JSONArray jsonArray = new JSONArray();
-//                            jsonArray = resultJson.getJSONArray(AppConstants.BODY);
-//                            for (int i = 0; i < jsonArray.length(); i++) {
-//
-//                                AppController.insertIntoContact(jsonArray.getJSONObject(i).getString("first_name"), jsonArray.getJSONObject(i).getString("last_name"),
-//                                        jsonArray.getJSONObject(i).getString("city"), jsonArray.getJSONObject(i).getString("zip_code"),
-//                                        jsonArray.getJSONObject(i).getString("country"), jsonArray.getJSONObject(i).getString("mobile_number_1"), jsonArray.getJSONObject(i).getString("email_1"));
-//
-//                                try {
-//                                    RealmDataInsert.insertConsumerProviders(jsonArray.getJSONObject(i).getString("mobile_number_1"), 2);
-//                                } catch (Exception e) {
-//
-//                                }
-//                            }
-//
-//
-//                        } catch (Exception e) {
-//                            e.printStackTrace();
-//
-//                        }
                     }
                 } catch (JSONException e) {
                     e.printStackTrace();
@@ -416,6 +403,72 @@ public class HomeModel {
         return false;
 
     }
+
+    public static boolean uploadImage(String user_id, String user_type, String image_url) {
+
+//        MyLogs.printinfo("image_url  "+"data:image/jpeg;base64," + UtilityFunctions.converStringToBase64(image_url));
+        //String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+        //MyLogs.printinfo("user_id "+user_id);
+
+        ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("base64_img", "data:image/jpeg;base64," + UtilityFunctions.converStringToBase64(image_url)));
+        params.add(new BasicNameValuePair("user_id", "" + user_id));
+        params.add(new BasicNameValuePair("user_type", user_type));
+        JSONObject resultJson;
+        try {
+
+            resultJson = WebService.callHTTPPost(
+                    ServiceUrl.call_update_profile_image, params, true)
+                    .extractJSONObject();
+
+            if (WebService.getResponseCode(resultJson) == 0) {
+                return true;
+            }
+
+        } catch (OutOfMemoryError e) {
+            e.printStackTrace();
+
+        }
+        return false;
+
+    }
+
+//    public static Boolean uploadVendorMediaImage(Activity activity, String user_id, String user_type, String imagePath) {
+//        ArrayList<String> params = new ArrayList<String>();
+//
+//        params.add(username);
+//        params.add(vendor_id);
+//        params.add(image_type);
+//
+//        ArrayList<String> paths = new ArrayList<String>();
+//        MyLogs.printinfo(" imagePath " + imagePath);
+//        paths.add(imagePath);
+//
+//        JSONObject result = WebService.callHTTPPost_uploadMedia3(activity,
+//                AppConstants.call_media_upload, params, paths, true)
+//                .extractJSONObject();
+//
+//
+//        if (result == null) {
+//            return false;
+//        }
+//        if (WebService.getResponseCode(result) == 0) {
+//
+//            try {
+//                JSONObject body = WebService
+//                        .getJSONObjectBodyFromResponseData(result);
+//
+//                if (body.getString("uploaded").equals("1")) {
+//
+//                }
+//            } catch (JSONException e) {
+//                e.printStackTrace();
+//            }
+//
+//            return true;
+//        }
+//        return false;
+//    }
 
 
 }

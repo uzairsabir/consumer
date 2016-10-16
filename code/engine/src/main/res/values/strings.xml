@@ -160,6 +160,7 @@
     <string name="Sync_contact">while we sync your contacts.</string>
     <string name="while_we_prepare_new_ziaraat_data">While we prepare Application for with new Ziaraat data.</string>
     <string name="please_filled">Please fill all required fields</string>
+    <string name="invalid_phone">Invalid phone number</string>
     <string name="phone_empty">Phone no is empty</string>
     <string name="zip_code_empty">Zipcode is empty</string>
     <string name="city_empty">City is empty</string>

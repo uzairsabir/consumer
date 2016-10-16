@@ -57,7 +57,7 @@
                     android:clickable="true"
                     android:background="@drawable/bg_white_round_blue_edges_grey_hover"
                     android:drawableRight="@drawable/drop_down_new"
-                    android:hint="Search in, All Providers"
+                    android:hint="Search in, My Providers"
                     android:paddingLeft="@dimen/margin_1"
                     android:paddingRight="@dimen/margin_1"
                     android:singleLine="true"

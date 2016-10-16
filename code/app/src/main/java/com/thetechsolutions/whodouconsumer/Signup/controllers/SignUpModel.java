@@ -13,6 +13,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.vanguardmatrix.engine.android.AppPreferences;
 import org.vanguardmatrix.engine.android.webservice.WebService;
+import org.vanguardmatrix.engine.utils.MyLogs;
 
 import java.util.ArrayList;
 
@@ -124,7 +125,7 @@ public class SignUpModel {
 
     }
 
-    protected boolean codeVerification(Activity activity,String code) {
+    protected boolean codeVerification(Activity activity, String code) {
 
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("username", "" + AppPreferences.getString(AppPreferences.PREF_USER_NUMBER)));
@@ -143,6 +144,7 @@ public class SignUpModel {
             if (WebService.getResponseCode(resultJson) == 0) {
 
                 try {
+                    MyLogs.printinfo("resultJson " + resultJson);
                     RealmDataInsert.insertProfile(resultJson.getJSONArray(AppConstants.BODY));
                 } catch (JSONException e) {
                     e.printStackTrace();

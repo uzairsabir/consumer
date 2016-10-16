@@ -2,6 +2,7 @@ package com.thetechsolutions.whodouconsumer.Settings.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 
@@ -11,8 +12,17 @@ import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.MethodGenerato
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.TitleBarController;
 import com.thetechsolutions.whodouconsumer.R;
 import com.thetechsolutions.whodouconsumer.Settings.adapters.SettingsMainPagerAdapter;
+import com.thetechsolutions.whodouconsumer.Settings.controller.SettingsController;
+import com.thetechsolutions.whodouconsumer.Settings.fragments.SettingPreferenceFragment;
+import com.thetechsolutions.whodouconsumer.Settings.fragments.SettingProfileFragment;
 
+import org.vanguardmatrix.engine.utils.MyLogs;
 import org.vanguardmatrix.engine.utils.PagerSlidingTabStrip;
+
+import java.io.File;
+
+import pl.aprilapps.easyphotopicker.DefaultCallback;
+import pl.aprilapps.easyphotopicker.EasyImage;
 
 /**
  * Created by Uzair on 7/12/2016.
@@ -60,5 +70,31 @@ public class SettingsMainActivity extends FragmentActivityController implements 
         tapStrip.setViewPager(pager);
 
     }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        EasyImage.handleActivityResult(requestCode, resultCode, data, activity, new DefaultCallback() {
+            @Override
+            public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
+                //Some error handling
+            }
+
+            @Override
+            public void onImagePicked(File imageFile, EasyImage.ImageSource source, int type) {
+                //Handle the image
+                try {
+                    MyLogs.printinfo("imageFile " + imageFile.getPath());
+                    SettingProfileFragment.fresco_view.setImageURI(Uri.fromFile(new File(imageFile.getPath())));
+                } catch (Exception e) {
+
+                }
+
+                SettingProfileFragment.imageUrl = imageFile.getAbsolutePath();
+            }
+        });
+    }
+
 
 }

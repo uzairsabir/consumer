@@ -43,7 +43,7 @@ public class RealmDataDelete {
 
         }
 
-        MyLogs.printinfo("cancel_tran ");
+        //MyLogs.printinfo("cancel_tran ");
 
 
     }

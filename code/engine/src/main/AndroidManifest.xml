@@ -49,6 +49,9 @@
         <meta-data
             android:name="com.facebook.sdk.ApplicationId"
             android:value="@string/facebook_ap_id" />
+        <activity
+            android:name="org.vanguardmatrix.engine.utils.FullImageView"
+            android:theme="@style/Theme.NoTitleBar" />
 
     </application>
 

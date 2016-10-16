@@ -14,6 +14,7 @@ import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProviderDT;
 import com.thetechsolutions.whodouconsumer.Home.fragments.HomeMainFragment;
 import com.thetechsolutions.whodouconsumer.R;
 
+import org.vanguardmatrix.engine.utils.MyLogs;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
 
 import uk.co.ribot.easyadapter.ItemViewHolder;
@@ -72,7 +73,8 @@ public class HomeListAdapter extends ItemViewHolder<ProviderDT> {
         this.item = item;
         this.positioninfo = positionInfo.getPosition();
         try {
-            //MyLogs.printinfo("cat_image " + item.getImage_url());
+            MyLogs.printinfo("cat_image " + item.getImage_url());
+            //sourceImageView.
             sourceImageView.setImageURI(Uri.parse(item.getImage_url()));
 
         } catch (Exception e) {
@@ -150,6 +152,12 @@ public class HomeListAdapter extends ItemViewHolder<ProviderDT> {
 //                    ListenerController.openFriendProfileActivity(activity, pos, item.getUsername());
 //                }
                 ListenerController.openFriendProfileActivity(activity, pos, item.getUsername());
+            }
+        });
+        sourceImageView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                UtilityFunctions.showFullImage(activity, item.getFirst_name() + " " + item.getLast_name(), item.getImage_url(), null, 0);
             }
         });
 

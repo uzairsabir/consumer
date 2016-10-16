@@ -104,6 +104,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -4096,6 +4097,23 @@ public class UtilityFunctions {
         cal.setTime(date);
         return cal.get(Calendar.MONTH);
 
+    }
+    public static String converStringToBase64(String url){
+
+        MyLogs.printinfo("url "+url);
+        Bitmap bm = BitmapFactory.decodeFile(url);
+        ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object
+        byte[] b = baos.toByteArray();
+
+//        byte[] data = new byte[0];
+//        try {
+//            data = url.getBytes("UTF-8");
+//        } catch (UnsupportedEncodingException e) {
+//            e.printStackTrace();
+//        }
+        String base64 = Base64.encodeToString(b, Base64.DEFAULT);
+        return base64;
     }
 
 }

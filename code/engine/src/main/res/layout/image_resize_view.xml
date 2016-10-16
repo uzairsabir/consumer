@@ -25,6 +25,7 @@
         android:ellipsize="end"
         android:gravity="center"
         android:maxLines="5"
+        android:visibility="gone"
         android:padding="@dimen/margin_2"
         android:text="About Image"
         android:textColor="@color/white"
@@ -39,7 +40,7 @@
         android:background="@color/transparent_full"
         android:maxLines="1"
         android:padding="@dimen/margin_2"
-        android:text="01 of 20"
+        android:text=""
         android:textColor="@color/white"
         android:textSize="@dimen/textsize_label_3" />
 

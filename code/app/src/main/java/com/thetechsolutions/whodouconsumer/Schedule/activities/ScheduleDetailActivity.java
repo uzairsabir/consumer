@@ -14,6 +14,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -21,13 +22,16 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
+import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.AppController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.BottomMenuController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.FragmentActivityController;
+import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.ListenerController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.MethodGenerator;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.TitleBarController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ScheduleDT;
+import com.thetechsolutions.whodouconsumer.Home.fragments.HomeMainFragment;
 import com.thetechsolutions.whodouconsumer.R;
 import com.thetechsolutions.whodouconsumer.Schedule.adapters.DurationListAdapter;
 import com.thetechsolutions.whodouconsumer.Schedule.controller.ScheduleController;
@@ -63,6 +67,7 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
     SwitchButton switch_button;
     String selectedDateTime, appointmentId, appointmentStatus;
     EditText description;
+    ImageView call_icon, chat_icon;
 
     long calId = 0;
 
@@ -101,6 +106,8 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
         appointment_date = (TextView) findViewById(R.id.appointment_date);
         duration = (TextView) findViewById(R.id.duration);
         description = (EditText) findViewById(R.id.description);
+        call_icon = (ImageView) findViewById(R.id.call_icon);
+        chat_icon = (ImageView) findViewById(R.id.chat_icon);
 
         fresco_view = (SimpleDraweeView) findViewById(R.id.fresco_view);
 
@@ -119,6 +126,7 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
         appointment_date.setOnClickListener(this);
         duration.setOnClickListener(this);
 
+
     }
 
     @Override
@@ -126,7 +134,7 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
 
 
         if (id != 0) {
-            ScheduleDT item_detail = RealmDataRetrive.getScheduleDetail(id);
+            final ScheduleDT item_detail = RealmDataRetrive.getScheduleDetail(id);
             if (item_detail.getCall_message() == 1) {
                 switch_button.setChecked(true);
             } else {
@@ -149,6 +157,22 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
             } catch (Exception e) {
 
             }
+
+//            calendar_icon.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    ListenerController.openScheduleDetail(activity, 0, 2, "Create Appointment", item_detail.getUsername());
+//                }
+//            });
+//
+//            chat_icon.setOnClickListener(new View.OnClickListener() {
+//                @Override
+//                public void onClick(View view) {
+//                    AppController.openChat(activity, item_detail.getUsername(), item_detail.getConsumer_name() + " " + item_detail.getConsumer_name(), item_detail.getSub_category_image_url(), item_detail.get, 0);
+//
+//                }
+//            });
+
 
 
         }

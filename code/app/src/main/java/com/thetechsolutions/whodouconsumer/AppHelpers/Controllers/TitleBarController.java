@@ -35,6 +35,8 @@ import com.thetechsolutions.whodouconsumer.Pay.activities.PayMainActivity;
 import com.thetechsolutions.whodouconsumer.R;
 import com.thetechsolutions.whodouconsumer.Schedule.activities.ScheduleMainActivity;
 import com.thetechsolutions.whodouconsumer.Settings.activities.SettingsMainActivity;
+import com.thetechsolutions.whodouconsumer.Settings.controller.SettingsController;
+import com.thetechsolutions.whodouconsumer.Settings.fragments.SettingProfileFragment;
 
 import org.vanguardmatrix.engine.android.AppPreferences;
 
@@ -259,13 +261,28 @@ public class TitleBarController {
 
         } else if (activity instanceof ScheduleMainActivity) {
 
-            ListenerController.openScheduleDetail(activity, 0, 2, "Create Appointment","");
+            ListenerController.openScheduleDetail(activity, 0, 2, "Create Appointment", "");
 
 
         } else if (activity instanceof HomeCreateNewContactActivity) {
             ((HomeCreateNewContactActivity) activity).validatorCode();
         } else if (activity instanceof ChatMainActivity) {
             callChatInDialogue(activity);
+        } else if (activity instanceof SettingsMainActivity) {
+
+            if (((SettingsMainActivity) activity).pager.getCurrentItem() == 0) {
+
+            } else if (((SettingsMainActivity) activity).pager.getCurrentItem() == 1) {
+
+                SettingsController.updateProfile(activity,
+                        AppPreferences.getString(AppPreferences.PREF_USER_NUMBER),
+                        SettingProfileFragment.fragment.firstName.getText().toString(),
+                        SettingProfileFragment.fragment.lastName.getText().toString(), "", SettingProfileFragment.fragment.city_state.getText().toString(), "",
+                        "", "", SettingProfileFragment.fragment.zip_codes.getText().toString(), "", SettingProfileFragment.fragment.imageUrl, 1
+                );
+
+            }
+
         }
     }
 

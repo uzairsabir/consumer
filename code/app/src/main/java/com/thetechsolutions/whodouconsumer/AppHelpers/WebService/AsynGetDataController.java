@@ -45,8 +45,20 @@ public class AsynGetDataController {
     }
 
     public void getSchedules(Activity activity) {
-        new getAppointments(activity, "upcoming").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        new getAppointments(activity, "recent").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        try{
+            new getAppointments(activity, "upcoming").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            new getAppointments(activity, "recent").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }catch (Exception e){
+
+        }
+
+
+        try{
+            new getSettings(activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }catch (Exception e){
+
+        }
+
     }
 
 
@@ -152,7 +164,14 @@ public class AsynGetDataController {
 
                 }
                 try {
-                    ContactsMainFragment.fragment.loadData();
+                  //  ContactsMainFragment.fragment.loadData();
+                } catch (Exception e) {
+
+                }
+
+                try {
+                    ((ContactsMainActivity) activity).viewUpdate();
+                    //ContactsMainFragment.fragment.loadData();
                 } catch (Exception e) {
 
                 }
@@ -254,7 +273,8 @@ public class AsynGetDataController {
 
                 }
                 try {
-                    ContactsMainFragment.fragment.loadData();
+                    ((ContactsMainActivity) activity).viewUpdate();
+                    //ContactsMainFragment.fragment.loadData();
                 } catch (Exception e) {
 
                 }
@@ -451,5 +471,59 @@ public class AsynGetDataController {
 
 
     }
+
+    private class getSettings extends AsyncTask<String, Void, Integer> {
+
+
+        Activity activity;
+
+
+        public getSettings(Activity _activity) {
+            activity = _activity;
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected Integer doInBackground(String... params) {
+
+            try {
+
+                if (WebserviceModel.getPreference())
+
+                    return 0;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return 4;
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            super.onPostExecute(result);
+
+
+            if (result == 0) {
+
+            } else {
+                MyLogs.printinfo(
+                        "Error in getting my providers"
+                );
+                //AppController.showToast(activity, activity.getResources().getString(R.string.went_wrong));
+            }
+
+
+        }
+
+
+    }
+
 
 }

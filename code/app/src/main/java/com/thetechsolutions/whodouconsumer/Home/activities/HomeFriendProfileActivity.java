@@ -2,6 +2,7 @@ package com.thetechsolutions.whodouconsumer.Home.activities;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -25,8 +26,14 @@ import com.thetechsolutions.whodouconsumer.Home.fragments.HomeMainFragment;
 import com.thetechsolutions.whodouconsumer.R;
 
 import org.vanguardmatrix.engine.android.AppPreferences;
-import org.vanguardmatrix.engine.utils.MyLogs;
+import org.vanguardmatrix.engine.utils.PermissionHandler;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
+
+import java.io.File;
+
+import pl.aprilapps.easyphotopicker.DefaultCallback;
+import pl.aprilapps.easyphotopicker.EasyImage;
+import pl.aprilapps.easyphotopicker.EasyImageConfig;
 
 /**
  * Created by Uzair on 7/12/2016.
@@ -46,6 +53,7 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
     static String providerName;
     String text_first_name, text_last_name,
             text_city_state, text_zip_codes, text_email;
+    String imageUrl;
 
 
     public static Intent createIntent(Activity _activity, int _tab_pos, String _providerName) {
@@ -104,8 +112,10 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
         if (HomeMainFragment.pos == 1) {
             calendar_icon.setVisibility(View.GONE);
             service_name.setVisibility(View.GONE);
+            dollar_icon.setVisibility(View.GONE);
         }
         listeners();
+
 
     }
 
@@ -235,6 +245,21 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
                 }
             });
 
+            fresco_view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if (item_detail.getCreated_by().equalsIgnoreCase(AppPreferences.getString(AppPreferences.PREF_USER_NUMBER))) {
+                        if (PermissionHandler.isStoragePermissionGranted(activity)) {
+
+                            EasyImage.openChooserWithGallery(activity, "Profile Photo", EasyImageConfig.REQ_PICK_PICTURE_FROM_GALLERY);
+                        }
+                    } else {
+                        UtilityFunctions.showFullImage(activity, item_detail.getFirst_name() + " " + item_detail.getLast_name(), item_detail.getImage_url(), null, 0);
+
+                    }
+                }
+            });
+
         }
 
 
@@ -257,7 +282,7 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
             try {
 
                 HomeMainController.updateProvider(providerName, text_first_name, text_last_name, "", text_city_state, "", "", text_email,
-                        text_zip_codes, subCatId + "", HomeMainFragment.pos);
+                        text_zip_codes, subCatId + "", HomeMainFragment.pos, imageUrl);
 
 
                 return 0;
@@ -293,6 +318,31 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
         }
 
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        EasyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
+            @Override
+            public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
+                //Some error handling
+            }
+
+            @Override
+            public void onImagePicked(File imageFile, EasyImage.ImageSource source, int type) {
+                //Handle the image
+                try {
+                    fresco_view.setImageURI(Uri.fromFile(new File(imageFile.getPath())));
+                } catch (Exception e) {
+
+                }
+
+                imageUrl = imageFile.getAbsolutePath();
+                //onPhotoReturned(imageFile);
+            }
+        });
     }
 
 

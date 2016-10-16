@@ -53,7 +53,7 @@ public class AppController {
         // RealmDataInsert.insertSchedule(null);
         RealmDataInsert.insertPay(null);
         // RealmDataInsert.insertChat(null);
-        RealmDataInsert.insertSettingsPreference(null);
+        //RealmDataInsert.insertSettingsPreference(null);
         RealmDataInsert.insertSearchIn();
         AppPreferences.setBoolean(AppPreferences.PREF_IS_DUMY_CONTENT_INSERT, true);
 
@@ -178,6 +178,11 @@ public class AppController {
 
     public static void openChat(final Activity activity, String contactNumber, String contactName, String contactAvatar, String isRegistered, int vendorOrconsumer) {
         ProfileDT profileDT = RealmDataRetrive.getProfile();
+        if (vendorOrconsumer == 0) {
+            MyLogs.printinfo("chating with vendor");
+        } else {
+            MyLogs.printinfo("chating with consumer");
+        }
         if (isRegistered.equals("0")) {
 
             loaderDialoge = new MaterialDialog.Builder(activity)
@@ -198,9 +203,11 @@ public class AppController {
                     .show();
         } else {
             if (vendorOrconsumer == 0) {
+
                 activity.startActivity(ConversationActivity.createIntent(activity, profileDT.getUsername() + "_c", profileDT.getImage_url(), contactNumber + "_v", contactName, contactAvatar));
 
             } else {
+
                 activity.startActivity(ConversationActivity.createIntent(activity, profileDT.getUsername() + "_c", profileDT.getImage_url(), contactNumber + "_c", contactName, contactAvatar));
 
             }
@@ -291,12 +298,12 @@ public class AppController {
         });
         s.addAll(l);
         final ArrayList<Conversation> newList = new ArrayList(s);
-        MyLogs.printinfo("newList "+newList.size());
+        MyLogs.printinfo("newList " + newList.size());
         return newList;
     }
 
-    public static ArrayList<Conversation> removeNew(ArrayList<Conversation> list){
-       ArrayList<Conversation> arrayList=new ArrayList<>();
+    public static ArrayList<Conversation> removeNew(ArrayList<Conversation> list) {
+        ArrayList<Conversation> arrayList = new ArrayList<>();
         HashSet<Conversation> hashSet = new HashSet<Conversation>();
         hashSet.addAll(list);
         arrayList.addAll(hashSet);

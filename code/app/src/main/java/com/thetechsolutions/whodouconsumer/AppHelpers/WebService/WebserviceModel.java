@@ -177,4 +177,50 @@ public class WebserviceModel {
         return false;
 
     }
+
+    public static boolean getPreference() {
+        String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+
+        ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+        params.add(new BasicNameValuePair("user_id", id));
+        params.add(new BasicNameValuePair("user_type", "consumer"));
+        JSONObject resultJson;
+        try {
+
+            resultJson = WebService.callHTTPPost(
+                    ServiceUrl.call_get_preference, params, true)
+                    .extractJSONObject();
+
+            if (WebService.getResponseCode(resultJson) == 0) {
+
+                try {
+
+                    if (resultJson.getJSONArray(AppConstants.BODY).length() > 0) {
+
+
+                        try {
+
+                            RealmDataInsert.insertSettingsPreference(resultJson.getJSONArray(AppConstants.BODY));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+                return true;
+            }
+
+        } catch (OutOfMemoryError e) {
+            e.printStackTrace();
+
+        }
+        return false;
+
+    }
+
 }

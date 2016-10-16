@@ -3,6 +3,7 @@ package com.thetechsolutions.whodouconsumer.Home.activities;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
@@ -35,10 +36,15 @@ import com.thetechsolutions.whodouconsumer.R;
 
 import org.vanguardmatrix.engine.android.AppPreferences;
 import org.vanguardmatrix.engine.countryManager.BaseFlagFragment;
-import org.vanguardmatrix.engine.utils.MyLogs;
+import org.vanguardmatrix.engine.utils.PermissionHandler;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
 
+import java.io.File;
+
 import io.realm.RealmResults;
+import pl.aprilapps.easyphotopicker.DefaultCallback;
+import pl.aprilapps.easyphotopicker.EasyImage;
+import pl.aprilapps.easyphotopicker.EasyImageConfig;
 import uk.co.ribot.easyadapter.EasyAdapter;
 
 /**
@@ -65,6 +71,7 @@ public class HomeCreateNewContactActivity extends FragmentActivityController imp
 
     VendorProfileDT profileDT;
     LinearLayout country_container;
+    String imageUrl = "";
 
     public static Intent createIntent(Activity _activity, int _tab_pos, String _provider_name) {
         activity = _activity;
@@ -84,7 +91,7 @@ public class HomeCreateNewContactActivity extends FragmentActivityController imp
         viewInitialize();
         viewUpdate();
 
-      //  MyLogs.printinfo("tab_pos  " + tab_pos);
+        //  MyLogs.printinfo("tab_pos  " + tab_pos);
 
     }
 
@@ -119,6 +126,26 @@ public class HomeCreateNewContactActivity extends FragmentActivityController imp
     @Override
     public void viewUpdate() {
         fresco_view.setImageURI("test.jpg");
+
+        fresco_view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+
+                if (AppPreferences.getString(AppPreferences.PREF_IS_PROVIDER_ALREADY_REGISTERED).equals(AppConstants.USER_NEW)) {
+
+                    if (PermissionHandler.isStoragePermissionGranted(activity)) {
+
+                        EasyImage.openChooserWithGallery(activity, "Profile Photo", EasyImageConfig.REQ_PICK_PICTURE_FROM_GALLERY);
+                    }
+                } else if (profileDT.getCreated_by().equals(AppPreferences.getString(AppPreferences.PREF_USER_NUMBER))) {
+                    if (PermissionHandler.isStoragePermissionGranted(activity)) {
+
+                        EasyImage.openChooserWithGallery(activity, "Profile Photo", EasyImageConfig.REQ_PICK_PICTURE_FROM_GALLERY);
+                    }
+                }
+
+            }
+        });
         if (!UtilityFunctions.isEmpty(provider_name))
             setProfile();
         else {
@@ -373,7 +400,7 @@ public class HomeCreateNewContactActivity extends FragmentActivityController imp
 
                     } else if (AppPreferences.getString(AppPreferences.PREF_IS_PROVIDER_ALREADY_REGISTERED).equals(AppConstants.USER_NOT_ON_APP)) {
 
-                        try{
+                        try {
                             if (profileDT.getCreated_by().equals(AppPreferences.getString(AppPreferences.PREF_USER_NUMBER))) {
 
                                 new updateVendor().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
@@ -383,7 +410,7 @@ public class HomeCreateNewContactActivity extends FragmentActivityController imp
                                 new createLink().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
                             }
-                        }catch (Exception e){
+                        } catch (Exception e) {
 
                         }
 
@@ -415,7 +442,7 @@ public class HomeCreateNewContactActivity extends FragmentActivityController imp
             try {
 
                 HomeMainController.createProvider(provider_name, text_first_name, text_last_name, "", text_city_state, "", "", text_email,
-                        text_zip_codes, subCatId + "", AppPreferences.getString(AppPreferences.PREF_IS_PROVIDER_ALREADY_REGISTERED)
+                        text_zip_codes, subCatId + "", AppPreferences.getString(AppPreferences.PREF_IS_PROVIDER_ALREADY_REGISTERED), imageUrl
 
 
                 );
@@ -510,7 +537,7 @@ public class HomeCreateNewContactActivity extends FragmentActivityController imp
             try {
 
                 HomeMainController.updateProvider(provider_name, text_first_name, text_last_name, "", text_city_state, "", "", text_email,
-                        text_zip_codes, subCatId + "", tab_pos);
+                        text_zip_codes, subCatId + "", tab_pos,imageUrl);
 
 
                 return 0;
@@ -550,6 +577,31 @@ public class HomeCreateNewContactActivity extends FragmentActivityController imp
 //        setResult(Activity.RESULT_OK, returnIntent);
 //        finish();
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        EasyImage.handleActivityResult(requestCode, resultCode, data, this, new DefaultCallback() {
+            @Override
+            public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
+                //Some error handling
+            }
+
+            @Override
+            public void onImagePicked(File imageFile, EasyImage.ImageSource source, int type) {
+                //Handle the image
+                try {
+                    fresco_view.setImageURI(Uri.fromFile(new File(imageFile.getPath())));
+                } catch (Exception e) {
+
+                }
+
+                imageUrl = imageFile.getAbsolutePath();
+                //onPhotoReturned(imageFile);
+            }
+        });
     }
 
 

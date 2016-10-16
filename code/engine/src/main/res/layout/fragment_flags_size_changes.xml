@@ -9,6 +9,7 @@
         android:id="@+id/l1"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:background="@drawable/bg_signup_background"
         android:orientation="horizontal">
 
         <Spinner
@@ -17,6 +18,11 @@
             android:layout_height="match_parent"
             android:background="@drawable/edit_box_drop_selector"
             android:dropDownWidth="200dp"/>
+
+        <TextView
+            android:layout_width="1dp"
+            android:background="@color/who_do_u_medium_grey"
+            android:layout_height="match_parent" />
 
         <EditText
             android:id="@+id/phone"

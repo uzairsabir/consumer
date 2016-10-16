@@ -13,11 +13,15 @@ import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.EditText;
-import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.afollestad.materialdialogs.GravityEnum;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.andreabaccega.widget.FormEditText;
+import com.github.pinball83.maskededittext.MaskedEditText;
+import com.mukesh.countrypicker.fragments.CountryPicker;
+import com.mukesh.countrypicker.interfaces.CountryPickerListener;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Config.AppConstants;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.AppController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.ListenerController;
@@ -28,7 +32,6 @@ import com.thetechsolutions.whodouconsumer.R;
 import com.thetechsolutions.whodouconsumer.Signup.controllers.SignUpAsynController;
 
 import org.vanguardmatrix.engine.android.AppPreferences;
-import org.vanguardmatrix.engine.countryManager.BaseFlagFragment;
 import org.vanguardmatrix.engine.utils.MyLogs;
 import org.vanguardmatrix.engine.utils.NetworkManager;
 import org.vanguardmatrix.engine.utils.PermissionHandler;
@@ -49,16 +52,20 @@ public class SignupActivity extends MagicCreateActivity implements View.OnClickL
     public static boolean isRegisterationScreen, isCodeInputScreen;
     private static long back_pressed;
     Activity activity;
-    EditText _edit_phone;
+    //EditText _edit_phone;
 
     Dialog workDialog;
 
     RelativeLayout bottomLay;
-    LinearLayout country_container;
     String inputPhoneNumber, fName, lName, email, code1, code2, code3, code4;
     int zipCode;
 
     Button signup_btn;
+    MaskedEditText country_number;
+    TextView country_name, country_code, term_text;
+    String finalNumber;
+
+    MaterialDialog term_and_condition_dialoge;
 
     public static Intent createIntent(Activity activity) {
         return new Intent(activity, SignupActivity.class);
@@ -70,7 +77,6 @@ public class SignupActivity extends MagicCreateActivity implements View.OnClickL
         setContentView(R.layout.activity_login_with_number);
         activity = this;
         viewsInitialize();
-        // addListeners();
         viewHandler();
 
         try {
@@ -94,22 +100,103 @@ public class SignupActivity extends MagicCreateActivity implements View.OnClickL
 
     private void viewsInitialize() {
 
+//        try {
+//            BaseFlagFragment.initUI(activity);
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
+//        try {
+//            BaseFlagFragment.initCodes(activity);
+//
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         try {
-            BaseFlagFragment.initUI(activity);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        try {
-            BaseFlagFragment.initCodes(activity);
+            country_name = (TextView) findViewById(R.id.country_name);
+            country_code = (TextView) findViewById(R.id.country_code);
+            term_text = (TextView) findViewById(R.id.term_text);
+
+            //final android.app.FragmentTransaction fragmentTransaction= getFragmentManager().beginTransaction();
+
+            term_text.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    term_and_condition_dialoge = new MaterialDialog.Builder(activity)
+                            .title("Privacy Policy")
+                            .content("This privacy policy governs your use of the software application Whodou (“Application”) for mobile\n" +
+                                    "\n" +
+                                    "devices that was created by Pingem, Inc.. The Application is a consumer oriented platform that allows the\n" +
+                                    "\n" +
+                                    "consumer to engage with existing providers via live chat, scheduling, payment and general coordination of\n" +
+                                    "\n" +
+                                    "the consumer/vendor relationship. Additionally, the Application allow consumers to add their friends in\n" +
+                                    "\n" +
+                                    "order to seamlessly share their go-to vendors.\n" +
+                                    "\n" +
+                                    "User Provided Information \n" +
+                                    "\n" +
+                                    "The Application obtains the information you provide when you download and register the Application. \n" +
+                                    "\n" +
+                                    "Registration with us is mandatory in order to be able to use the basic features of the Application.\n" +
+                                    "\n" +
+                                    "When you register with us and use the Application, you generally provide (a) your name, email address,\n" +
+                                    "\n" +
+                                    "age, user name, password and other registration information; (b) transaction-related information, such as\n" +
+                                    "\n" +
+                                    "when you make purchases, respond to any offers, or download or use applications from us; (c) information\n" +
+                                    "\n" +
+                                    "you provide us when you contact us for help; (d) credit card information for purchase and use of the\n" +
+                                    "\n" +
+                                    "Application, and; (e) information you enter into our system when using the Application, such as contact\n" +
+                                    "\n" +
+                                    "information and project management information.\n" +
+                                    "\n" +
+                                    "We may also use the information you provided us to contact your from time to time to provide you with\n" +
+                                    "\n" +
+                                    "important information, required notices and marketing promotions.")
+                            .contentGravity(GravityEnum.CENTER)
+                            .backgroundColor(activity.getResources().getColor(R.color.white))
+                            .titleColor(activity.getResources().getColor(R.color.black))
+                            .contentColor(activity.getResources().getColor(R.color.who_do_u_medium_grey))
+                            .show();
+                }
+            });
+
+            country_name.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    final CountryPicker picker = CountryPicker.newInstance("Select Country");
+                    picker.show(getSupportFragmentManager(), "COUNTRY_PICKER");
+
+                    picker.setListener(new CountryPickerListener() {
+                        @Override
+                        public void onSelectCountry(String name, String code, String dialCode, int flagDrawableResID) {
+                            country_code.setText(dialCode);
+                            country_name.setText(name);
+                            picker.dismiss();
+
+                        }
+                    });
+                }
+            });
+
+            try {
+                country_number = (MaskedEditText) findViewById(R.id.country_number);
+
+
+            } catch (Exception e) {
+
+            }
+
 
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
 
         bottomLay = (RelativeLayout) findViewById(R.id.bottom_lay);
         bottomLay.setVisibility(View.GONE);
-        country_container = (LinearLayout) findViewById(R.id.country_container);
-        _edit_phone = (EditText) findViewById(R.id.phone);
+        // country_container = (LinearLayout) findViewById(R.id.country_container);
+        //  _edit_phone = (EditText) findViewById(R.id.phone);
         signup_btn = (Button) findViewById(R.id.signup_btn);
         signup_btn.setOnClickListener(this);
 
@@ -142,10 +229,14 @@ public class SignupActivity extends MagicCreateActivity implements View.OnClickL
         switch (v.getId()) {
 
             case R.id.signup_btn:
+                if(country_number.getUnmaskedText().length() ==10) {
+                    finalNumber = country_code.getText().toString() + country_number.getUnmaskedText();
+                    AppPreferences.setString(AppPreferences.PREF_USER_COUNTRY_CODE, country_code.getText().toString().replace("+", ""));
+                    inputNumberValidator(finalNumber);
+                }else{
+                    UtilityFunctions.showToast_onCenter(activity.getString(R.string.please_format_number), activity);
 
-                inputNumberValidator();
-
-
+                }
                 break;
 
 
@@ -477,19 +568,19 @@ public class SignupActivity extends MagicCreateActivity implements View.OnClickL
     }
 
 
-    private void inputNumberValidator() {
+    private void inputNumberValidator(String completeNumber) {
         MyLogs.printinfo("country_code " + AppPreferences.getString(AppPreferences.PREF_USER_COUNTRY_CODE));
-        inputPhoneNumber = _edit_phone.getText().toString();
+        inputPhoneNumber = completeNumber;
 
 
         if (UtilityFunctions.isEmpty(inputPhoneNumber)) {
             UtilityFunctions.showToast_onCenter(activity.getString(R.string.please_filled), activity);
             return;
         }
-        if (!UtilityFunctions.isContainSpaces(inputPhoneNumber)) {
-            UtilityFunctions.showToast_onCenter(activity.getString(R.string.please_format_number), activity);
-            return;
-        }
+//        if (!UtilityFunctions.isContainSpaces(inputPhoneNumber)) {
+//            UtilityFunctions.showToast_onCenter(activity.getString(R.string.please_format_number), activity);
+//            return;
+//        }
         inputPhoneNumber = UtilityFunctions.getstandarizeNumber(inputPhoneNumber, activity);
         new SignUpAsync(activity, AppConstants.SIGNUP_FUNCTION_TYPE_NUMBER_VERIFICATION).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 

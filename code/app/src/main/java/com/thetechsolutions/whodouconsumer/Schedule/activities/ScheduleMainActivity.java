@@ -40,7 +40,7 @@ public class ScheduleMainActivity extends FragmentActivityController implements 
         BottomMenuController.getInstance(activity).setBottomMenu(activity);
         viewInitialize();
 
-        TitleBarController.getInstance(activity).setTitleBar(activity, "Schedule", false, true, false);
+        TitleBarController.getInstance(activity).setTitleBar(activity, "Appointments", false, true, false);
         viewUpdate();
     }
 

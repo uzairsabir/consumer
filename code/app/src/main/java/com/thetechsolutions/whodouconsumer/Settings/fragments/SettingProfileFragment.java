@@ -3,8 +3,6 @@ package com.thetechsolutions.whodouconsumer.Settings.fragments;
 import android.app.Activity;
 import android.app.Dialog;
 import android.content.DialogInterface;
-import android.content.Intent;
-import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -20,12 +18,9 @@ import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProfileDT;
 import com.thetechsolutions.whodouconsumer.R;
 
-import org.vanguardmatrix.engine.utils.MyLogs;
+import org.vanguardmatrix.engine.utils.PermissionHandler;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
 
-import java.io.File;
-
-import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 import pl.aprilapps.easyphotopicker.EasyImageConfig;
 
@@ -36,12 +31,13 @@ public class SettingProfileFragment extends Fragment {
 
 
     static Activity activity;
-    static SettingProfileFragment fragment;
+    public static SettingProfileFragment fragment;
 
 
     public Dialog dialog;
-    static SimpleDraweeView fresco_view;
-    EditText firstName, lastName, cellno, city_state, zip_codes;
+    public static SimpleDraweeView fresco_view;
+    public EditText firstName, lastName, cellno, city_state, zip_codes;
+    public static String imageUrl = "";
 
 
     public static Fragment newInstance(Activity _activity) {
@@ -86,8 +82,11 @@ public class SettingProfileFragment extends Fragment {
         fresco_view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (PermissionHandler.isStoragePermissionGranted(activity)) {
 
-                openDialoge();
+                    EasyImage.openChooserWithGallery(activity, "Profile Photo", EasyImageConfig.REQ_PICK_PICTURE_FROM_GALLERY);
+                }
+                //openDialoge();
 
             }
         });
@@ -139,6 +138,12 @@ public class SettingProfileFragment extends Fragment {
                         e.printStackTrace();
 
                     }
+                    try{
+
+                        city_state.setText(""+profileDT.getCity());
+                    }catch (Exception e){
+
+                    }
 
 //                    PhoneFormat phoneFormat = new PhoneFormat(activity);
 //
@@ -171,43 +176,43 @@ public class SettingProfileFragment extends Fragment {
     }
 
 
-    public class updateProfile extends AsyncTask<String, Void, Boolean> {
-
-
-        @Override
-        protected void onPreExecute() {
-            super.onPreExecute();
-
-
-        }
-
-        @Override
-        protected Boolean doInBackground(String... params) {
-
-            try {
-                // SettingController.updateProfile(activity, data, isImageSelected, mImageCurrentPath);
-
-                return true;
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return false;
-        }
-
-        @Override
-        protected void onPostExecute(Boolean result) {
-
-            super.onPostExecute(result);
-            if (result) {
-                UtilityFunctions.showToast_onCenter("profile has been updated", activity);
-            } else {
-                UtilityFunctions.showToast_onCenter("Something went wrong", activity);
-            }
-
-
-        }
-    }
+//    public class updateProfile extends AsyncTask<String, Void, Boolean> {
+//
+//
+//        @Override
+//        protected void onPreExecute() {
+//            super.onPreExecute();
+//
+//
+//        }
+//
+//        @Override
+//        protected Boolean doInBackground(String... params) {
+//
+//            try {
+//                // SettingController.updateProfile(activity, data, isImageSelected, mImageCurrentPath);
+//
+//                return true;
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            return false;
+//        }
+//
+//        @Override
+//        protected void onPostExecute(Boolean result) {
+//
+//            super.onPostExecute(result);
+//            if (result) {
+//                UtilityFunctions.showToast_onCenter("profile has been updated", activity);
+//            } else {
+//                UtilityFunctions.showToast_onCenter("Something went wrong", activity);
+//            }
+//
+//
+//        }
+//    }
 
     private void openDialoge() {
         new BottomSheet.Builder(activity, R.style.BottomSheet_StyleDialog).title("How would you like to add ?")
@@ -231,23 +236,5 @@ public class SettingProfileFragment extends Fragment {
         }).show();
     }
 
-    @Override
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        EasyImage.handleActivityResult(requestCode, resultCode, data, activity, new DefaultCallback() {
-            @Override
-            public void onImagePickerError(Exception e, EasyImage.ImageSource source, int type) {
-                //Some error handling
-            }
-
-            @Override
-            public void onImagePicked(File imageFile, EasyImage.ImageSource source, int type) {
-                //Handle the image
-                MyLogs.printinfo("imageFile " + imageFile);
-                fresco_view.setImageURI(Uri.fromFile(imageFile));
-            }
-        });
-    }
 
 }

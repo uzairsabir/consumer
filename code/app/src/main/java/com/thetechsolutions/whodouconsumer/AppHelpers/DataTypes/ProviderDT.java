@@ -138,7 +138,8 @@ public class ProviderDT extends RealmObject {
             MyLogs.printinfo("cat_url " + this.subcategory_image_url);
             if (image_url == null) {
                 return this.subcategory_image_url;
-            } else if (UtilityFunctions.isEmpty(image_url)) {
+
+            } else if (!image_url.contains(".jpeg")) {
                 return this.subcategory_image_url;
             }
         } catch (Exception e) {

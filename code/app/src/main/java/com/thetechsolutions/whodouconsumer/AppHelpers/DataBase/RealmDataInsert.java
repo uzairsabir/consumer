@@ -139,9 +139,10 @@ public class RealmDataInsert {
                     item.setLast_name("");
                 }
                 try {
-                    if (jsonArray.getJSONObject(i).has("image_url") && !jsonArray.getJSONObject(i).isNull("image_url"))
+                    if (jsonArray.getJSONObject(i).has("image_url") && !jsonArray.getJSONObject(i).isNull("image_url")) {
+                        //MyLogs.printinfo("image_url_"+jsonArray.getJSONObject(i).getString("image_url"));
                         item.setImage_url(jsonArray.getJSONObject(i).getString("image_url"));
-                    else
+                    } else
                         item.setImage_url("");
 
                 } catch (RealmException e) {
@@ -466,51 +467,30 @@ public class RealmDataInsert {
 
     }
 
-    public static void insertSettingsPreference(final JSONObject jsonObject) {
+    public static void insertSettingsPreference(final JSONArray jsonArray) {
         Realm realm = Realm.getDefaultInstance();
         try {
 
-
-            for (int i = 1; i < 8; i++) {
-                SettingsPreferenceDT tempItem = new SettingsPreferenceDT();
+            for (int i = 0; i < jsonArray.length(); i++) {
                 realm.beginTransaction();
-                if (i == 1) {
-                    tempItem.setId(i);
-                    tempItem.setGroup_name("Payments");
-                    tempItem.setGroup_item_name("To My Vendors Only");
-                } else if (i == 2) {
-                    tempItem.setId(i);
-                    tempItem.setGroup_name("Notifications");
-                    tempItem.setGroup_item_name("Text");
-                } else if (i == 3) {
-                    tempItem.setId(i);
-                    tempItem.setGroup_name("Privacy");
-                    tempItem.setGroup_item_name("Share Babysitters");
-                } else if (i == 4) {
-                    tempItem.setId(i);
-                    tempItem.setGroup_name("Payments");
-                    tempItem.setGroup_item_name("Confirmation Email");
-                } else if (i == 5) {
-                    tempItem.setId(i);
-                    tempItem.setGroup_name("Notifications");
-                    tempItem.setGroup_item_name("Email");
-                } else if (i == 6) {
-                    tempItem.setId(i);
-                    tempItem.setGroup_name("Privacy");
-                    tempItem.setGroup_item_name("Share with Friends");
-                } else if (i == 7) {
-                    tempItem.setId(i);
-                    tempItem.setGroup_name("Privacy");
-                    tempItem.setGroup_item_name("Share with Public");
-                }
-                realm.copyToRealm(tempItem);
+                realm.createOrUpdateObjectFromJson(SettingsPreferenceDT.class, jsonArray.getJSONObject(i));
                 realm.commitTransaction();
-
             }
+
+//            realm.executeTransactionAsync(new Realm.Transaction() {
+//                @Override
+//                public void execute(Realm realm) {
+//
+//                }
+//            });
+
+
+
+            //  }
 
 
         } catch (Exception e) {
-            realm.cancelTransaction();
+            e.printStackTrace();
 
         }
 
@@ -608,8 +588,12 @@ public class RealmDataInsert {
                 realm.beginTransaction();
                 try {
                     try {
-
-                        tempItem.setId(jsonObject.getJSONObject(i).getInt("id"));
+                        MyLogs.printinfo("json_id " + jsonObject.getJSONObject(i).getInt("id"));
+                        if (!jsonObject.getJSONObject(i).isNull("id")) {
+                            tempItem.setId(jsonObject.getJSONObject(i).getInt("id"));
+                        } else {
+                            tempItem.setId(0);
+                        }
                     } catch (Exception e) {
 
                     }
@@ -725,7 +709,7 @@ public class RealmDataInsert {
 
                 }
 
-                realm.copyToRealm(tempItem);
+                realm.copyToRealmOrUpdate(tempItem);
                 realm.commitTransaction();
 
             }

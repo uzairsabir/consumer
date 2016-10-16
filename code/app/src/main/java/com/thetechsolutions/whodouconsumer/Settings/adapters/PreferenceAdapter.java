@@ -14,10 +14,11 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.kyleduo.switchbutton.SwitchButton;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.SettingsPreferenceDT;
 import com.thetechsolutions.whodouconsumer.R;
-import com.kyleduo.switchbutton.SwitchButton;
+import com.thetechsolutions.whodouconsumer.Settings.controller.SettingsController;
 
 import org.vanguardmatrix.engine.android.AppPreferences;
 import org.vanguardmatrix.engine.utils.MyLogs;
@@ -49,7 +50,7 @@ public class PreferenceAdapter extends BaseExpandableListAdapter {
 
     @Override
     public int getChildrenCount(int groupPosition) {
-        RealmResults<SettingsPreferenceDT> childList = RealmDataRetrive.getSettingsPreferenceItemList(PreferenceGroupList.get(groupPosition).getGroup_name());
+        RealmResults<SettingsPreferenceDT> childList = RealmDataRetrive.getSettingsPreferenceItemList(PreferenceGroupList.get(groupPosition).getGroup());
         return childList.size();
     }
 
@@ -60,7 +61,7 @@ public class PreferenceAdapter extends BaseExpandableListAdapter {
 
     @Override
     public Object getChild(int groupPosition, int childPosition) {
-        RealmResults<SettingsPreferenceDT> childList = RealmDataRetrive.getSettingsPreferenceItemList(PreferenceGroupList.get(groupPosition).getGroup_name());
+        RealmResults<SettingsPreferenceDT> childList = RealmDataRetrive.getSettingsPreferenceItemList(PreferenceGroupList.get(groupPosition).getGroup());
         return childList.get(childPosition);
 
     }
@@ -175,7 +176,7 @@ public class PreferenceAdapter extends BaseExpandableListAdapter {
         try {
 
             holder.type_name
-                    .setText(headerItems.getGroup_name());
+                    .setText(headerItems.getGroup());
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -202,24 +203,24 @@ public class PreferenceAdapter extends BaseExpandableListAdapter {
 
         try {
             holder.homescreen_title_textview
-                    .setText(Items.getGroup_item_name());
+                    .setText(Items.getPreferences_type());
         } catch (Exception e) {
             e.printStackTrace();
         }
         try {
-            if (AppPreferences.getBoolean(AppPreferences.PREF_IS_SETTING_ITEM_IS_CLICKED + Items.getId())) {
-                if (AppPreferences.getInt(AppPreferences.PREF_ACCOUNT_SETTING_YES + Items.getId()) == 1) {
-                    holder.homescreen_location_textview.setText("ON");
-                    holder.homescreen_location_textview.setTextColor(activity.getResources().getColor(R.color.app_title_bar_bg));
-                    holder.switch_button.setChecked(true);
-                } else {
-
-                    holder.homescreen_location_textview.setText("OFF");
-                    holder.homescreen_location_textview.setTextColor(activity.getResources().getColor(R.color.imkhi_red));
-                    holder.switch_button.setChecked(false);
-                }
-
+            //   if (AppPreferences.getBoolean(AppPreferences.PREF_IS_SETTING_ITEM_IS_CLICKED + Items.getPrefernece_id())) {
+            if (Items.getPreferences_value().equals("1")) {
+                holder.homescreen_location_textview.setText("ON");
+                holder.homescreen_location_textview.setTextColor(activity.getResources().getColor(R.color.app_title_bar_bg));
+                holder.switch_button.setChecked(true);
             } else {
+
+                holder.homescreen_location_textview.setText("OFF");
+                holder.homescreen_location_textview.setTextColor(activity.getResources().getColor(R.color.imkhi_red));
+                holder.switch_button.setChecked(false);
+            }
+
+            //  } else {
 //                if (Items.getValue().equalsIgnoreCase("1")) {
 //                    holder.homescreen_location_textview.setTextColor(activity.getResources().getColor(R.color.app_title_bar_bg));
 //                    holder.homescreen_location_textview.setText("ON");
@@ -229,7 +230,7 @@ public class PreferenceAdapter extends BaseExpandableListAdapter {
 //                    holder.switch_button.setChecked(false);
 //                    holder.homescreen_location_textview.setTextColor(activity.getResources().getColor(R.color.imkhi_red));
 //                }
-            }
+            //}
         } catch (Exception e) {
 
         }
@@ -248,26 +249,27 @@ public class PreferenceAdapter extends BaseExpandableListAdapter {
                 }
 
                 if (NetworkManager.isConnected(activity)) {
-                    if (AppPreferences.getBoolean(AppPreferences.PREF_IS_SETTING_ITEM_IS_CLICKED + Items.getId())) {
-                        if (AppPreferences.getInt(AppPreferences.PREF_ACCOUNT_SETTING_YES + Items.getId()) == 1) {
-                            MyLogs.printinfo("is clicked 0");
-                            // new callUpdateService(holder, Items, 0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                        } else {
-                            // new callUpdateService(holder, Items, 1).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                            MyLogs.printinfo("is clicked 1");
-                        }
-
-
-                    } else {
-
-//                        if (Items.getValue().equalsIgnoreCase("1")) {
-//                            //new callUpdateService(holder, Items, 0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-//                            MyLogs.printinfo("is clicked service 0");
+             //       SettingsController.
+//                    if (AppPreferences.getBoolean(AppPreferences.PREF_IS_SETTING_ITEM_IS_CLICKED + Items.getPrefernece_id())) {
+//                        if (AppPreferences.getInt(AppPreferences.PREF_ACCOUNT_SETTING_YES + Items.getPrefernece_id()) == 1) {
+//                            MyLogs.printinfo("is clicked 0");
+//                            // new callUpdateService(holder, Items, 0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 //                        } else {
-//                            //new callUpdateService(holder, Items, 1).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-//                            MyLogs.printinfo("is clicked service 1");
+//                            // new callUpdateService(holder, Items, 1).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//                            MyLogs.printinfo("is clicked 1");
 //                        }
-                    }
+
+
+//                    } else {
+//
+////                        if (Items.getValue().equalsIgnoreCase("1")) {
+////                            //new callUpdateService(holder, Items, 0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+////                            MyLogs.printinfo("is clicked service 0");
+////                        } else {
+////                            //new callUpdateService(holder, Items, 1).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+////                            MyLogs.printinfo("is clicked service 1");
+////                        }
+//                    }
                 } else {
                     UtilityFunctions.showToast_onCenter(activity.getString(R.string.internetoffstatus), activity);
                 }
@@ -303,13 +305,13 @@ public class PreferenceAdapter extends BaseExpandableListAdapter {
     public class callUpdateService extends AsyncTask<String, Void, Boolean> {
 
         ViewHolder holder;
-       // PreferenceChildList Items;
+        // PreferenceChildList Items;
         int innercircleStatus;
 
         public callUpdateService(ViewHolder _holder, int _innercircleStatus) {
 
             this.holder = _holder;
-           // this.Items = _Items;
+            // this.Items = _Items;
             this.innercircleStatus = _innercircleStatus;
 
         }
@@ -326,8 +328,8 @@ public class PreferenceAdapter extends BaseExpandableListAdapter {
         protected Boolean doInBackground(String... params) {
             try {
                 if (NetworkManager.isConnected(activity)) {
-                  //  if (SettingController.callUpdateService(activity, Items, innercircleStatus + ""))
-                        return true;
+                    //  if (SettingController.callUpdateService(activity, Items, innercircleStatus + ""))
+                    return true;
                 }
             } catch (Exception e) {
                 e.printStackTrace();
@@ -344,7 +346,7 @@ public class PreferenceAdapter extends BaseExpandableListAdapter {
             if (result) {
 //                AppPreferences.setInt(AppPreferences.PREF_ACCOUNT_SETTING_YES + Items.get, innercircleStatus);
 //                AppPreferences.setBoolean(AppPreferences.PREF_IS_SETTING_ITEM_IS_CLICKED + Items.getKey(), true);
-               // notifyDataSetChanged();
+                // notifyDataSetChanged();
             } else {
                 UtilityFunctions.showToast_onCenter(activity.getString(R.string.internetoffstatus), activity);
             }

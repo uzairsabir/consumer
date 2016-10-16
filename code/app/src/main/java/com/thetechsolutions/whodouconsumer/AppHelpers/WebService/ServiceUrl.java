@@ -25,4 +25,6 @@ public class ServiceUrl {
     public static String call_create_appointment = ServiceConfig.getPublicUrl() + "v2/createAppointment";
     public static String call_update_appointment = ServiceConfig.getPublicUrl() + "v2/updateConsumerAppointment";
     public static String call_get_appointment = ServiceConfig.getPublicUrl() + "v2/getConsumerAppointments";
+    public static String call_update_profile_image = ServiceConfig.getPublicUrl() + "v2/updateConsumerVendorProfileImageByUserid";
+    public static String call_get_preference = ServiceConfig.getPublicUrl() + "v2/userPreferencesByUserId";
 }

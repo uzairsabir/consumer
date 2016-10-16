@@ -104,4 +104,6 @@ dependencies {
     compile 'com.afollestad.material-dialogs:core:0.9.0.0'
     compile 'io.realm:realm-android-library:1.2.0'
     compile 'com.terrakok.phonematter:phonematter:1.0@aar'
+    compile 'com.github.jkwiecien:EasyImage:1.2.3'
+
 }

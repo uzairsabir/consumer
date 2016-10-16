@@ -313,7 +313,7 @@ public class StickyListViewAdapter extends BaseAdapter implements StickyListHead
             if (result) {
                 //   RealmDataDelete.deleteHomeItem(providerUserName, ContactsMainActivity.tab_pos);
                 RealmDataDelete.deleteHomeItem(providername, ContactsMainActivity.tab_pos);
-                notifyDataSetChanged();
+               // notifyDataSetChanged();
                 //RealmDataDelete.deleteConsumerProviderLink(providername, ContactsMainActivity.tab_pos);
                 // notifyDataSetChanged();
                 AsynGetDataController.getInstance().getMyProvidersOrFriends(activity, ContactsMainActivity.tab_pos, false);
