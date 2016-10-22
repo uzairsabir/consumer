@@ -120,7 +120,7 @@ public class ContactModel {
 
     public static boolean checkDeleteConsumerVendorLink(String providerUserName) {
 
-        String vendor_id = String.valueOf(RealmDataRetrive.getHomeItemDetail(providerUserName, ContactsMainActivity.tab_pos).getId());
+        String vendor_id = String.valueOf(RealmDataRetrive.getProviderDetail(providerUserName, 0).getId());
         String consumer_id = String.valueOf(RealmDataRetrive.getProfile().getId());
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("consumer_id", consumer_id));
@@ -149,7 +149,7 @@ public class ContactModel {
 
     public static boolean checkDeleteConsumerFriendLink(String providerUserName) {
 
-        String vendor_id = String.valueOf(RealmDataRetrive.getHomeItemDetail(providerUserName, ContactsMainActivity.tab_pos).getId());
+        String vendor_id = String.valueOf(RealmDataRetrive.getFriendDetail(providerUserName).getId());
         String consumer_id = String.valueOf(RealmDataRetrive.getProfile().getId());
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("consumer_id", consumer_id));

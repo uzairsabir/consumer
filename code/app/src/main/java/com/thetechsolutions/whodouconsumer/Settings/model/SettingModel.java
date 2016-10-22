@@ -5,6 +5,7 @@ import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataInsert;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
 import com.thetechsolutions.whodouconsumer.AppHelpers.WebService.ServiceUrl;
 import com.thetechsolutions.whodouconsumer.Home.model.HomeModel;
+import com.thetechsolutions.whodouconsumer.Settings.fragments.SettingProfileFragment;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -25,7 +26,7 @@ public class SettingModel {
                                         String email_address, String zip_code, String subcategory_id, String imageUrl, int pos
     ) {
         String id = String.valueOf(RealmDataRetrive.getProfile().getUsername());
-
+        String user_id = String.valueOf(RealmDataRetrive.getProfile().getId());
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 
         params.add(new BasicNameValuePair("username", providerName));
@@ -54,20 +55,60 @@ public class SettingModel {
                     .extractJSONObject();
 
             if (WebService.getResponseCode(resultJson) == 0) {
-                try {
-                    RealmDataInsert.insertProfile(resultJson.getJSONArray(AppConstants.BODY));
-                } catch (JSONException e) {
-                    e.printStackTrace();
-                }
+
                 if (!UtilityFunctions.isEmpty(imageUrl)) {
 
-                    return HomeModel.uploadImage(id,"consumer", imageUrl);
+                    SettingProfileFragment.imageUrl = "";
+                    return HomeModel.uploadImage(user_id, "consumer", imageUrl, true);
+
                 } else {
+                    try {
+                        RealmDataInsert.insertProfile(resultJson.getJSONArray(AppConstants.BODY));
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
                     return true;
                 }
 
 
             }
+
+        } catch (OutOfMemoryError e) {
+            e.printStackTrace();
+
+        }
+        return false;
+
+    }
+
+    public static boolean updatePreference(String preference_id, String preference_value) {
+        String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+
+        ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        params.add(new BasicNameValuePair("my_user_id", id));
+        params.add(new BasicNameValuePair("preferences_type_id", preference_id));
+        params.add(new BasicNameValuePair("new_value", preference_value));
+        params.add(new BasicNameValuePair("my_user_type", AppConstants.APP_TYPE));
+
+        JSONObject resultJson;
+        try {
+
+            resultJson = WebService.callHTTPPost(
+                    ServiceUrl.call_update_preference, params, true)
+                    .extractJSONObject();
+
+            if (WebService.getResponseCode(resultJson) == 0) {
+                try {
+                    RealmDataInsert.insertSettingsPreference(resultJson.getJSONArray(AppConstants.BODY));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+                return true;
+            }
+
 
         } catch (OutOfMemoryError e) {
             e.printStackTrace();

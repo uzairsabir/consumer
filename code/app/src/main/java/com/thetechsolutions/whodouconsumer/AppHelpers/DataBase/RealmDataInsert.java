@@ -2,6 +2,8 @@ package com.thetechsolutions.whodouconsumer.AppHelpers.DataBase;
 
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ChatDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ContactDT;
+import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendDT;
+import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendsProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.PayDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProfileDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProviderDT;
@@ -39,192 +41,570 @@ public class RealmDataInsert {
         try {
 
 
+
             for (int i = 0; i < jsonArray.length(); i++) {
-                ProviderDT item = new ProviderDT();
-                realm.beginTransaction();
-                try {
-                    if (jsonArray.getJSONObject(i).has("id"))
-                        item.setId(jsonArray.getJSONObject(i).getInt("id"));
-                    else
+
+              // ProviderDT item = new ProviderDT();
+                if(type==0){
+                    ProviderDT item = new ProviderDT();
+                    realm.beginTransaction();
+                    try {
+                        if (jsonArray.getJSONObject(i).has("id"))
+                            item.setId(jsonArray.getJSONObject(i).getInt("id"));
+                        else
+                            item.setId(0);
+                    } catch (RealmException e) {
                         item.setId(0);
-                } catch (RealmException e) {
-                    item.setId(0);
-                }
+                    }
 
-                try {
-                    if (jsonArray.getJSONObject(i).has("country") && !jsonArray.getJSONObject(i).isNull("country"))
-                        item.setCountry(jsonArray.getJSONObject(i).getString("country"));
-                    else
+                    try {
+                        if (jsonArray.getJSONObject(i).has("country") && !jsonArray.getJSONObject(i).isNull("country"))
+                            item.setCountry(jsonArray.getJSONObject(i).getString("country"));
+                        else
+                            item.setCountry("");
+                    } catch (RealmException e) {
                         item.setCountry("");
-                } catch (RealmException e) {
-                    item.setCountry("");
-                }
-                try {
-                    if (jsonArray.getJSONObject(i).has("city") && !jsonArray.getJSONObject(i).isNull("city"))
-                        item.setCity(jsonArray.getJSONObject(i).getString("city"));
-                    else
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("city") && !jsonArray.getJSONObject(i).isNull("city"))
+                            item.setCity(jsonArray.getJSONObject(i).getString("city"));
+                        else
+                            item.setCity("");
+                    } catch (RealmException e) {
                         item.setCity("");
-                } catch (RealmException e) {
-                    item.setCity("");
-                }
-                try {
-                    if (jsonArray.getJSONObject(i).has("address") && !jsonArray.getJSONObject(i).isNull("address"))
-                        item.setAddress(jsonArray.getJSONObject(i).getString("address"));
-                    else
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("address") && !jsonArray.getJSONObject(i).isNull("address"))
+                            item.setAddress(jsonArray.getJSONObject(i).getString("address"));
+                        else
+                            item.setAddress("");
+                    } catch (RealmException e) {
                         item.setAddress("");
-                } catch (RealmException e) {
-                    item.setAddress("");
-                }
-                try {
-                    if (jsonArray.getJSONObject(i).has("category_id") && !jsonArray.getJSONObject(i).isNull("category_id"))
-                        item.setCategory_id(jsonArray.getJSONObject(i).getInt("category_id"));
-                    else
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("category_id") && !jsonArray.getJSONObject(i).isNull("category_id"))
+                            item.setCategory_id(jsonArray.getJSONObject(i).getInt("category_id"));
+                        else
+                            item.setCategory_id(0);
+                    } catch (RealmException e) {
                         item.setCategory_id(0);
-                } catch (RealmException e) {
-                    item.setCategory_id(0);
 
-                }
-                try {
-                    if (jsonArray.getJSONObject(i).has("category_image_url") && !jsonArray.getJSONObject(i).isNull("category_image_url"))
-                        item.setCategory_image_url(jsonArray.getJSONObject(i).getString("category_image_url"));
-                    else
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("category_image_url") && !jsonArray.getJSONObject(i).isNull("category_image_url"))
+                            item.setCategory_image_url(jsonArray.getJSONObject(i).getString("category_image_url"));
+                        else
+                            item.setCategory_image_url("");
+                    } catch (RealmException e) {
                         item.setCategory_image_url("");
-                } catch (RealmException e) {
-                    item.setCategory_image_url("");
 
-                }
-                try {
-                    if (jsonArray.getJSONObject(i).has("category_title") && !jsonArray.getJSONObject(i).isNull("category_title"))
-                        item.setCategory_title(jsonArray.getJSONObject(i).getString("category_title"));
-                    else
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("category_title") && !jsonArray.getJSONObject(i).isNull("category_title"))
+                            item.setCategory_title(jsonArray.getJSONObject(i).getString("category_title"));
+                        else
+                            item.setCategory_title("");
+                    } catch (RealmException e) {
                         item.setCategory_title("");
-                } catch (RealmException e) {
-                    item.setCategory_title("");
 
-                }
-                try {
-                    if (jsonArray.getJSONObject(i).has("created_by"))
-                        item.setCreated_by(jsonArray.getJSONObject(i).getString("created_by"));
-                    else
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("created_by"))
+                            item.setCreated_by(jsonArray.getJSONObject(i).getString("created_by"));
+                        else
+                            item.setCreated_by("");
+                    } catch (RealmException e) {
                         item.setCreated_by("");
-                } catch (RealmException e) {
-                    item.setCreated_by("");
 
-                }
-                try {
-                    if (jsonArray.getJSONObject(i).has("email_1") && !jsonArray.getJSONObject(i).isNull("email_1"))
-                        item.setEmail_1(jsonArray.getJSONObject(i).getString("email_1"));
-                    else
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("email_1") && !jsonArray.getJSONObject(i).isNull("email_1"))
+                            item.setEmail_1(jsonArray.getJSONObject(i).getString("email_1"));
+                        else
+                            item.setEmail_1("");
+                    } catch (RealmException e) {
                         item.setEmail_1("");
-                } catch (RealmException e) {
-                    item.setEmail_1("");
 
 
-                }
-                try {
-                    if (jsonArray.getJSONObject(i).has("first_name"))
-                        item.setFirst_name(jsonArray.getJSONObject(i).getString("first_name"));
-                    else
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("first_name"))
+                            item.setFirst_name(jsonArray.getJSONObject(i).getString("first_name"));
+                        else
+                            item.setFirst_name("");
+                    } catch (RealmException e) {
                         item.setFirst_name("");
-                } catch (RealmException e) {
-                    item.setFirst_name("");
-                }
-                try {
-                    if (jsonArray.getJSONObject(i).has("last_name"))
-                        item.setLast_name(jsonArray.getJSONObject(i).getString("last_name"));
-                    else
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("last_name"))
+                            item.setLast_name(jsonArray.getJSONObject(i).getString("last_name"));
+                        else
+                            item.setLast_name("");
+
+                    } catch (RealmException e) {
                         item.setLast_name("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("image_url") && !jsonArray.getJSONObject(i).isNull("image_url")) {
+                            //MyLogs.printinfo("image_url_"+jsonArray.getJSONObject(i).getString("image_url"));
+                            item.setImage_url(jsonArray.getJSONObject(i).getString("image_url"));
+                        } else
+                            item.setImage_url("");
 
-                } catch (RealmException e) {
-                    item.setLast_name("");
-                }
-                try {
-                    if (jsonArray.getJSONObject(i).has("image_url") && !jsonArray.getJSONObject(i).isNull("image_url")) {
-                        //MyLogs.printinfo("image_url_"+jsonArray.getJSONObject(i).getString("image_url"));
-                        item.setImage_url(jsonArray.getJSONObject(i).getString("image_url"));
-                    } else
+                    } catch (RealmException e) {
                         item.setImage_url("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("is_register_user"))
+                            item.setIs_register_user(jsonArray.getJSONObject(i).getString("is_register_user"));
+                        else
+                            item.setIs_register_user("");
 
-                } catch (RealmException e) {
-                    item.setImage_url("");
-                }
-                try {
-                    if (jsonArray.getJSONObject(i).has("is_register_user"))
-                        item.setIs_register_user(jsonArray.getJSONObject(i).getString("is_register_user"));
-                    else
+                    } catch (RealmException e) {
                         item.setIs_register_user("");
-
-                } catch (RealmException e) {
-                    item.setIs_register_user("");
-                }
-                try {
-                    if (jsonArray.getJSONObject(i).has("mobile_number_1"))
-                        item.setMobile_number_1(jsonArray.getJSONObject(i).getString("mobile_number_1"));
-                    else
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("mobile_number_1"))
+                            item.setMobile_number_1(jsonArray.getJSONObject(i).getString("mobile_number_1"));
+                        else
+                            item.setMobile_number_1("");
+                    } catch (RealmException e) {
                         item.setMobile_number_1("");
-                } catch (RealmException e) {
-                    item.setMobile_number_1("");
 
-                }
-                try {
-                    if (jsonArray.getJSONObject(i).has("sub_category_id") && !jsonArray.getJSONObject(i).isNull("sub_category_id"))
-                        item.setSub_category_id(jsonArray.getJSONObject(i).getInt("sub_category_id"));
-                    else
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("sub_category_id") && !jsonArray.getJSONObject(i).isNull("sub_category_id"))
+                            item.setSub_category_id(jsonArray.getJSONObject(i).getInt("sub_category_id"));
+                        else
+                            item.setSub_category_id(0);
+                    } catch (RealmException e) {
                         item.setSub_category_id(0);
-                } catch (RealmException e) {
-                    item.setSub_category_id(0);
 
-                }
-                try {
-                    if (jsonArray.getJSONObject(i).has("sub_category_title") && !jsonArray.getJSONObject(i).isNull("sub_category_title"))
-                        item.setSub_category_title("" + jsonArray.getJSONObject(i).getString("sub_category_title"));
-                    else
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("sub_category_title") && !jsonArray.getJSONObject(i).isNull("sub_category_title"))
+                            item.setSub_category_title("" + jsonArray.getJSONObject(i).getString("sub_category_title"));
+                        else
+                            item.setSub_category_title("");
+                    } catch (RealmException e) {
                         item.setSub_category_title("");
-                } catch (RealmException e) {
-                    item.setSub_category_title("");
 
-                }
-                try {
-                    if (jsonArray.getJSONObject(i).has("subcategory_image_url") && !jsonArray.getJSONObject(i).isNull("subcategory_image_url"))
-                        item.setSubcategory_image_url("" + jsonArray.getJSONObject(i).getString("subcategory_image_url"));
-                    else
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("subcategory_image_url") && !jsonArray.getJSONObject(i).isNull("subcategory_image_url"))
+                            item.setSubcategory_image_url("" + jsonArray.getJSONObject(i).getString("subcategory_image_url"));
+                        else
+                            item.setSubcategory_image_url("");
+                    } catch (RealmException e) {
                         item.setSubcategory_image_url("");
-                } catch (RealmException e) {
-                    item.setSubcategory_image_url("");
-                }
-                try {
-                    item.setTab_pos(type);
-                } catch (Exception e) {
-                    item.setTab_pos(0);
-                }
-                try {
-                    if (jsonArray.getJSONObject(i).has("username"))
-                        item.setUsername(jsonArray.getJSONObject(i).getString("username"));
-                    else item.setUsername("");
+                    }
+                    try {
+                        item.setTab_pos(type);
+                    } catch (Exception e) {
+                        item.setTab_pos(0);
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("username"))
+                            item.setUsername(jsonArray.getJSONObject(i).getString("username"));
+                        else item.setUsername("");
 
-                } catch (RealmException e) {
-                    item.setUsername("");
-                }
-                try {
-                    if (jsonArray.getJSONObject(i).has("zip_code"))
-                        item.setZip_code(jsonArray.getJSONObject(i).getString("zip_code"));
-                    else item.setZip_code("");
+                    } catch (RealmException e) {
+                        item.setUsername("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("zip_code"))
+                            item.setZip_code(jsonArray.getJSONObject(i).getString("zip_code"));
+                        else item.setZip_code("");
 
-                } catch (RealmException e) {
-                    item.setZip_code("");
-                }
-                try {
-                    if (jsonArray.getJSONObject(i).has("friend_name"))
-                        item.setFriend_name(jsonArray.getJSONObject(i).getString("friend_name"));
-                    else item.setFriend_name("");
+                    } catch (RealmException e) {
+                        item.setZip_code("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("friend_name"))
+                            item.setFriend_name(jsonArray.getJSONObject(i).getString("friend_name"));
+                        else item.setFriend_name("");
 
-                } catch (RealmException e) {
-                    item.setFriend_name("");
-                }
+                    } catch (RealmException e) {
+                        item.setFriend_name("");
+                    }
 
 
-                realm.copyToRealm(item);
-                realm.commitTransaction();
+                    realm.copyToRealmOrUpdate(item);
+                    realm.commitTransaction();
+                }else if(type==1){
+                    FriendDT item = new FriendDT();
+                    realm.beginTransaction();
+                    try {
+                        if (jsonArray.getJSONObject(i).has("id"))
+                            item.setId(jsonArray.getJSONObject(i).getInt("id"));
+                        else
+                            item.setId(0);
+                    } catch (RealmException e) {
+                        item.setId(0);
+                    }
+
+                    try {
+                        if (jsonArray.getJSONObject(i).has("country") && !jsonArray.getJSONObject(i).isNull("country"))
+                            item.setCountry(jsonArray.getJSONObject(i).getString("country"));
+                        else
+                            item.setCountry("");
+                    } catch (RealmException e) {
+                        item.setCountry("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("city") && !jsonArray.getJSONObject(i).isNull("city"))
+                            item.setCity(jsonArray.getJSONObject(i).getString("city"));
+                        else
+                            item.setCity("");
+                    } catch (RealmException e) {
+                        item.setCity("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("address") && !jsonArray.getJSONObject(i).isNull("address"))
+                            item.setAddress(jsonArray.getJSONObject(i).getString("address"));
+                        else
+                            item.setAddress("");
+                    } catch (RealmException e) {
+                        item.setAddress("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("category_id") && !jsonArray.getJSONObject(i).isNull("category_id"))
+                            item.setCategory_id(jsonArray.getJSONObject(i).getInt("category_id"));
+                        else
+                            item.setCategory_id(0);
+                    } catch (RealmException e) {
+                        item.setCategory_id(0);
+
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("category_image_url") && !jsonArray.getJSONObject(i).isNull("category_image_url"))
+                            item.setCategory_image_url(jsonArray.getJSONObject(i).getString("category_image_url"));
+                        else
+                            item.setCategory_image_url("");
+                    } catch (RealmException e) {
+                        item.setCategory_image_url("");
+
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("category_title") && !jsonArray.getJSONObject(i).isNull("category_title"))
+                            item.setCategory_title(jsonArray.getJSONObject(i).getString("category_title"));
+                        else
+                            item.setCategory_title("");
+                    } catch (RealmException e) {
+                        item.setCategory_title("");
+
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("created_by"))
+                            item.setCreated_by(jsonArray.getJSONObject(i).getString("created_by"));
+                        else
+                            item.setCreated_by("");
+                    } catch (RealmException e) {
+                        item.setCreated_by("");
+
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("email_1") && !jsonArray.getJSONObject(i).isNull("email_1"))
+                            item.setEmail_1(jsonArray.getJSONObject(i).getString("email_1"));
+                        else
+                            item.setEmail_1("");
+                    } catch (RealmException e) {
+                        item.setEmail_1("");
+
+
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("first_name"))
+                            item.setFirst_name(jsonArray.getJSONObject(i).getString("first_name"));
+                        else
+                            item.setFirst_name("");
+                    } catch (RealmException e) {
+                        item.setFirst_name("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("last_name"))
+                            item.setLast_name(jsonArray.getJSONObject(i).getString("last_name"));
+                        else
+                            item.setLast_name("");
+
+                    } catch (RealmException e) {
+                        item.setLast_name("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("image_url") && !jsonArray.getJSONObject(i).isNull("image_url")) {
+                            //MyLogs.printinfo("image_url_"+jsonArray.getJSONObject(i).getString("image_url"));
+                            item.setImage_url(jsonArray.getJSONObject(i).getString("image_url"));
+                        } else
+                            item.setImage_url("");
+
+                    } catch (RealmException e) {
+                        item.setImage_url("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("is_register_user"))
+                            item.setIs_register_user(jsonArray.getJSONObject(i).getString("is_register_user"));
+                        else
+                            item.setIs_register_user("");
+
+                    } catch (RealmException e) {
+                        item.setIs_register_user("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("mobile_number_1"))
+                            item.setMobile_number_1(jsonArray.getJSONObject(i).getString("mobile_number_1"));
+                        else
+                            item.setMobile_number_1("");
+                    } catch (RealmException e) {
+                        item.setMobile_number_1("");
+
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("sub_category_id") && !jsonArray.getJSONObject(i).isNull("sub_category_id"))
+                            item.setSub_category_id(jsonArray.getJSONObject(i).getInt("sub_category_id"));
+                        else
+                            item.setSub_category_id(0);
+                    } catch (RealmException e) {
+                        item.setSub_category_id(0);
+
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("sub_category_title") && !jsonArray.getJSONObject(i).isNull("sub_category_title"))
+                            item.setSub_category_title("" + jsonArray.getJSONObject(i).getString("sub_category_title"));
+                        else
+                            item.setSub_category_title("");
+                    } catch (RealmException e) {
+                        item.setSub_category_title("");
+
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("subcategory_image_url") && !jsonArray.getJSONObject(i).isNull("subcategory_image_url"))
+                            item.setSubcategory_image_url("" + jsonArray.getJSONObject(i).getString("subcategory_image_url"));
+                        else
+                            item.setSubcategory_image_url("");
+                    } catch (RealmException e) {
+                        item.setSubcategory_image_url("");
+                    }
+                    try {
+                        item.setTab_pos(type);
+                    } catch (Exception e) {
+                        item.setTab_pos(0);
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("username"))
+                            item.setUsername(jsonArray.getJSONObject(i).getString("username"));
+                        else item.setUsername("");
+
+                    } catch (RealmException e) {
+                        item.setUsername("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("zip_code"))
+                            item.setZip_code(jsonArray.getJSONObject(i).getString("zip_code"));
+                        else item.setZip_code("");
+
+                    } catch (RealmException e) {
+                        item.setZip_code("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("friend_name"))
+                            item.setFriend_name(jsonArray.getJSONObject(i).getString("friend_name"));
+                        else item.setFriend_name("");
+
+                    } catch (RealmException e) {
+                        item.setFriend_name("");
+                    }
+
+
+                    realm.copyToRealmOrUpdate(item);
+                    realm.commitTransaction();
+                }else {
+                    FriendsProviderDT item = new FriendsProviderDT();
+                    realm.beginTransaction();
+                    try {
+                        if (jsonArray.getJSONObject(i).has("id"))
+                            item.setId(jsonArray.getJSONObject(i).getInt("id"));
+                        else
+                            item.setId(0);
+                    } catch (RealmException e) {
+                        item.setId(0);
+                    }
+
+                    try {
+                        if (jsonArray.getJSONObject(i).has("country") && !jsonArray.getJSONObject(i).isNull("country"))
+                            item.setCountry(jsonArray.getJSONObject(i).getString("country"));
+                        else
+                            item.setCountry("");
+                    } catch (RealmException e) {
+                        item.setCountry("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("city") && !jsonArray.getJSONObject(i).isNull("city"))
+                            item.setCity(jsonArray.getJSONObject(i).getString("city"));
+                        else
+                            item.setCity("");
+                    } catch (RealmException e) {
+                        item.setCity("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("address") && !jsonArray.getJSONObject(i).isNull("address"))
+                            item.setAddress(jsonArray.getJSONObject(i).getString("address"));
+                        else
+                            item.setAddress("");
+                    } catch (RealmException e) {
+                        item.setAddress("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("category_id") && !jsonArray.getJSONObject(i).isNull("category_id"))
+                            item.setCategory_id(jsonArray.getJSONObject(i).getInt("category_id"));
+                        else
+                            item.setCategory_id(0);
+                    } catch (RealmException e) {
+                        item.setCategory_id(0);
+
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("category_image_url") && !jsonArray.getJSONObject(i).isNull("category_image_url"))
+                            item.setCategory_image_url(jsonArray.getJSONObject(i).getString("category_image_url"));
+                        else
+                            item.setCategory_image_url("");
+                    } catch (RealmException e) {
+                        item.setCategory_image_url("");
+
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("category_title") && !jsonArray.getJSONObject(i).isNull("category_title"))
+                            item.setCategory_title(jsonArray.getJSONObject(i).getString("category_title"));
+                        else
+                            item.setCategory_title("");
+                    } catch (RealmException e) {
+                        item.setCategory_title("");
+
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("created_by"))
+                            item.setCreated_by(jsonArray.getJSONObject(i).getString("created_by"));
+                        else
+                            item.setCreated_by("");
+                    } catch (RealmException e) {
+                        item.setCreated_by("");
+
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("email_1") && !jsonArray.getJSONObject(i).isNull("email_1"))
+                            item.setEmail_1(jsonArray.getJSONObject(i).getString("email_1"));
+                        else
+                            item.setEmail_1("");
+                    } catch (RealmException e) {
+                        item.setEmail_1("");
+
+
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("first_name"))
+                            item.setFirst_name(jsonArray.getJSONObject(i).getString("first_name"));
+                        else
+                            item.setFirst_name("");
+                    } catch (RealmException e) {
+                        item.setFirst_name("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("last_name"))
+                            item.setLast_name(jsonArray.getJSONObject(i).getString("last_name"));
+                        else
+                            item.setLast_name("");
+
+                    } catch (RealmException e) {
+                        item.setLast_name("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("image_url") && !jsonArray.getJSONObject(i).isNull("image_url")) {
+                            //MyLogs.printinfo("image_url_"+jsonArray.getJSONObject(i).getString("image_url"));
+                            item.setImage_url(jsonArray.getJSONObject(i).getString("image_url"));
+                        } else
+                            item.setImage_url("");
+
+                    } catch (RealmException e) {
+                        item.setImage_url("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("is_register_user"))
+                            item.setIs_register_user(jsonArray.getJSONObject(i).getString("is_register_user"));
+                        else
+                            item.setIs_register_user("");
+
+                    } catch (RealmException e) {
+                        item.setIs_register_user("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("mobile_number_1"))
+                            item.setMobile_number_1(jsonArray.getJSONObject(i).getString("mobile_number_1"));
+                        else
+                            item.setMobile_number_1("");
+                    } catch (RealmException e) {
+                        item.setMobile_number_1("");
+
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("sub_category_id") && !jsonArray.getJSONObject(i).isNull("sub_category_id"))
+                            item.setSub_category_id(jsonArray.getJSONObject(i).getInt("sub_category_id"));
+                        else
+                            item.setSub_category_id(0);
+                    } catch (RealmException e) {
+                        item.setSub_category_id(0);
+
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("sub_category_title") && !jsonArray.getJSONObject(i).isNull("sub_category_title"))
+                            item.setSub_category_title("" + jsonArray.getJSONObject(i).getString("sub_category_title"));
+                        else
+                            item.setSub_category_title("");
+                    } catch (RealmException e) {
+                        item.setSub_category_title("");
+
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("subcategory_image_url") && !jsonArray.getJSONObject(i).isNull("subcategory_image_url"))
+                            item.setSubcategory_image_url("" + jsonArray.getJSONObject(i).getString("subcategory_image_url"));
+                        else
+                            item.setSubcategory_image_url("");
+                    } catch (RealmException e) {
+                        item.setSubcategory_image_url("");
+                    }
+                    try {
+                        item.setTab_pos(type);
+                    } catch (Exception e) {
+                        item.setTab_pos(0);
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("username"))
+                            item.setUsername(jsonArray.getJSONObject(i).getString("username"));
+                        else item.setUsername("");
+
+                    } catch (RealmException e) {
+                        item.setUsername("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("zip_code"))
+                            item.setZip_code(jsonArray.getJSONObject(i).getString("zip_code"));
+                        else item.setZip_code("");
+
+                    } catch (RealmException e) {
+                        item.setZip_code("");
+                    }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("friend_name"))
+                            item.setFriend_name(jsonArray.getJSONObject(i).getString("friend_name"));
+                        else item.setFriend_name("");
+
+                    } catch (RealmException e) {
+                        item.setFriend_name("");
+                    }
+
+
+                    realm.copyToRealmOrUpdate(item);
+                    realm.commitTransaction();
+                }
+
 
 
             }

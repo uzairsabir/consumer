@@ -10,6 +10,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.AppController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.ListenerController;
+import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProviderDT;
 import com.thetechsolutions.whodouconsumer.Home.fragments.HomeMainFragment;
 import com.thetechsolutions.whodouconsumer.R;
@@ -26,7 +27,7 @@ import uk.co.ribot.easyadapter.annotations.ViewId;
  * Created by Uzair on 3/25/2016.
  */
 @LayoutId(R.layout.item_home_list)
-public class HomeListAdapter extends ItemViewHolder<ProviderDT> {
+public class HomeListFriendAdapter extends ItemViewHolder<FriendDT> {
 
 
     @ViewId(R.id.fresco_view)
@@ -53,23 +54,23 @@ public class HomeListAdapter extends ItemViewHolder<ProviderDT> {
 
     static Activity activity;
 
-    ProviderDT item;
+    FriendDT item;
 
-    public HomeListAdapter(View view) {
+    public HomeListFriendAdapter(View view) {
         super(view);
     }
 
     static int pos, positioninfo;
 
-    public static Class<HomeListAdapter> newInstance(Activity _activity, int _pos) {
+    public static Class<HomeListFriendAdapter> newInstance(Activity _activity, int _pos) {
         activity = _activity;
         pos = _pos;
-        return HomeListAdapter.class;
+        return HomeListFriendAdapter.class;
     }
 
 
     @Override
-    public void onSetValues(ProviderDT item, PositionInfo positionInfo) {
+    public void onSetValues(FriendDT item, PositionInfo positionInfo) {
         this.item = item;
         this.positioninfo = positionInfo.getPosition();
         try {

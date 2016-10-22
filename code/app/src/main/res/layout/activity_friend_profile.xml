@@ -316,6 +316,19 @@
                             android:textColor="@color/white"
                             android:textSize="@dimen/textsize_label_2" />
 
+                        <Button
+                            android:id="@+id/delete_btn"
+                            android:layout_width="@dimen/margin_15"
+                            android:layout_height="@dimen/margin_4"
+                            android:layout_gravity="center"
+                            android:layout_marginBottom="@dimen/margin_1"
+                            android:layout_marginRight="@dimen/margin_small"
+                            android:layout_marginTop="@dimen/margin_2"
+                            android:background="@drawable/bg_new_red_hover"
+                            android:text="Delete Contact"
+                            android:textColor="@color/white"
+                            android:textSize="@dimen/textsize_label_2" />
+
 
                     </LinearLayout>
 

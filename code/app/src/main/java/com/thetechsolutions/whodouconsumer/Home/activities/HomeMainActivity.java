@@ -51,16 +51,16 @@ public class HomeMainActivity extends FragmentActivityController implements Meth
 
         TitleBarController.getInstance(activity).setTitleBar(activity, "Home", false, true, false);
 
-        try{
+        try {
             EasyImage.configuration(this)
                     .setImagesFolderName("Whodou") //images folder name, default is "EasyImage"
                     .saveInRootPicturesDirectory();
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 
 
-//        MyLogs.printinfo("providerList " + RealmDataRetrive.getHomeList(0));
+//        MyLogs.printinfo("providerList " + RealmDataRetrive.getProvider(0));
 //
 //
 //        TessBaseAPI baseApi = new TessBaseAPI();
@@ -77,7 +77,10 @@ public class HomeMainActivity extends FragmentActivityController implements Meth
 //
 //       MyLogs.printinfo("recognizedText " + recognizedText);
 //        baseApi.end();
+
         try {
+            AsynGetDataController.getInstance().getMyProvidersOrFriends(activity, 0, false);
+            AsynGetDataController.getInstance().getMyProvidersOrFriends(activity, 1, false);
             AsynGetDataController.getInstance().getMyProvidersOrFriends(activity, 2, false);
         } catch (Exception e) {
 
@@ -98,6 +101,11 @@ public class HomeMainActivity extends FragmentActivityController implements Meth
     @Override
     protected void onResume() {
         super.onResume();
+        try {
+            AppController.saveChatNamesAvatar(HomeMainActivity.activity);
+        } catch (Exception e) {
+
+        }
         //BottomMenuController.getInstance(activity).setBottomMenu(activity);
 
 

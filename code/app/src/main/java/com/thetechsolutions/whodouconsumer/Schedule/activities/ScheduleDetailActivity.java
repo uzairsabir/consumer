@@ -22,16 +22,13 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
-import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.AppController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.BottomMenuController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.FragmentActivityController;
-import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.ListenerController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.MethodGenerator;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.TitleBarController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ScheduleDT;
-import com.thetechsolutions.whodouconsumer.Home.fragments.HomeMainFragment;
 import com.thetechsolutions.whodouconsumer.R;
 import com.thetechsolutions.whodouconsumer.Schedule.adapters.DurationListAdapter;
 import com.thetechsolutions.whodouconsumer.Schedule.controller.ScheduleController;
@@ -40,6 +37,7 @@ import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import org.vanguardmatrix.engine.android.AppPreferences;
+import org.vanguardmatrix.engine.utils.MyLogs;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
 
 import java.util.ArrayList;
@@ -142,7 +140,7 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
             }
 
             title_name.setText(item_detail.getVendor_name());
-            location_name.setText("");
+            location_name.setText(item_detail.getSub_categor_title());
             appointment_date.setText(item_detail.getAppointmentDate() + " @ " + UtilityFunctions.formatteSqlTime(UtilityFunctions.converMillisToDate(item_detail.getAppointment_date_time(), "yyyy-MM-dd HH:mm:ss")));
             duration.setText(item_detail.getEstimated_duration() + "");
             fresco_view.setImageURI(Uri.parse(item_detail.getSub_category_image_url()));
@@ -158,6 +156,9 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
 
             }
 
+            decline_btn.setVisibility(View.VISIBLE);
+
+
 //            calendar_icon.setOnClickListener(new View.OnClickListener() {
 //                @Override
 //                public void onClick(View view) {
@@ -172,7 +173,6 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
 //
 //                }
 //            });
-
 
 
         }
@@ -194,14 +194,16 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
             accept_btn.setText("Submit");
 
             if (!UtilityFunctions.isEmpty(providerUserName)) {
-                ProviderDT item = RealmDataRetrive.getHomeItemDetail(providerUserName, 0);
+                ProviderDT item = RealmDataRetrive.getProviderDetail(providerUserName, 0);
                 auto_com_cutomer_name.setText("" + item.getFirst_name() + " " + item.getLast_name());
                 vendorId = "" + item.getId();
                 auto_com_cutomer_name.setEnabled(false);
+
+
             }
             //   final String[] names = new String[]{"Ricky", "Aubery", "David"};
             ArrayList<String> providers_name = new ArrayList<>();
-            for (ProviderDT item : RealmDataRetrive.getHomeList(0)) {
+            for (ProviderDT item : RealmDataRetrive.getProvider()) {
                 providers_name.add(item.getFirst_name() + " " + item.getLast_name());
             }
 
@@ -216,7 +218,7 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
 
                 @Override
                 public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
-                    vendorId = "" + RealmDataRetrive.getHomeList(0).get(position).getId();
+                    vendorId = "" + RealmDataRetrive.getProvider().get(position).getId();
 
                 }
             });
@@ -257,6 +259,10 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
                 validator(true);
                 break;
             case R.id.decline_btn:
+
+                appointmentStatus = "rejected";
+                validator(true);
+
                 break;
             case R.id.duration:
                 callHoursDialogue(activity);
@@ -324,11 +330,17 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
         final ArrayList<String> list = new ArrayList<>();
         list.add("30 minutes");
         list.add("1 hour");
+        list.add("1 hour 30 minutes ");
         list.add("2 hours");
+        list.add("2 hours 30 minutes");
         list.add("3 hours");
+        list.add("3 hours 30 minutes");
         list.add("4 hours");
+        list.add("4 hours 30 minutes");
         list.add("5 hours");
+        list.add("5 hours 30 minutes");
         list.add("6 hours");
+        list.add("6 hours 30 minutes");
         list.add("1 day");
         list.add("2 days");
         list.add("3 days");
@@ -380,9 +392,42 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
 
 
         try {
-            calId = 0;
-            //if (!isUpdate)
-            // calId = UtilityFunctions.addEvent(activity, sqlDateTime, "", 1);
+            //calId = 0;
+            int duration = 0;
+            String onlyDuration = UtilityFunctions.spaceSplit(durationS)[0];
+           // MyLogs.printinfo("onlyDuration " + onlyDuration);
+            if (durationS.contains("minutes")) {
+                if (onlyDuration.equals("30")) {
+                    duration = 1;
+                } else {
+                    duration = Integer.parseInt(onlyDuration);
+                }
+            } else if (durationS.contains("days") || durationS.contains("day")) {
+                duration = Integer.parseInt(onlyDuration) * 24;
+
+            } else if (durationS.contains("weeks") || durationS.contains("week")) {
+                duration = Integer.parseInt(onlyDuration) * 168;
+
+            } else if (durationS.contains("months") || durationS.contains("month")) {
+                duration = Integer.parseInt(onlyDuration) * 730;
+
+            }else{
+                duration = Integer.parseInt(onlyDuration);
+            }
+
+            if (!isUpdate) {
+
+                calId = UtilityFunctions.addEvent(activity, sqlDateTime, auto_com_cutomer_name.getText().toString(), duration);
+            } else {
+                //MyLogs.printinfo("calId " + calId);
+
+                UtilityFunctions.deleteEventNew(activity, calId);
+                if(!appointmentStatus.equals("rejected")){
+                    calId = UtilityFunctions.addEvent(activity, sqlDateTime, title_name.getText().toString(), duration);
+                }
+
+
+            }
         } catch (Exception e) {
 
         }

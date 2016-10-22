@@ -92,13 +92,24 @@ public class StickyListViewAdapter extends BaseAdapter implements StickyListHead
 
         } else {
             try {
-                if (RealmDataRetrive.getHomeItemDetail(phoneContact.get(position).getNumbersToPerform().get(0), ContactsMainActivity.tab_pos) != null) {
-                    holder.add_icon.setImageResource(R.drawable.minu_red_icon);
-                    holder.isdeleteRequire = true;
-                } else {
-                    holder.add_icon.setImageResource(R.drawable.add_blue_icon);
-                    holder.isdeleteRequire = false;
+                if(ContactsMainActivity.tab_pos==0){
+                    if (RealmDataRetrive.getProviderDetail(phoneContact.get(position).getNumbersToPerform().get(0), ContactsMainActivity.tab_pos) != null) {
+                        holder.add_icon.setImageResource(R.drawable.minu_red_icon);
+                        holder.isdeleteRequire = true;
+                    } else {
+                        holder.add_icon.setImageResource(R.drawable.add_blue_icon);
+                        holder.isdeleteRequire = false;
+                    }
+                }else if(ContactsMainActivity.tab_pos==1){
+                    if (RealmDataRetrive.getFriendDetail(phoneContact.get(position).getNumbersToPerform().get(0)) != null) {
+                        holder.add_icon.setImageResource(R.drawable.minu_red_icon);
+                        holder.isdeleteRequire = true;
+                    } else {
+                        holder.add_icon.setImageResource(R.drawable.add_blue_icon);
+                        holder.isdeleteRequire = false;
+                    }
                 }
+
             } catch (Exception e) {
 
             }

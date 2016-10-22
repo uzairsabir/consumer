@@ -9,13 +9,15 @@ import android.os.Bundle;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
-import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.andreabaccega.widget.FormEditText;
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.github.pinball83.maskededittext.MaskedEditText;
+import com.mukesh.countrypicker.fragments.CountryPicker;
+import com.mukesh.countrypicker.interfaces.CountryPickerListener;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Config.AppConstants;
@@ -35,7 +37,6 @@ import com.thetechsolutions.whodouconsumer.Home.controllers.HomeMainController;
 import com.thetechsolutions.whodouconsumer.R;
 
 import org.vanguardmatrix.engine.android.AppPreferences;
-import org.vanguardmatrix.engine.countryManager.BaseFlagFragment;
 import org.vanguardmatrix.engine.utils.PermissionHandler;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
 
@@ -63,9 +64,10 @@ public class HomeCreateNewContactActivity extends FragmentActivityController imp
 
     String text_first_name, text_last_name,
             text_city_state, text_zip_codes, text_category, text_sub_category, text_email, provider_user_name;
-    EditText edit_phone;
+    //  EditText edit_phone;
 
-    TextView cat_text, sub_cat_text;
+    TextView cat_text, sub_cat_text, country_code, cat_line,sub_cat_line;
+    MaskedEditText country_number;
 
     int catId = 0, subCatId = 0, provider_id = 0;
 
@@ -107,18 +109,44 @@ public class HomeCreateNewContactActivity extends FragmentActivityController imp
         category = (FormEditText) findViewById(R.id.category);
         sub_category = (FormEditText) findViewById(R.id.sub_category);
         country_container = (LinearLayout) findViewById(R.id.country_container);
-        edit_phone = (EditText) findViewById(R.id.phone);
+        // edit_phone = (EditText) findViewById(R.id.phone);
 
         cat_text = (TextView) findViewById(R.id.cat_text);
         sub_cat_text = (TextView) findViewById(R.id.sub_cat_text);
+
+        country_number = (MaskedEditText) findViewById(R.id.country_number);
+        country_code = (TextView) findViewById(R.id.country_code);
+
+        cat_line=(TextView) findViewById(R.id.cat_line);
+        sub_cat_line=(TextView) findViewById(R.id.sub_cat_line);
 
         if (tab_pos == 1) {
             sub_category.setVisibility(View.GONE);
             category.setVisibility(View.GONE);
             cat_text.setVisibility(View.GONE);
             sub_cat_text.setVisibility(View.GONE);
+            cat_line.setVisibility(View.GONE);
+            sub_cat_line.setVisibility(View.GONE);
 
         }
+
+        country_code.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final CountryPicker picker = CountryPicker.newInstance("Select Country");
+                picker.show(getSupportFragmentManager(), "COUNTRY_PICKER");
+
+                picker.setListener(new CountryPickerListener() {
+                    @Override
+                    public void onSelectCountry(String name, String code, String dialCode, int flagDrawableResID) {
+                        country_code.setText(dialCode);
+                        //country_name.setText(name);
+                        picker.dismiss();
+
+                    }
+                });
+            }
+        });
         // descripton_service = (FormEditText) findViewById(R.id.descripton_service);
         // website = (FormEditText) findViewById(R.id.website);
     }
@@ -151,17 +179,17 @@ public class HomeCreateNewContactActivity extends FragmentActivityController imp
         else {
             cell_no.setVisibility(View.GONE);
             country_container.setVisibility(View.VISIBLE);
-            try {
-                BaseFlagFragment.initUI(activity);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            try {
-                BaseFlagFragment.initCodes(activity);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+//            try {
+//                BaseFlagFragment.initUI(activity);
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
+//            try {
+//                BaseFlagFragment.initCodes(activity);
+//
+//            } catch (Exception e) {
+//                e.printStackTrace();
+//            }
 
         }
         setListner();
@@ -354,7 +382,17 @@ public class HomeCreateNewContactActivity extends FragmentActivityController imp
 
     public void validatorCode() {
         if (UtilityFunctions.isEmpty(provider_name)) {
-            cell_no.setText(edit_phone.getText().toString());
+            if (country_number.getUnmaskedText().length() == 10) {
+               // String finalNumber = UtilityFunctions.getstandarizeNumber(country_code.getText().toString() + country_number.getUnmaskedText(),activity);
+
+                String finalNumber = country_code.getText().toString() + country_number.getUnmaskedText();
+                cell_no.setText(finalNumber);
+
+            } else {
+                UtilityFunctions.showToast_onCenter(activity.getString(R.string.please_format_number), activity);
+
+            }
+
         }
         boolean allValid = true;
         if (tab_pos == 1) {
@@ -384,7 +422,18 @@ public class HomeCreateNewContactActivity extends FragmentActivityController imp
 
                 if (UtilityFunctions.isEmpty(provider_name)) {
 
-                    provider_name = UtilityFunctions.getstandarizeNumber(edit_phone.getText().toString(), activity);
+                    if (country_number.getUnmaskedText().length() == 10) {
+                        String finalNumber = UtilityFunctions.getstandarizeNumber(country_code.getText().toString() + country_number.getUnmaskedText(),activity);
+                        cell_no.setText(finalNumber);
+                        provider_name=finalNumber;
+                    } else {
+                        UtilityFunctions.showToast_onCenter(activity.getString(R.string.please_format_number), activity);
+
+                        return;
+                    }
+
+
+                   // provider_name = UtilityFunctions.getstandarizeNumber(edit_phone.getText().toString(), activity);
                     new createVendor().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
                 } else {
@@ -537,7 +586,7 @@ public class HomeCreateNewContactActivity extends FragmentActivityController imp
             try {
 
                 HomeMainController.updateProvider(provider_name, text_first_name, text_last_name, "", text_city_state, "", "", text_email,
-                        text_zip_codes, subCatId + "", tab_pos,imageUrl);
+                        text_zip_codes, subCatId + "", tab_pos, imageUrl);
 
 
                 return 0;

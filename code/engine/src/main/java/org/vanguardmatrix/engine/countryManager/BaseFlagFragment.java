@@ -193,7 +193,7 @@ public abstract class BaseFlagFragment {
         mSpinner.setAdapter(mAdapter);
 
         mPhoneEdit = (EditText) activity.findViewById(R.id.phone);
-        mPhoneEdit.addTextChangedListener(new CustomPhoneNumberFormattingTextWatcher(mOnPhoneChangedListener));
+        mPhoneEdit.addTextChangedListener(new CustomPhoneNumberFormattingTextWatcher(mOnPhoneChangedListener,mPhoneEdit));
         InputFilter filter = new InputFilter() {
             public CharSequence filter(CharSequence source, int start, int end,
                                        Spanned dest, int dstart, int dend) {

@@ -1320,9 +1320,9 @@ public class ConversationActivity extends XmppActivity
         }
         forbidProcessingPendings = false;
 
-        if (!ExceptionHelper.checkForCrash(this, this.xmppConnectionService)) {
-            openBatteryOptimizationDialogIfNeeded();
-        }
+//        if (!ExceptionHelper.checkForCrash(this, this.xmppConnectionService)) {
+//            openBatteryOptimizationDialogIfNeeded();
+//        }
     }
 
     private void handleViewConversationIntent(final Intent intent) {

@@ -10,8 +10,9 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Contacts.models.ContactModel;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.AppController;
+import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.ListenerController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
-import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProviderDT;
+import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendsProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.WebService.AsynGetDataController;
 import com.thetechsolutions.whodouconsumer.Home.model.HomeModel;
 import com.thetechsolutions.whodouconsumer.R;
@@ -27,7 +28,7 @@ import uk.co.ribot.easyadapter.annotations.ViewId;
  * Created by Uzair on 3/25/2016.
  */
 @LayoutId(R.layout.item_home_friend_provider)
-public class HomeFriendsProviderListAdapter extends ItemViewHolder<ProviderDT> {
+public class HomeListFriendsProviderAdapter extends ItemViewHolder<FriendsProviderDT> {
 
 
     @ViewId(R.id.fresco_view)
@@ -55,24 +56,24 @@ public class HomeFriendsProviderListAdapter extends ItemViewHolder<ProviderDT> {
 
 
     static Activity activity;
-    ProviderDT item;
+    FriendsProviderDT item;
 
-    boolean isRefresh =false;
+    boolean isRefresh = false;
 
 
-    public HomeFriendsProviderListAdapter(View view) {
+    public HomeListFriendsProviderAdapter(View view) {
         super(view);
     }
 
-    public static Class<HomeFriendsProviderListAdapter> newInstance(Activity _activity) {
+    public static Class<HomeListFriendsProviderAdapter> newInstance(Activity _activity) {
         activity = _activity;
 
-        return HomeFriendsProviderListAdapter.class;
+        return HomeListFriendsProviderAdapter.class;
     }
 
 
     @Override
-    public void onSetValues(ProviderDT item, PositionInfo positionInfo) {
+    public void onSetValues(FriendsProviderDT item, PositionInfo positionInfo) {
         sourceImageView.setImageURI(Uri.parse(item.getImage_url()));
         title.setText(item.getFirst_name() + " " + item.getLast_name());
         service_name.setText(item.getSub_category_title());
@@ -82,7 +83,8 @@ public class HomeFriendsProviderListAdapter extends ItemViewHolder<ProviderDT> {
 
         try {
 
-            if (RealmDataRetrive.getHomeItemDetail(getItem().getMobile_number_1(), 0) != null) {
+
+            if (RealmDataRetrive.getProviderDetail(getItem().getUsername(), 0) != null) {
                 add_btn.setText("Remove");
                 add_btn.setTextColor(activity.getResources().getColor(R.color.color_red));
                 add_btn.setBackground(activity.getResources().getDrawable(R.drawable.bg_red_with_round_edges_center_white));
@@ -94,6 +96,7 @@ public class HomeFriendsProviderListAdapter extends ItemViewHolder<ProviderDT> {
 
                 isdeleteRequire = false;
             }
+
         } catch (Exception e) {
 
         }
@@ -106,12 +109,13 @@ public class HomeFriendsProviderListAdapter extends ItemViewHolder<ProviderDT> {
         super.onSetListeners();
 
 
-//        container.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//             //   ListenerController.openFriendProfileActivity(activity, 0, getItem().getId());
-//            }
-//        });
+        container.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ListenerController.openFriendProfileActivity(activity, 2, item.getUsername());
+                //ListenerController.openFriendProfileActivity(activity, 0, getItem().getId());
+            }
+        });
 
         //   MyLogs.printinfo("get_uid"+item);
         add_btn.setOnClickListener(new View.OnClickListener() {
@@ -136,7 +140,7 @@ public class HomeFriendsProviderListAdapter extends ItemViewHolder<ProviderDT> {
 
 
     public interface Listener {
-        void onButtonClicked(ProviderDT datetype);
+        void onButtonClicked(FriendsProviderDT datetype);
     }
 
     private class callConsumerVendorDelete extends AsyncTask<String, Void, Boolean> {
@@ -202,7 +206,6 @@ public class HomeFriendsProviderListAdapter extends ItemViewHolder<ProviderDT> {
 
         }
     }
-
 
 
     public void refreshAdapter() {

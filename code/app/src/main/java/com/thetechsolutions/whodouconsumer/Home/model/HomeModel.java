@@ -68,9 +68,9 @@ public class HomeModel {
                 if (!UtilityFunctions.isEmpty(imageUrl)) {
 
                     try {
-                        MyLogs.printinfo("calling_image " +type);
+                        MyLogs.printinfo("calling_image " + type);
                         String friendId = resultJson.getJSONArray("body").getJSONObject(0).getString("id");
-                        return uploadImage(friendId, type, imageUrl);
+                        return uploadImage(friendId, type, imageUrl, false);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -108,6 +108,12 @@ public class HomeModel {
                     .extractJSONObject();
 
             if (WebService.getResponseCode(resultJson) == 0) {
+//                try{
+//                    RealmDataDelete.deleteHomeItem(providerId);
+//
+//                }catch (Exception e){
+//
+//                }
 
 //                try {
 //                    RealmDataInsert.insertConsumerProviders(providerName, tab_pos);
@@ -129,7 +135,7 @@ public class HomeModel {
 
     public static boolean updateProvider(String providerName, String first_name, String last_name,
                                          String user_address, String user_city, String user_state, String user_country,
-                                         String email_address, String zip_code, String subcategory_id, int pos,String imageUrl
+                                         String email_address, String zip_code, String subcategory_id, int pos, String imageUrl
     ) {
         String id = String.valueOf(RealmDataRetrive.getProfile().getUsername());
 
@@ -165,9 +171,9 @@ public class HomeModel {
                 if (!UtilityFunctions.isEmpty(imageUrl)) {
 
                     try {
-                        MyLogs.printinfo("calling_image " +type);
+                        MyLogs.printinfo("calling_image " + type);
                         String friendId = resultJson.getJSONArray("body").getJSONObject(0).getString("id");
-                        return uploadImage(friendId, type, imageUrl);
+                        return uploadImage(friendId, type, imageUrl,false);
                     } catch (JSONException e) {
                         e.printStackTrace();
                     }
@@ -177,7 +183,7 @@ public class HomeModel {
                 }
 
 
-               // return true;
+                // return true;
             }
 
         } catch (OutOfMemoryError e) {
@@ -209,7 +215,7 @@ public class HomeModel {
 
                 try {
                     try {
-                        RealmDataDelete.deleteHomeDTByPos(0);
+                        //RealmDataDelete.deleteHomeDTByPos(0);
                     } catch (Exception e) {
                         e.printStackTrace();
 
@@ -299,7 +305,7 @@ public class HomeModel {
                 try {
                     if (resultJson.getJSONArray(AppConstants.BODY) != null) {
                         try {
-                            RealmDataDelete.deleteHomeDTByPos(1);
+                           // RealmDataDelete.deleteHomeDTByPos(1);
                         } catch (Exception e) {
 
                         }
@@ -374,7 +380,7 @@ public class HomeModel {
                 try {
                     if (resultJson.getJSONArray(AppConstants.BODY) != null) {
                         try {
-                            RealmDataDelete.deleteHomeDTByPos(2);
+                           // RealmDataDelete.deleteHomeDTByPos(2);
                         } catch (Exception e) {
 
                         }
@@ -404,7 +410,7 @@ public class HomeModel {
 
     }
 
-    public static boolean uploadImage(String user_id, String user_type, String image_url) {
+    public static boolean uploadImage(String user_id, String user_type, String image_url, boolean isUpdateProfile) {
 
 //        MyLogs.printinfo("image_url  "+"data:image/jpeg;base64," + UtilityFunctions.converStringToBase64(image_url));
         //String id = String.valueOf(RealmDataRetrive.getProfile().getId());
@@ -422,6 +428,12 @@ public class HomeModel {
                     .extractJSONObject();
 
             if (WebService.getResponseCode(resultJson) == 0) {
+                try {
+                    if (isUpdateProfile)
+                        RealmDataInsert.insertProfile(resultJson.getJSONArray(AppConstants.BODY));
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
                 return true;
             }
 

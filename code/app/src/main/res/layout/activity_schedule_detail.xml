@@ -175,7 +175,7 @@
                     android:layout_marginRight="@dimen/margin_small"
                     android:layout_marginTop="@dimen/margin_2"
                     android:background="@drawable/bg_new_red_hover"
-                    android:text="Decline"
+                    android:text="Cancel"
                     android:textColor="@color/white"
                     android:textSize="@dimen/textsize_label_2"
                     android:visibility="gone" />

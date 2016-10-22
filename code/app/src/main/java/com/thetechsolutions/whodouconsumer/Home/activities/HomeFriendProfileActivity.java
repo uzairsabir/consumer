@@ -12,13 +12,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.thetechsolutions.whodouconsumer.AppHelpers.Contacts.models.ContactModel;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.AppController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.BottomMenuController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.FragmentActivityController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.ListenerController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.MethodGenerator;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.TitleBarController;
+import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataDelete;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
+import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendDT;
+import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendsProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.WebService.AsynGetDataController;
 import com.thetechsolutions.whodouconsumer.Home.controllers.HomeMainController;
@@ -47,7 +51,7 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
 
     EditText cell_no, email, city_state, zip_code;
     ImageView dollar_icon, calendar_icon, chat_icon, call_icon;
-    Button save_btn;
+    Button save_btn, delete_btn;
 
     static int tab_pos, subCatId;
     static String providerName;
@@ -106,13 +110,17 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
         call_icon = (ImageView) findViewById(R.id.call_icon);
 
         save_btn = (Button) findViewById(R.id.save_btn);
-
+        delete_btn = (Button) findViewById(R.id.delete_btn);
         //MyLogs.printinfo("tab_pos " + tab_pos);
 
         if (HomeMainFragment.pos == 1) {
             calendar_icon.setVisibility(View.GONE);
             service_name.setVisibility(View.GONE);
             dollar_icon.setVisibility(View.GONE);
+        }
+        if(tab_pos==2){
+            save_btn.setVisibility(View.GONE);
+            delete_btn.setVisibility(View.GONE);
         }
         listeners();
 
@@ -165,13 +173,32 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
         save_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ProviderDT item_detail = RealmDataRetrive.getHomeItemDetail(providerName, HomeMainFragment.pos);
-                text_first_name = item_detail.getFirst_name();
-                text_last_name = item_detail.getLast_name();
-                text_city_state = city_state.getText().toString();
-                text_email = email.getText().toString();
-                text_zip_codes = zip_code.getText().toString();
-                subCatId = item_detail.getSub_category_id();
+                if(HomeMainFragment.pos==0){
+                    ProviderDT item_detail = RealmDataRetrive.getProviderDetail(providerName, 0);
+                    text_first_name = item_detail.getFirst_name();
+                    text_last_name = item_detail.getLast_name();
+                    text_city_state = city_state.getText().toString();
+                    text_email = email.getText().toString();
+                    text_zip_codes = zip_code.getText().toString();
+                    subCatId = item_detail.getSub_category_id();
+                }else if(HomeMainFragment.pos==1){
+                    FriendDT item_detail = RealmDataRetrive.getFriendDetail(providerName);
+                    text_first_name = item_detail.getFirst_name();
+                    text_last_name = item_detail.getLast_name();
+                    text_city_state = city_state.getText().toString();
+                    text_email = email.getText().toString();
+                    text_zip_codes = zip_code.getText().toString();
+                    subCatId = item_detail.getSub_category_id();
+                }else if(HomeMainFragment.pos==2){
+                    FriendsProviderDT item_detail = RealmDataRetrive.getFriendProviderDetail(providerName);
+                    text_first_name = item_detail.getFirst_name();
+                    text_last_name = item_detail.getLast_name();
+                    text_city_state = city_state.getText().toString();
+                    text_email = email.getText().toString();
+                    text_zip_codes = zip_code.getText().toString();
+                    subCatId = item_detail.getSub_category_id();
+                }
+
 
                 new updateVendor().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
@@ -183,84 +210,275 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
     @Override
     public void viewUpdate() {
         // MyLogs.printinfo("userName " + providerName + " : " + tab_pos);
-        final ProviderDT item_detail = RealmDataRetrive.getHomeItemDetail(providerName, HomeMainFragment.pos);
-        if (item_detail != null) {
-            title_name.setText(item_detail.getFirst_name() + " " + item_detail.getLast_name());
-            service_name.setText(item_detail.getSub_category_title());
-            address.setText(item_detail.getAddress());
-            cell_no.setText(UtilityFunctions.getFormattedNumberToDisplay(activity, item_detail.getMobile_number_1()));
-            email.setText(item_detail.getEmail_1());
-            fresco_view.setImageURI(item_detail.getImage_url());
-            zip_code.setText(item_detail.getZip_code());
-            city_state.setText(item_detail.getCity());
+       // ProviderDT item_detail = RealmDataRetrive.getProviderDetail(providerName, HomeMainFragment.pos);
 
-            try {
-                if (!item_detail.getCreated_by().equals(AppPreferences.getString(AppPreferences.PREF_USER_NUMBER))) {
-                    email_edit_text.setVisibility(View.INVISIBLE);
-                    city_edit_text.setVisibility(View.INVISIBLE);
-                    mobile_edit_text.setVisibility(View.INVISIBLE);
-                    zip_edit_text.setVisibility(View.INVISIBLE);
+        if(HomeMainFragment.pos==0){
+            final ProviderDT item_detail = RealmDataRetrive.getProviderDetail(providerName, 0);
 
-                    email.setEnabled(false);
-                    email.setTextColor(activity.getResources().getColor(R.color.who_do_u_light_grey));
-                    zip_code.setEnabled(false);
-                    zip_code.setTextColor(activity.getResources().getColor(R.color.who_do_u_light_grey));
-                    city_state.setEnabled(false);
-                    city_state.setTextColor(activity.getResources().getColor(R.color.who_do_u_light_grey));
-                    save_btn.setVisibility(View.GONE);
-                } else {
-                    email.setFocusable(true);
-                    zip_code.setFocusable(true);
-                    city_state.setFocusable(true);
+            if (item_detail != null) {
+                title_name.setText(item_detail.getFirst_name() + " " + item_detail.getLast_name());
+                service_name.setText(item_detail.getSub_category_title());
+                address.setText(item_detail.getAddress());
+                cell_no.setText(UtilityFunctions.getFormattedNumberToDisplay(activity, item_detail.getMobile_number_1()));
+                email.setText(item_detail.getEmail_1());
+                fresco_view.setImageURI(item_detail.getImage_url());
+                zip_code.setText(item_detail.getZip_code());
+                city_state.setText(item_detail.getCity());
+
+                try {
+                    if (!item_detail.getCreated_by().equals(AppPreferences.getString(AppPreferences.PREF_USER_NUMBER))) {
+                        email_edit_text.setVisibility(View.INVISIBLE);
+                        city_edit_text.setVisibility(View.INVISIBLE);
+                        mobile_edit_text.setVisibility(View.INVISIBLE);
+                        zip_edit_text.setVisibility(View.INVISIBLE);
+
+                        email.setEnabled(false);
+                        email.setTextColor(activity.getResources().getColor(R.color.who_do_u_light_grey));
+                        zip_code.setEnabled(false);
+                        zip_code.setTextColor(activity.getResources().getColor(R.color.who_do_u_light_grey));
+                        city_state.setEnabled(false);
+                        city_state.setTextColor(activity.getResources().getColor(R.color.who_do_u_light_grey));
+                        save_btn.setVisibility(View.GONE);
+                    } else {
+                        email.setFocusable(true);
+                        zip_code.setFocusable(true);
+                        city_state.setFocusable(true);
+                    }
+                } catch (Exception e) {
+
                 }
-            } catch (Exception e) {
+
+
+                dollar_icon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+                calendar_icon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ListenerController.openScheduleDetail(activity, 0, 2, "Create Appointment", item_detail.getUsername());
+                    }
+                });
+
+                chat_icon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        AppController.openChat(activity, item_detail.getUsername(), item_detail.getFirst_name() + " " + item_detail.getLast_name(), item_detail.getImage_url(), item_detail.getIs_register_user(), HomeMainFragment.pos);
+
+                    }
+                });
+                call_icon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        UtilityFunctions.directCall(activity, item_detail.getUsername());
+                    }
+                });
+
+                fresco_view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (item_detail.getCreated_by().equalsIgnoreCase(AppPreferences.getString(AppPreferences.PREF_USER_NUMBER))) {
+                            if (PermissionHandler.isStoragePermissionGranted(activity)) {
+
+                                EasyImage.openChooserWithGallery(activity, "Profile Photo", EasyImageConfig.REQ_PICK_PICTURE_FROM_GALLERY);
+                            }
+                        } else {
+                            UtilityFunctions.showFullImage(activity, item_detail.getFirst_name() + " " + item_detail.getLast_name(), item_detail.getImage_url(), null, 0);
+
+                        }
+                    }
+                });
+
+                delete_btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        new callConsumerVendorDelete(""+item_detail.getUsername()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    }
+                });
 
             }
 
+        }else if(HomeMainFragment.pos==1){
+            final FriendDT item_detail = RealmDataRetrive.getFriendDetail(providerName);
+            if (item_detail != null) {
+                title_name.setText(item_detail.getFirst_name() + " " + item_detail.getLast_name());
+                service_name.setText(item_detail.getSub_category_title());
+                address.setText(item_detail.getAddress());
+                cell_no.setText(UtilityFunctions.getFormattedNumberToDisplay(activity, item_detail.getMobile_number_1()));
+                email.setText(item_detail.getEmail_1());
+                fresco_view.setImageURI(item_detail.getImage_url());
+                zip_code.setText(item_detail.getZip_code());
+                city_state.setText(item_detail.getCity());
 
-            dollar_icon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
+                try {
+                    if (!item_detail.getCreated_by().equals(AppPreferences.getString(AppPreferences.PREF_USER_NUMBER))) {
+                        email_edit_text.setVisibility(View.INVISIBLE);
+                        city_edit_text.setVisibility(View.INVISIBLE);
+                        mobile_edit_text.setVisibility(View.INVISIBLE);
+                        zip_edit_text.setVisibility(View.INVISIBLE);
 
-                }
-            });
-            calendar_icon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    ListenerController.openScheduleDetail(activity, 0, 2, "Create Appointment", item_detail.getUsername());
-                }
-            });
-
-            chat_icon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    AppController.openChat(activity, item_detail.getUsername(), item_detail.getFirst_name() + " " + item_detail.getLast_name(), item_detail.getImage_url(), item_detail.getIs_register_user(), HomeMainFragment.pos);
-
-                }
-            });
-            call_icon.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    UtilityFunctions.directCall(activity, item_detail.getUsername());
-                }
-            });
-
-            fresco_view.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (item_detail.getCreated_by().equalsIgnoreCase(AppPreferences.getString(AppPreferences.PREF_USER_NUMBER))) {
-                        if (PermissionHandler.isStoragePermissionGranted(activity)) {
-
-                            EasyImage.openChooserWithGallery(activity, "Profile Photo", EasyImageConfig.REQ_PICK_PICTURE_FROM_GALLERY);
-                        }
+                        email.setEnabled(false);
+                        email.setTextColor(activity.getResources().getColor(R.color.who_do_u_light_grey));
+                        zip_code.setEnabled(false);
+                        zip_code.setTextColor(activity.getResources().getColor(R.color.who_do_u_light_grey));
+                        city_state.setEnabled(false);
+                        city_state.setTextColor(activity.getResources().getColor(R.color.who_do_u_light_grey));
+                        save_btn.setVisibility(View.GONE);
                     } else {
-                        UtilityFunctions.showFullImage(activity, item_detail.getFirst_name() + " " + item_detail.getLast_name(), item_detail.getImage_url(), null, 0);
+                        email.setFocusable(true);
+                        zip_code.setFocusable(true);
+                        city_state.setFocusable(true);
+                    }
+                } catch (Exception e) {
+
+                }
+
+
+                dollar_icon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
 
                     }
+                });
+                calendar_icon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ListenerController.openScheduleDetail(activity, 0, 2, "Create Appointment", item_detail.getUsername());
+                    }
+                });
+
+                chat_icon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        AppController.openChat(activity, item_detail.getUsername(), item_detail.getFirst_name() + " " + item_detail.getLast_name(), item_detail.getImage_url(), item_detail.getIs_register_user(), HomeMainFragment.pos);
+
+                    }
+                });
+                call_icon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        UtilityFunctions.directCall(activity, item_detail.getUsername());
+                    }
+                });
+
+                fresco_view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (item_detail.getCreated_by().equalsIgnoreCase(AppPreferences.getString(AppPreferences.PREF_USER_NUMBER))) {
+                            if (PermissionHandler.isStoragePermissionGranted(activity)) {
+
+                                EasyImage.openChooserWithGallery(activity, "Profile Photo", EasyImageConfig.REQ_PICK_PICTURE_FROM_GALLERY);
+                            }
+                        } else {
+                            UtilityFunctions.showFullImage(activity, item_detail.getFirst_name() + " " + item_detail.getLast_name(), item_detail.getImage_url(), null, 0);
+
+                        }
+                    }
+                });
+
+                delete_btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        new callConsumerVendorDelete(""+item_detail.getUsername()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    }
+                });
+
+            }
+
+        }else if(HomeMainFragment.pos==2){
+            final FriendsProviderDT item_detail = RealmDataRetrive.getFriendProviderDetail(providerName);
+            if (item_detail != null) {
+                title_name.setText(item_detail.getFirst_name() + " " + item_detail.getLast_name());
+                service_name.setText(item_detail.getSub_category_title());
+                address.setText(item_detail.getAddress());
+                cell_no.setText(UtilityFunctions.getFormattedNumberToDisplay(activity, item_detail.getMobile_number_1()));
+                email.setText(item_detail.getEmail_1());
+                fresco_view.setImageURI(item_detail.getImage_url());
+                zip_code.setText(item_detail.getZip_code());
+                city_state.setText(item_detail.getCity());
+
+                try {
+                    if (!item_detail.getCreated_by().equals(AppPreferences.getString(AppPreferences.PREF_USER_NUMBER))) {
+                        email_edit_text.setVisibility(View.INVISIBLE);
+                        city_edit_text.setVisibility(View.INVISIBLE);
+                        mobile_edit_text.setVisibility(View.INVISIBLE);
+                        zip_edit_text.setVisibility(View.INVISIBLE);
+
+                        email.setEnabled(false);
+                        email.setTextColor(activity.getResources().getColor(R.color.who_do_u_light_grey));
+                        zip_code.setEnabled(false);
+                        zip_code.setTextColor(activity.getResources().getColor(R.color.who_do_u_light_grey));
+                        city_state.setEnabled(false);
+                        city_state.setTextColor(activity.getResources().getColor(R.color.who_do_u_light_grey));
+                        save_btn.setVisibility(View.GONE);
+                    } else {
+                        email.setFocusable(true);
+                        zip_code.setFocusable(true);
+                        city_state.setFocusable(true);
+                    }
+                } catch (Exception e) {
+
                 }
-            });
+
+
+                dollar_icon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                    }
+                });
+                calendar_icon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ListenerController.openScheduleDetail(activity, 0, 2, "Create Appointment", item_detail.getUsername());
+                    }
+                });
+
+                chat_icon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        AppController.openChat(activity, item_detail.getUsername(), item_detail.getFirst_name() + " " + item_detail.getLast_name(), item_detail.getImage_url(), item_detail.getIs_register_user(), HomeMainFragment.pos);
+
+                    }
+                });
+                call_icon.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        UtilityFunctions.directCall(activity, item_detail.getUsername());
+                    }
+                });
+
+                fresco_view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (item_detail.getCreated_by().equalsIgnoreCase(AppPreferences.getString(AppPreferences.PREF_USER_NUMBER))) {
+                            if (PermissionHandler.isStoragePermissionGranted(activity)) {
+
+                                EasyImage.openChooserWithGallery(activity, "Profile Photo", EasyImageConfig.REQ_PICK_PICTURE_FROM_GALLERY);
+                            }
+                        } else {
+                            UtilityFunctions.showFullImage(activity, item_detail.getFirst_name() + " " + item_detail.getLast_name(), item_detail.getImage_url(), null, 0);
+
+                        }
+                    }
+                });
+
+                delete_btn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        new callConsumerVendorDelete(""+item_detail.getUsername()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                    }
+                });
+
+            }
 
         }
+
 
 
     }
@@ -343,6 +561,60 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
                 //onPhotoReturned(imageFile);
             }
         });
+    }
+
+    private class callConsumerVendorDelete extends AsyncTask<String, Void, Boolean> {
+
+
+        String providername = "";
+
+
+        public callConsumerVendorDelete(String _providername) {
+
+            providername = _providername;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            AppController.showDialoge(activity);
+
+        }
+
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            try {
+
+                if (HomeMainFragment.pos == 0) {
+                    return ContactModel.checkDeleteConsumerVendorLink(providername);
+                } else {
+                    return ContactModel.checkDeleteConsumerFriendLink(providername);
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            AppController.hideDialoge();
+
+            if (result) {
+
+                RealmDataDelete.deleteHomeItem(providername, HomeMainFragment.pos);
+
+                AsynGetDataController.getInstance().getMyProvidersOrFriends(activity,HomeMainFragment.pos, true);
+
+
+            }
+
+
+        }
     }
 
 

@@ -12,14 +12,13 @@ import android.view.ViewGroup;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
+import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendsProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProviderDT;
 import com.thetechsolutions.whodouconsumer.Chat.activities.ChatFromMainActivity;
 import com.thetechsolutions.whodouconsumer.Chat.adapters.ChatFromListAdapter;
 import com.thetechsolutions.whodouconsumer.Home.activities.HomeMainSearchActivity;
-import com.thetechsolutions.whodouconsumer.Home.adapters.HomeFriendsProviderListAdapter;
-import com.thetechsolutions.whodouconsumer.Home.adapters.HomeListAdapter;
+import com.thetechsolutions.whodouconsumer.Home.adapters.HomeListFriendsProviderAdapter;
 import com.thetechsolutions.whodouconsumer.Home.controllers.HomeMainController;
-import com.thetechsolutions.whodouconsumer.Home.fragments.HomeMainFragment;
 import com.thetechsolutions.whodouconsumer.R;
 
 import org.vanguardmatrix.engine.customviews.ProgressActivity;
@@ -245,7 +244,7 @@ public class ChatFromMainFragment extends Fragment implements View.OnClickListen
                 progressActivity.showContent();
                 easyAdapter = new EasyAdapter<>(
                         activity,
-                        HomeFriendsProviderListAdapter.newInstance(activity),
+                        HomeListFriendsProviderAdapter.newInstance(activity),
                         providerDTs, mListener);
                 AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(easyAdapter);
                 animationAdapter.setAbsListView(dynamicListView);
@@ -263,10 +262,10 @@ public class ChatFromMainFragment extends Fragment implements View.OnClickListen
 
     }
 
-    public HomeFriendsProviderListAdapter.Listener mListener = new HomeFriendsProviderListAdapter.Listener() {
+    public HomeListFriendsProviderAdapter.Listener mListener = new HomeListFriendsProviderAdapter.Listener() {
 
         @Override
-        public void onButtonClicked(ProviderDT person) {
+        public void onButtonClicked(FriendsProviderDT person) {
             refreshAdapters();
         }
     };

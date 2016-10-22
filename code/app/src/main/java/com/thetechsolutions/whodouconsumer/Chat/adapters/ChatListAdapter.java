@@ -74,7 +74,7 @@ public class ChatListAdapter extends ItemViewHolder<Conversation> {
         //    MyLogs.printinfo("name_test  " + item.getJid().toBareJid().toString() + " : " + RealmDataRetrive.getHomeListOfMyProviderAndMyFriends().get(0));
 
         try {
-            for (ProviderDT items : RealmDataRetrive.getHomeListOfMyProviderAndMyFriends()) {
+            for (ProviderDT items : RealmDataRetrive.getProvider()) {
 
                 if (item.getJid().toBareJid().toString().contains(items.getUsername())) {
                     providerDT = items;

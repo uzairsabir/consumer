@@ -5,13 +5,13 @@ import android.os.AsyncTask;
 
 import com.thetechsolutions.whodouconsumer.AppHelpers.Contacts.activities.ContactsMainActivity;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Contacts.controllers.ContactsController;
-import com.thetechsolutions.whodouconsumer.AppHelpers.Contacts.fragments.ContactsMainFragment;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.AppController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.TitleBarController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataDelete;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
+import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendDT;
+import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendsProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProviderDT;
-import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ScheduleDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.VendorProfileDT;
 import com.thetechsolutions.whodouconsumer.Home.activities.HomeCreateNewContactActivity;
 import com.thetechsolutions.whodouconsumer.Home.activities.HomeFriendProfileActivity;
@@ -45,17 +45,17 @@ public class AsynGetDataController {
     }
 
     public void getSchedules(Activity activity) {
-        try{
+        try {
             new getAppointments(activity, "upcoming").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             new getAppointments(activity, "recent").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 
 
-        try{
+        try {
             new getSettings(activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        }catch (Exception e){
+        } catch (Exception e) {
 
         }
 
@@ -109,7 +109,7 @@ public class AsynGetDataController {
 
                 try {
                     try {
-                        for (ProviderDT item : RealmDataRetrive.getHomeList(0)
+                        for (ProviderDT item : RealmDataRetrive.getProvider()
                                 ) {
                             try {
                                 RealmDataDelete.deleteContactOldRecord(item.getFirst_name(),
@@ -164,7 +164,7 @@ public class AsynGetDataController {
 
                 }
                 try {
-                  //  ContactsMainFragment.fragment.loadData();
+                    //  ContactsMainFragment.fragment.loadData();
                 } catch (Exception e) {
 
                 }
@@ -212,9 +212,15 @@ public class AsynGetDataController {
 
             try {
 
-                if (HomeModel.getMyFriends())
+                if (HomeModel.getMyFriends()) {
+                    if (HomeModel.getMyFriendsProviders()) {
+                        return 0;
+                    } else {
+                        return 0;
+                    }
+                }
 
-                    return 0;
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -233,7 +239,7 @@ public class AsynGetDataController {
             if (result == 0) {
                 try {
                     try {
-                        for (ProviderDT item : RealmDataRetrive.getHomeList(1)
+                        for (FriendDT item : RealmDataRetrive.getFriendList()
                                 ) {
 
                             RealmDataDelete.deleteContactOldRecord(item.getFirst_name(),
@@ -336,7 +342,7 @@ public class AsynGetDataController {
             if (result == 0) {
                 try {
                     try {
-                        for (ProviderDT item : RealmDataRetrive.getHomeList(1)
+                        for (FriendsProviderDT item : RealmDataRetrive.getFriendsProvider()
                                 ) {
 
 //                            try {

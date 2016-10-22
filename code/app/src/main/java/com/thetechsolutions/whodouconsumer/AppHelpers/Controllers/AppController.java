@@ -12,6 +12,8 @@ import com.github.johnpersano.supertoasts.library.Style;
 import com.github.johnpersano.supertoasts.library.SuperActivityToast;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataInsert;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
+import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendDT;
+import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendsProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProfileDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProviderDT;
 import com.thetechsolutions.whodouconsumer.R;
@@ -39,6 +41,7 @@ import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.ui.ConversationActivity;
 import eu.siacs.conversations.utils.FriendNames;
 import eu.siacs.conversations.utils.UIHelper;
+import io.realm.RealmResults;
 
 /**
  * Created by Uzair on 12/19/2015.
@@ -222,37 +225,86 @@ public class AppController {
 
         // GsonBuilder gsonb = new GsonBuilder();
 
-        if (RealmDataRetrive.getHomeListOfMyProviderAndMyFriends().size() > 0) {
-            List<FriendNames> list = new ArrayList<>();
-            FriendNames item = new FriendNames();
-            for (ProviderDT providerDT : RealmDataRetrive.getHomeListOfMyProviderAndMyFriends()) {
+        RealmResults<ProviderDT> providerDTs=RealmDataRetrive.getProvider();
+        RealmResults<FriendDT> friendDTs=RealmDataRetrive.getFriendList();
+        List<FriendNames> list = new ArrayList<>();
+
+        if(providerDTs.size() > 0){
+
+            for (ProviderDT providerDT : providerDTs) {
+                FriendNames item = new FriendNames();
                 item.setDisplayName(providerDT.getFirst_name() + " " + providerDT.getLast_name());
                 item.setDisplayAvatar(providerDT.getImage_url());
                 item.setUsername(providerDT.getUsername());
                 list.add(item);
             }
-            try {
-                UtilityFunctions.deleteFile(UIHelper.FILE_NAME);
-            } catch (Exception e) {
+        }
 
-            }
-            FileOutputStream fos = null;
-            try {
-
-                fos = activity.openFileOutput(UIHelper.FILE_NAME, Context.MODE_PRIVATE);
-            } catch (FileNotFoundException e) {
-                e.printStackTrace();
-            }
-            ObjectOutputStream oos = null;
-            try {
-                oos = new ObjectOutputStream(fos);
-                oos.writeObject(list);
-                oos.close();
-            } catch (IOException e) {
-                e.printStackTrace();
+        if(friendDTs.size() > 0 ){
+            for (FriendDT providerDT : friendDTs) {
+                FriendNames item = new FriendNames();
+                item.setDisplayName(providerDT.getFirst_name() + " " + providerDT.getLast_name());
+                item.setDisplayAvatar(providerDT.getImage_url());
+                item.setUsername(providerDT.getUsername());
+                list.add(item);
             }
 
         }
+        try {
+            UtilityFunctions.deleteFile(UIHelper.FILE_NAME);
+        } catch (Exception e) {
+
+        }
+        FileOutputStream fos = null;
+        try {
+
+            fos = activity.openFileOutput(UIHelper.FILE_NAME, Context.MODE_PRIVATE);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        ObjectOutputStream oos = null;
+        try {
+            oos = new ObjectOutputStream(fos);
+            oos.writeObject(list);
+            oos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+
+
+
+//        if (RealmDataRetrive.getHomeListOfMyProviderAndMyFriends().size() > 0) {
+//            List<FriendNames> list = new ArrayList<>();
+//            FriendNames item = new FriendNames();
+//            for (ProviderDT providerDT : RealmDataRetrive.getHomeListOfMyProviderAndMyFriends()) {
+//                item.setDisplayName(providerDT.getFirst_name() + " " + providerDT.getLast_name());
+//                item.setDisplayAvatar(providerDT.getImage_url());
+//                item.setUsername(providerDT.getUsername());
+//                list.add(item);
+//            }
+//            try {
+//                UtilityFunctions.deleteFile(UIHelper.FILE_NAME);
+//            } catch (Exception e) {
+//
+//            }
+//            FileOutputStream fos = null;
+//            try {
+//
+//                fos = activity.openFileOutput(UIHelper.FILE_NAME, Context.MODE_PRIVATE);
+//            } catch (FileNotFoundException e) {
+//                e.printStackTrace();
+//            }
+//            ObjectOutputStream oos = null;
+//            try {
+//                oos = new ObjectOutputStream(fos);
+//                oos.writeObject(list);
+//                oos.close();
+//            } catch (IOException e) {
+//                e.printStackTrace();
+//            }
+//
+//        }
 
     }
 
@@ -308,6 +360,39 @@ public class AppController {
         hashSet.addAll(list);
         arrayList.addAll(hashSet);
         return arrayList;
+    }
+
+    public static ArrayList<FriendsProviderDT> filterFriendsProvider(ArrayList<FriendsProviderDT> friendsProviders) {
+
+        //  RealmResults<FriendsProviderDT> friendsProviderDTs = realm.where(FriendsProviderDT.class).findAllSorted(a, b).distinct("username");
+
+        ArrayList<FriendsProviderDT> filterList = new ArrayList<>();
+
+        RealmResults<ProviderDT> providerDTs = RealmDataRetrive.getProvider();
+        if (RealmDataRetrive.getProvider().size() > 0) {
+
+            boolean found = false;
+            for(FriendsProviderDT object1 : friendsProviders){
+                for(ProviderDT object2: providerDTs){
+                    if(object1.getUsername().equals(object2.getUsername())){
+                        found = true;
+
+                        //also do something
+                    }
+                }
+                if(!found){
+                    filterList.add(object1);
+                    //do something
+                }
+                found = false;
+            }
+
+
+            return filterList;
+
+            // return finalUniq=filterList;
+        }
+        return friendsProviders;
     }
 
 }

@@ -20,8 +20,6 @@ import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.SettingsPreferen
 import com.thetechsolutions.whodouconsumer.R;
 import com.thetechsolutions.whodouconsumer.Settings.controller.SettingsController;
 
-import org.vanguardmatrix.engine.android.AppPreferences;
-import org.vanguardmatrix.engine.utils.MyLogs;
 import org.vanguardmatrix.engine.utils.NetworkManager;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
 
@@ -249,7 +247,14 @@ public class PreferenceAdapter extends BaseExpandableListAdapter {
                 }
 
                 if (NetworkManager.isConnected(activity)) {
-             //       SettingsController.
+
+                    if (holder.switch_button.isChecked()) {
+                        SettingsController.updatePreference(activity, Items.getPrefernece_id(), "1");
+                    } else {
+                        SettingsController.updatePreference(activity, Items.getPrefernece_id(), "0");
+                    }
+
+                    //       SettingsController.
 //                    if (AppPreferences.getBoolean(AppPreferences.PREF_IS_SETTING_ITEM_IS_CLICKED + Items.getPrefernece_id())) {
 //                        if (AppPreferences.getInt(AppPreferences.PREF_ACCOUNT_SETTING_YES + Items.getPrefernece_id()) == 1) {
 //                            MyLogs.printinfo("is clicked 0");
@@ -304,23 +309,20 @@ public class PreferenceAdapter extends BaseExpandableListAdapter {
 
     public class callUpdateService extends AsyncTask<String, Void, Boolean> {
 
-        ViewHolder holder;
-        // PreferenceChildList Items;
-        int innercircleStatus;
 
-        public callUpdateService(ViewHolder _holder, int _innercircleStatus) {
+        int preference_id, preference_value;
 
-            this.holder = _holder;
-            // this.Items = _Items;
-            this.innercircleStatus = _innercircleStatus;
+        public callUpdateService(int _preference_id, int _preference_value) {
+            preference_id = _preference_id;
+            preference_value = _preference_value;
+
 
         }
 
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            //      holder.progress_loader.setVisibility(View.VISIBLE);
-            //     holder.homescreen_location_textview.setVisibility(View.INVISIBLE);
+
 
         }
 
@@ -328,7 +330,7 @@ public class PreferenceAdapter extends BaseExpandableListAdapter {
         protected Boolean doInBackground(String... params) {
             try {
                 if (NetworkManager.isConnected(activity)) {
-                    //  if (SettingController.callUpdateService(activity, Items, innercircleStatus + ""))
+                    //    SettingsController.updatePreference(activity, preference_id+"", preference_value + "")
                     return true;
                 }
             } catch (Exception e) {
@@ -339,14 +341,10 @@ public class PreferenceAdapter extends BaseExpandableListAdapter {
 
         @Override
         protected void onPostExecute(Boolean result) {
-
             super.onPostExecute(result);
-            //   holder.progress_loader.setVisibility(View.INVISIBLE);
-            //  holder.homescreen_location_textview.setVisibility(View.VISIBLE);
+
             if (result) {
-//                AppPreferences.setInt(AppPreferences.PREF_ACCOUNT_SETTING_YES + Items.get, innercircleStatus);
-//                AppPreferences.setBoolean(AppPreferences.PREF_IS_SETTING_ITEM_IS_CLICKED + Items.getKey(), true);
-                // notifyDataSetChanged();
+
             } else {
                 UtilityFunctions.showToast_onCenter(activity.getString(R.string.internetoffstatus), activity);
             }

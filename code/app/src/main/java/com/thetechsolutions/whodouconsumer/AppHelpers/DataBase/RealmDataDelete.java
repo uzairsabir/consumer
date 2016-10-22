@@ -1,6 +1,8 @@
 package com.thetechsolutions.whodouconsumer.AppHelpers.DataBase;
 
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ContactDT;
+import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendDT;
+import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendsProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProviderDT;
 
 import org.vanguardmatrix.engine.utils.MyLogs;
@@ -81,15 +83,27 @@ public class RealmDataDelete {
 
     }
 
-    public static void deleteHomeItem(String providerName, int pos) {
+    public static void deleteHomeItem(String id, int pos) {
         final Realm realm = Realm.getDefaultInstance();
         realm.beginTransaction();
         try {
-            ProviderDT result = realm.where(ProviderDT.class).equalTo("Numbers", providerName).equalTo("tab_pos", pos).findFirst();
+            MyLogs.printinfo("id  "+id+" pos "+pos);
 
-            result.deleteFromRealm();
+            if (pos == 0) {
+                ProviderDT result = realm.where(ProviderDT.class).equalTo("username",id).findFirst();
+
+
+                result.deleteFromRealm();
+            } else if (pos == 1) {
+                FriendDT result = realm.where(FriendDT.class).equalTo("username",id).findFirst();
+
+
+                result.deleteFromRealm();
+
+            }
 
         } catch (Exception e) {
+            e.printStackTrace();
 
         }
         realm.commitTransaction();

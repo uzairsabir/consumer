@@ -10,7 +10,7 @@
     <RelativeLayout
         android:id="@+id/container"
         android:layout_width="match_parent"
-        android:layout_height="100dp"
+        android:layout_height="@dimen/item_list_height"
         android:background="@drawable/bg_white_grey_hover">
 
 
@@ -69,6 +69,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:text="(Matt Samler)"
+                android:visibility="gone"
                 android:textColor="@color/who_do_u_medium_grey"
                 android:textSize="@dimen/textsize_label_3" />
 

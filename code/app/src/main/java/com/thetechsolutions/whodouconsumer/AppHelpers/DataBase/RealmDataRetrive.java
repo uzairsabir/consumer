@@ -3,6 +3,8 @@ package com.thetechsolutions.whodouconsumer.AppHelpers.DataBase;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.AppController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ChatDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ContactDT;
+import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendDT;
+import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendsProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.PayDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProfileDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProviderDT;
@@ -26,10 +28,24 @@ import io.realm.Sort;
  */
 public class RealmDataRetrive {
 
-    public static RealmResults<ProviderDT> getHomeList(int tabId) {
+    public static RealmResults<ProviderDT> getProvider() {
+
+
+
+        final Realm realm = Realm.getDefaultInstance();
+        String[] a = {"first_name", "last_name"};
+        Sort[] b = {Sort.ASCENDING, Sort.ASCENDING};
+
+
+        return realm.where(ProviderDT.class).findAllSorted(a, b).distinct("username");
+        // return realm.where(ProviderDT.class).equalTo("tab_pos", tabId).findAllSorted(a, b).distinct("username");
+
+    }
+
+    public static RealmResults<FriendDT> getFriendList() {
 
         try {
-            AppController.saveChatNamesAvatar(HomeMainActivity.activity);
+      //      AppController.saveChatNamesAvatar(HomeMainActivity.activity);
         } catch (Exception e) {
 
         }
@@ -37,9 +53,24 @@ public class RealmDataRetrive {
         final Realm realm = Realm.getDefaultInstance();
         String[] a = {"first_name", "last_name"};
         Sort[] b = {Sort.ASCENDING, Sort.ASCENDING};
-        return realm.where(ProviderDT.class).equalTo("tab_pos", tabId).findAllSorted(a, b);
+
+
+        return realm.where(FriendDT.class).findAllSorted(a, b).distinct("username");
+        // return realm.where(ProviderDT.class).equalTo("tab_pos", tabId).findAllSorted(a, b).distinct("username");
 
     }
+
+    public static RealmResults<FriendsProviderDT> getFriendsProvider() {
+
+
+        final Realm realm = Realm.getDefaultInstance();
+        String[] a = {"first_name", "last_name"};
+        Sort[] b = {Sort.ASCENDING, Sort.ASCENDING};
+
+        return realm.where(FriendsProviderDT.class).findAllSorted(a, b).distinct("username");
+
+    }
+
 
     public static RealmResults<ProviderDT> getHomeSearchList(String keyword, int tabId, int cat_id, int sub_cat_id) {
 
@@ -82,24 +113,42 @@ public class RealmDataRetrive {
 
     }
 
-    public static ProviderDT getHomeItemDetail(String provider_user_name, int is_provider) {
+    public static ProviderDT getProviderDetail(String provider_user_name, int is_provider) {
 
         final Realm realm = Realm.getDefaultInstance();
-        return realm.where(ProviderDT.class).equalTo("tab_pos", is_provider).equalTo("username", provider_user_name).findFirst();
+        MyLogs.printinfo(" provider_user_name "+provider_user_name );
+        return realm.where(ProviderDT.class).equalTo("username", provider_user_name).findFirst();
 
     }
+
+    public static FriendsProviderDT getFriendProviderDetail(String provider_user_name) {
+
+        final Realm realm = Realm.getDefaultInstance();
+        MyLogs.printinfo(" provider_user_name "+provider_user_name );
+        return realm.where(FriendsProviderDT.class).equalTo("username", provider_user_name).findFirst();
+
+    }
+
+    public static FriendDT getFriendDetail(String provider_user_name) {
+
+        final Realm realm = Realm.getDefaultInstance();
+        MyLogs.printinfo(" provider_user_name "+provider_user_name );
+        return realm.where(FriendDT.class).equalTo("username", provider_user_name).findFirst();
+
+    }
+
 
     public static RealmResults<ScheduleDT> getScheduleList(int tabId) {
 
 
         final Realm realm = Realm.getDefaultInstance();
 
-        MyLogs.printinfo("scheduleList " + tabId + "  " + realm.where(ScheduleDT.class).findAll().size());
+        // MyLogs.printinfo("scheduleList " + tabId + "  " + realm.where(ScheduleDT.class).findAll().size());
 
         if (tabId == 0) {
-            return realm.where(ScheduleDT.class).greaterThan("appointment_date_time", System.currentTimeMillis()).findAllSorted("appointment_date_time", Sort.ASCENDING);
+            return realm.where(ScheduleDT.class).greaterThan("appointment_date_time", System.currentTimeMillis()).notEqualTo("status", "rejected").findAllSorted("appointment_date_time", Sort.ASCENDING);
         } else if (tabId == 1) {
-            return realm.where(ScheduleDT.class).lessThanOrEqualTo("appointment_date_time", System.currentTimeMillis()).findAllSorted("appointment_date_time", Sort.DESCENDING);
+            return realm.where(ScheduleDT.class).lessThanOrEqualTo("appointment_date_time", System.currentTimeMillis()).notEqualTo("status", "rejected").findAllSorted("appointment_date_time", Sort.DESCENDING);
         }
 
         return null;
@@ -144,7 +193,7 @@ public class RealmDataRetrive {
     public static RealmResults<SettingsPreferenceDT> getSettingsPreferenceList() {
 
         final Realm realm = Realm.getDefaultInstance();
-        MyLogs.printinfo(" group "+realm.where(SettingsPreferenceDT.class).findAll().size());
+        MyLogs.printinfo(" group " + realm.where(SettingsPreferenceDT.class).findAll().size());
         return realm.where(SettingsPreferenceDT.class).findAll().distinct("group");
 
     }

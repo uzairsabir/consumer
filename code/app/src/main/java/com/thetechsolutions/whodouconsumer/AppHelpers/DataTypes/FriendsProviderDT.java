@@ -11,12 +11,11 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by Uzair on 8/6/2016.
  */
-public class ProviderDT extends RealmObject {
+public class FriendsProviderDT extends RealmObject {
 
-    public ProviderDT() {
+    public FriendsProviderDT() {
 
     }
-
     @PrimaryKey
     private int id = 0;
 

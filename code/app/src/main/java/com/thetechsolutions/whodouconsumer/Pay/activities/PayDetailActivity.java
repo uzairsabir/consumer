@@ -120,7 +120,7 @@ public class PayDetailActivity extends FragmentActivityController implements Met
             auto_com_cutomer_name.setVisibility(View.VISIBLE);
             //  final String[] names = new String[]{"Ricky", "Aubery", "David"};
             ArrayList<String> providers_name = new ArrayList<>();
-            for (ProviderDT item : RealmDataRetrive.getHomeList(0)) {
+            for (ProviderDT item : RealmDataRetrive.getProvider()) {
                 providers_name.add(item.getFirst_name() +" " +item.getLast_name());
             }
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(

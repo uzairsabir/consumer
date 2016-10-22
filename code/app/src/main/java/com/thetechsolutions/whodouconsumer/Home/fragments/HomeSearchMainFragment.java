@@ -11,12 +11,15 @@ import android.view.ViewGroup;
 
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
+import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.AppController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
+import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendDT;
+import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendsProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProviderDT;
-import com.thetechsolutions.whodouconsumer.Home.activities.HomeMainActivity;
 import com.thetechsolutions.whodouconsumer.Home.activities.HomeMainSearchActivity;
-import com.thetechsolutions.whodouconsumer.Home.adapters.HomeFriendsProviderListAdapter;
-import com.thetechsolutions.whodouconsumer.Home.adapters.HomeListAdapter;
+import com.thetechsolutions.whodouconsumer.Home.adapters.HomeListFriendAdapter;
+import com.thetechsolutions.whodouconsumer.Home.adapters.HomeListFriendsProviderAdapter;
+import com.thetechsolutions.whodouconsumer.Home.adapters.HomeListProviderAdapter;
 import com.thetechsolutions.whodouconsumer.Home.controllers.HomeMainController;
 import com.thetechsolutions.whodouconsumer.R;
 
@@ -43,6 +46,8 @@ public class HomeSearchMainFragment extends Fragment implements View.OnClickList
 
     ArrayList<ProviderDT> providerDTs;
     public static int pos;
+    ArrayList<FriendDT> friendDTs;
+    ArrayList<FriendsProviderDT> friendsProviderDTs;
 
     public static Fragment newInstance(int sectionNumber,
                                        Activity _activity) {
@@ -92,18 +97,16 @@ public class HomeSearchMainFragment extends Fragment implements View.OnClickList
             new getProviderList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
         } else if (HomeMainSearchActivity.tab_pos == 1) {
-            providerDTs = new ArrayList<>();
-            providerDTs.addAll(RealmDataRetrive.getHomeSearchList(HomeMainSearchActivity.keyword, 1, HomeMainSearchActivity.cat_id, HomeMainSearchActivity.sub_cat_id));
-
+            friendDTs = new ArrayList<>();
+            friendDTs.addAll(RealmDataRetrive.getFriendList());
             new getFriendsList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
 
         } else if (HomeMainSearchActivity.tab_pos == 2) {
 
 
-            providerDTs = new ArrayList<>();
-            providerDTs.addAll(RealmDataRetrive.getHomeSearchList(HomeMainSearchActivity.keyword, 2, HomeMainSearchActivity.cat_id, HomeMainSearchActivity.sub_cat_id));
-
+            friendsProviderDTs = new ArrayList<>();
+            friendsProviderDTs.addAll(RealmDataRetrive.getFriendsProvider());
             new getFriendsProviderList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
 
@@ -142,7 +145,7 @@ public class HomeSearchMainFragment extends Fragment implements View.OnClickList
                 progressActivity.showContent();
                 easyAdapter = new EasyAdapter<>(
                         activity,
-                        HomeListAdapter.newInstance(activity, 0),
+                        HomeListProviderAdapter.newInstance(activity, 0),
                         providerDTs, mListener);
                 AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(easyAdapter);
                 animationAdapter.setAbsListView(dynamicListView);
@@ -175,7 +178,7 @@ public class HomeSearchMainFragment extends Fragment implements View.OnClickList
         @Override
         protected Boolean doInBackground(String... params) {
             try {
-                if (providerDTs.size() > 0) {
+                if (friendDTs.size() > 0) {
                     return true;
                 }
 
@@ -193,8 +196,8 @@ public class HomeSearchMainFragment extends Fragment implements View.OnClickList
                 progressActivity.showContent();
                 easyAdapter = new EasyAdapter<>(
                         activity,
-                        HomeListAdapter.newInstance(activity, 0),
-                        providerDTs, mListener);
+                        HomeListFriendAdapter.newInstance(activity, 0),
+                        friendDTs, mListener);
                 AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(easyAdapter);
                 animationAdapter.setAbsListView(dynamicListView);
                 dynamicListView.setAdapter(animationAdapter);
@@ -225,7 +228,7 @@ public class HomeSearchMainFragment extends Fragment implements View.OnClickList
         protected Boolean doInBackground(String... params) {
             try {
 
-                if (providerDTs.size() > 0) {
+                if (friendsProviderDTs.size() > 0) {
                     return true;
                 }
 
@@ -241,13 +244,23 @@ public class HomeSearchMainFragment extends Fragment implements View.OnClickList
             super.onPostExecute(result);
             if (result) {
                 progressActivity.showContent();
-                easyAdapter = new EasyAdapter<>(
-                        activity,
-                        HomeFriendsProviderListAdapter.newInstance(activity),
-                        providerDTs, mListener);
-                AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(easyAdapter);
-                animationAdapter.setAbsListView(dynamicListView);
-                dynamicListView.setAdapter(animationAdapter);
+                ArrayList<FriendsProviderDT> tempList=new ArrayList<>();
+                tempList= AppController.filterFriendsProvider(friendsProviderDTs);
+                if(tempList.size() > 0) {
+                    progressActivity.showContent();
+
+                    easyAdapter = new EasyAdapter<>(
+                            activity,
+                            HomeListFriendsProviderAdapter.newInstance(activity),
+                            tempList, mListener);
+                    AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(easyAdapter);
+                    animationAdapter.setAbsListView(dynamicListView);
+                    dynamicListView.setAdapter(animationAdapter);
+                }else{
+                    progressActivity.showEmpty(activity.getResources().getDrawable(R.drawable.home_vendor_icon), "",
+                            "Add your friends and see who they trust to get things done! Just click on the + button above to invite your friends to join you.");
+
+                }
 
 
             } else {
@@ -261,10 +274,10 @@ public class HomeSearchMainFragment extends Fragment implements View.OnClickList
 
     }
 
-    public HomeFriendsProviderListAdapter.Listener mListener = new HomeFriendsProviderListAdapter.Listener() {
+    public HomeListFriendsProviderAdapter.Listener mListener = new HomeListFriendsProviderAdapter.Listener() {
 
         @Override
-        public void onButtonClicked(ProviderDT person) {
+        public void onButtonClicked(FriendsProviderDT person) {
             refreshAdapters();
         }
     };

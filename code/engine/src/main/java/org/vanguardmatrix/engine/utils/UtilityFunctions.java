@@ -104,7 +104,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
-import java.io.UnsupportedEncodingException;
 import java.math.BigInteger;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -3166,7 +3165,10 @@ public class UtilityFunctions {
                 } else {
                     number = number.replaceAll("[\\D]", "");
                     number = number.replaceFirst("^0+(?!$)", "");
-                    number = myCountryCode + number;
+                    if (!number.startsWith(myCountryCode)) {
+                        number = myCountryCode + number;
+                    }
+
                     countryCode = myCountryCode;
                     //MyLogs.printinfo("getSimNumber" + countryCode);
                 }
@@ -3357,6 +3359,8 @@ public class UtilityFunctions {
     public static long addEvent(Context context, String SqlDate,
                                 String title, int estimated_hour) {
 
+        MyLogs.printinfo("duration " + estimated_hour);
+
 
         String getSqlDateObject[] = SqlDate.split("\\s+");
         MyLogs.printinfo("" + getSqlDateObject[0]);
@@ -3426,17 +3430,26 @@ public class UtilityFunctions {
     }
 
 
-    public static void deleteEventNew(Activity activity, int id) {
+    public static void deleteEventNew(Activity activity, long id) {
         MyLogs.printinfo("event_id 2 " + id);
-        Uri eventsUri = Uri.parse("content://com.android.calendar/events");
-        ContentResolver cr = activity.getContentResolver();
-        Cursor cursor;
-        cursor = cr.query(eventsUri, new String[]{"_id"}, "calendar_id=" + id, null, null);
-        while (cursor.moveToNext()) {
-            long eventId = cursor.getLong(cursor.getColumnIndex("_id"));
-            cr.delete(ContentUris.withAppendedId(eventsUri, eventId), null, null);
-        }
-        cursor.close();
+        int iNumRowsDeleted = 0;
+
+        Uri eventsUri = Uri.parse("content://com.android.calendar/" + "events");
+        Uri eventUri = ContentUris.withAppendedId(eventsUri, id);
+        iNumRowsDeleted = activity.getContentResolver().delete(eventUri, null, null);
+
+        Log.i("calendar_deleted ", "Deleted " + iNumRowsDeleted + " calendar entry.");
+
+        //   return iNumRowsDeleted;
+//        Uri eventsUri = Uri.parse("content://com.android.calendar/events");
+//        ContentResolver cr = activity.getContentResolver();
+//        Cursor cursor;
+//        cursor = cr.query(eventsUri, new String[]{"_id"}, "calendar_id=" + id, null, null);
+//        while (cursor.moveToNext()) {
+//            long eventId = cursor.getLong(cursor.getColumnIndex("_id"));
+//            cr.delete(ContentUris.withAppendedId(eventsUri, eventId), null, null);
+//        }
+//        cursor.close();
 
     }
 
@@ -3879,7 +3892,7 @@ public class UtilityFunctions {
         int month = Integer.parseInt(date.split("-")[1]);
 
         String monthString = "";
-        monthString = new DateFormatSymbols().getMonths()[month-1];
+        monthString = new DateFormatSymbols().getMonths()[month - 1];
         String formattedDate = dayName(datetime, "yyyy-MM-dd HH:mm:ss") + ", " + monthString + " " + ordinal(Integer.parseInt(date.split("-")[2]));
 
         return formattedDate;
@@ -3925,7 +3938,7 @@ public class UtilityFunctions {
 
     public static long convertDateToMillis(String givenDateString) {
         //  String givenDateString = "Tue Apr 23 16:08:28 GMT+05:30 2013";
-       // MyLogs.printinfo("givenDateString " + givenDateString);
+        // MyLogs.printinfo("givenDateString " + givenDateString);
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
         long timeInMilliseconds = 0;
         try {
@@ -3991,6 +4004,8 @@ public class UtilityFunctions {
 
         String numberString;
         if (number.startsWith("00")) {
+            numberString = number.substring(2);
+        } else if (number.startsWith("1")) {
             numberString = number.substring(2);
         } else {
             numberString = number.substring(1);
@@ -4098,9 +4113,10 @@ public class UtilityFunctions {
         return cal.get(Calendar.MONTH);
 
     }
-    public static String converStringToBase64(String url){
 
-        MyLogs.printinfo("url "+url);
+    public static String converStringToBase64(String url) {
+
+        MyLogs.printinfo("url " + url);
         Bitmap bm = BitmapFactory.decodeFile(url);
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
         bm.compress(Bitmap.CompressFormat.JPEG, 100, baos); //bm is the bitmap object

@@ -11,12 +11,11 @@ import io.realm.annotations.PrimaryKey;
 /**
  * Created by Uzair on 8/6/2016.
  */
-public class ProviderDT extends RealmObject {
+public class FriendDT extends RealmObject {
 
-    public ProviderDT() {
+    public FriendDT() {
 
     }
-
     @PrimaryKey
     private int id = 0;
 
@@ -94,7 +93,7 @@ public class ProviderDT extends RealmObject {
         }
         try{
             if(address.contains(",")){
-                return address.replace(",USA","USA");
+                return address.replace(", USA"," USA");
             }
         }catch (Exception e){
 

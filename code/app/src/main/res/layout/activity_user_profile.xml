@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:fresco="http://schemas.android.com/apk/res-auto"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/root_view"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -189,14 +190,35 @@
                         <LinearLayout
                             android:id="@+id/country_container"
                             android:layout_width="fill_parent"
-                            android:layout_height="wrap_content"
+                            android:layout_height="@dimen/margin_3"
                             android:layout_marginTop="@dimen/margin_small"
+                            android:orientation="horizontal"
                             android:visibility="gone">
 
-                            <include
-                                layout="@layout/fragment_flags"
-                                android:layout_width="match_parent"
-                                android:layout_height="wrap_content" />
+                           <TextView
+                               android:id="@+id/country_code"
+                               android:layout_marginLeft="@dimen/margin_1"
+                               android:layout_width="@dimen/margin_4"
+                               android:textSize="@dimen/margin_1_5"
+                               android:text="+1"
+                               android:background="@drawable/bg_white_grey_hover"
+                               android:gravity="center"
+                               android:drawableRight="@drawable/arrow_down"
+                               android:textColor="@color/who_do_u_dark_grey"
+                               android:layout_height="match_parent" />
+
+                            <com.github.pinball83.maskededittext.MaskedEditText
+                                android:id="@+id/country_number"
+                                android:layout_width="wrap_content"
+                                android:layout_height="match_parent"
+                                android:gravity="center"
+                                android:inputType="number"
+                                android:background="@null"
+                                android:paddingLeft="@dimen/margin_1"
+                                android:textSize="@dimen/margin_1_5"
+                                android:textColor="@color/who_do_u_dark_grey"
+                                app:mask="(***)*** -****"
+                                app:notMaskedSymbol="*" />
                         </LinearLayout>
 
 
@@ -215,6 +237,74 @@
                             android:textSize="@dimen/margin_1_5" />
 
                         <TextView
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/app_home_bg" />
+
+                        <TextView
+                            android:id="@+id/cat_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin_1"
+                            android:layout_marginTop="@dimen/margin_1"
+                            android:text="Category"
+                            android:textColor="@color/who_do_u_blue"
+                            android:textSize="@dimen/margin_1_5" />
+
+                        <com.andreabaccega.widget.FormEditText
+                            android:id="@+id/category"
+                            android:layout_width="fill_parent"
+                            android:layout_height="@dimen/margin_3"
+                            android:paddingLeft="@dimen/margin_1"
+                            android:layout_marginTop="@dimen/margin_1"
+                            android:background="@drawable/bg_white_grey_hover"
+                            android:clickable="true"
+                            android:drawableRight="@drawable/drop_down_new"
+                            android:focusable="false"
+                            android:hint=""
+                            android:inputType="textCapSentences"
+                            android:paddingRight="@dimen/margin_1"
+                            android:singleLine="true"
+                            android:textColor="@color/who_do_u_dark_grey"
+                            android:textColorHint="@color/app_text_color"
+                            android:textSize="@dimen/margin_1_5" />
+                        <TextView
+                            android:id="@+id/cat_line"
+                            android:layout_width="match_parent"
+                            android:layout_height="1dp"
+                            android:background="@color/app_home_bg" />
+
+
+                        <TextView
+                            android:id="@+id/sub_cat_text"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginLeft="@dimen/margin_1"
+                            android:layout_marginTop="@dimen/margin_1"
+                            android:text="Sub-Category"
+                            android:textColor="@color/who_do_u_blue"
+                            android:textSize="@dimen/margin_1_5" />
+
+                        <com.andreabaccega.widget.FormEditText
+                            android:id="@+id/sub_category"
+                            android:layout_width="fill_parent"
+                            android:layout_height="@dimen/margin_3"
+                            android:paddingLeft="@dimen/margin_1"
+                            android:layout_marginTop="@dimen/margin_1"
+                            android:background="@drawable/bg_white_grey_hover"
+                            android:clickable="true"
+                            android:drawableRight="@drawable/drop_down_new"
+                            android:focusable="false"
+                            android:hint=""
+                            android:inputType="textCapSentences"
+                            android:paddingRight="@dimen/margin_1"
+                            android:singleLine="true"
+                            android:textColor="@color/app_text_color"
+                            android:textColorHint="@color/who_do_u_dark_grey"
+                            android:textSize="@dimen/margin_1_5" />
+
+                        <TextView
+                            android:id="@+id/sub_cat_line"
                             android:layout_width="match_parent"
                             android:layout_height="1dp"
                             android:background="@color/app_home_bg" />
@@ -320,71 +410,7 @@
                             android:layout_height="1dp"
                             android:background="@color/app_home_bg" />
 
-                        <TextView
-                            android:id="@+id/cat_text"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/margin_1"
-                            android:layout_marginTop="@dimen/margin_1"
-                            android:text="Category"
-                            android:textColor="@color/who_do_u_blue"
-                            android:textSize="@dimen/margin_1_5" />
 
-                        <com.andreabaccega.widget.FormEditText
-                            android:id="@+id/category"
-                            android:layout_width="fill_parent"
-                            android:layout_height="@dimen/margin_3"
-                            android:paddingLeft="@dimen/margin_1"
-                            android:layout_marginTop="@dimen/margin_1"
-                            android:background="@drawable/bg_white_grey_hover"
-                            android:clickable="true"
-                            android:drawableRight="@drawable/drop_down_new"
-                            android:focusable="false"
-                            android:hint=""
-                            android:inputType="textCapSentences"
-                            android:paddingRight="@dimen/margin_1"
-                            android:singleLine="true"
-                            android:textColor="@color/who_do_u_dark_grey"
-                            android:textColorHint="@color/app_text_color"
-                            android:textSize="@dimen/margin_1_5" />
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="@color/app_home_bg" />
-
-
-                        <TextView
-                            android:id="@+id/sub_cat_text"
-                            android:layout_width="match_parent"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="@dimen/margin_1"
-                            android:layout_marginTop="@dimen/margin_1"
-                            android:text="Sub-Category"
-                            android:textColor="@color/who_do_u_blue"
-                            android:textSize="@dimen/margin_1_5" />
-
-                        <com.andreabaccega.widget.FormEditText
-                            android:id="@+id/sub_category"
-                            android:layout_width="fill_parent"
-                            android:layout_height="@dimen/margin_3"
-                            android:paddingLeft="@dimen/margin_1"
-                            android:layout_marginTop="@dimen/margin_1"
-                            android:background="@drawable/bg_white_grey_hover"
-                            android:clickable="true"
-                            android:drawableRight="@drawable/drop_down_new"
-                            android:focusable="false"
-                            android:hint=""
-                            android:inputType="textCapSentences"
-                            android:paddingRight="@dimen/margin_1"
-                            android:singleLine="true"
-                            android:textColor="@color/app_text_color"
-                            android:textColorHint="@color/who_do_u_dark_grey"
-                            android:textSize="@dimen/margin_1_5" />
-
-                        <TextView
-                            android:layout_width="match_parent"
-                            android:layout_height="1dp"
-                            android:background="@color/app_home_bg" />
 
 
                         <TextView

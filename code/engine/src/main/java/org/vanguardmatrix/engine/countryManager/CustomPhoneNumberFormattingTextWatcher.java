@@ -20,6 +20,7 @@ import android.telephony.PhoneNumberUtils;
 import android.text.Editable;
 import android.text.Selection;
 import android.text.TextWatcher;
+import android.widget.EditText;
 
 import com.google.i18n.phonenumbers.AsYouTypeFormatter;
 import com.google.i18n.phonenumbers.PhoneNumberUtil;
@@ -42,13 +43,17 @@ public class CustomPhoneNumberFormattingTextWatcher implements TextWatcher {
 
     private OnPhoneChangedListener mOnPhoneChangedListener;
 
+    private EditText mEditText;
+
+
     /**
      * The formatting is based on the current system locale and future locale changes
      * may not take effect on this instance.
      */
-    public CustomPhoneNumberFormattingTextWatcher(OnPhoneChangedListener listener) {
+    public CustomPhoneNumberFormattingTextWatcher(OnPhoneChangedListener listener,EditText editText) {
         this(Locale.getDefault().getCountry());
         mOnPhoneChangedListener = listener;
+        mEditText = editText;
     }
 
     /**
@@ -84,6 +89,13 @@ public class CustomPhoneNumberFormattingTextWatcher implements TextWatcher {
         if (count > 0 && hasSeparator(s, start, count)) {
             stopFormatting();
         }
+//        if (mEditText.length() == 3) {
+//            return ;
+//        }
+//
+//        if (mEditText.getText().charAt(mEditText.length()-1) == '/') {
+//            mEditText.append(" ");
+//        }
     }
 
     @Override

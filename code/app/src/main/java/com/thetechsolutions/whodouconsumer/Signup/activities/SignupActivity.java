@@ -229,11 +229,11 @@ public class SignupActivity extends MagicCreateActivity implements View.OnClickL
         switch (v.getId()) {
 
             case R.id.signup_btn:
-                if(country_number.getUnmaskedText().length() ==10) {
+                if (country_number.getUnmaskedText().length() == 10) {
                     finalNumber = country_code.getText().toString() + country_number.getUnmaskedText();
                     AppPreferences.setString(AppPreferences.PREF_USER_COUNTRY_CODE, country_code.getText().toString().replace("+", ""));
                     inputNumberValidator(finalNumber);
-                }else{
+                } else {
                     UtilityFunctions.showToast_onCenter(activity.getString(R.string.please_format_number), activity);
 
                 }
@@ -253,6 +253,7 @@ public class SignupActivity extends MagicCreateActivity implements View.OnClickL
 
     public void callRegisterationDialog(final Activity activity) {
 
+
         isRegisterationScreen = true;
         workDialog = new Dialog(activity);
         workDialog.setCancelable(false);
@@ -263,6 +264,8 @@ public class SignupActivity extends MagicCreateActivity implements View.OnClickL
         final FormEditText last_Name = (FormEditText) workDialog.findViewById(R.id.last_name);
         final FormEditText email_address = (FormEditText) workDialog.findViewById(R.id.email_name);
         final FormEditText zip_Code = (FormEditText) workDialog.findViewById(R.id.zip_code);
+
+
 
 //        categorySelectedText = (TextView) workDialog.findViewById(R.id.categorylist);
 //        subcategorylist = (TextView) workDialog.findViewById(R.id.subcategorylist);
@@ -324,6 +327,18 @@ public class SignupActivity extends MagicCreateActivity implements View.OnClickL
 
         }
 
+        email_address.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    workDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                }
+            }
+        });
+
+       // UtilityFunctions.showKeyboard(activity);
+        //email_address.setFocusable(true);
+        //email_address.setFocusableInTouchMode(true);
 
     }
 
@@ -341,6 +356,7 @@ public class SignupActivity extends MagicCreateActivity implements View.OnClickL
         final FormEditText code_2 = (FormEditText) workDialog.findViewById(R.id.code_two);
         final FormEditText code_3 = (FormEditText) workDialog.findViewById(R.id.code_three);
         final FormEditText code_4 = (FormEditText) workDialog.findViewById(R.id.code_four);
+     //   UtilityFunctions.showSoftKeyboard(activity, code_1);
 
         code_1.addTextChangedListener(new TextWatcher() {
             @Override
@@ -442,6 +458,15 @@ public class SignupActivity extends MagicCreateActivity implements View.OnClickL
             public void onClick(View v) {
                 workDialog.dismiss();
                 isCodeInputScreen = false;
+            }
+        });
+
+        code_1.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
+                    workDialog.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_VISIBLE);
+                }
             }
         });
 
