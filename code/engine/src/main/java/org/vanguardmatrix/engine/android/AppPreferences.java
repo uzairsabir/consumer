@@ -46,7 +46,7 @@ public class AppPreferences {
     public static final String PREF_USER_STATUS = "PREF_USER_STATUS";
     public static final String PREF_USER_LOGIN_TYPE = "PREF_USER_LOGIN_TYPE";
     public static final String PREF_IS_PROVIDER_ALREADY_REGISTERED = "PREF_IS_PROVIDER_ALREADY_REGISTERED";
-
+    public static final String PREF_USER_ID = "PREF_USER_ID";
 //    public static final String PREF_USER_COUNTRY_CODE = "PREF_USER_COUNTRY_CODE";
 
     public static final String PREF_MY_PROVIDERS_NUMBERS = "PREF_MY_PROVIDERS_NUMBERS";

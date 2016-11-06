@@ -78,13 +78,7 @@ public class HomeMainActivity extends FragmentActivityController implements Meth
 //       MyLogs.printinfo("recognizedText " + recognizedText);
 //        baseApi.end();
 
-        try {
-            AsynGetDataController.getInstance().getMyProvidersOrFriends(activity, 0, false);
-            AsynGetDataController.getInstance().getMyProvidersOrFriends(activity, 1, false);
-            AsynGetDataController.getInstance().getMyProvidersOrFriends(activity, 2, false);
-        } catch (Exception e) {
 
-        }
         BottomMenuController.getInstance(activity).setBottomMenu(activity);
 
     }
@@ -103,6 +97,12 @@ public class HomeMainActivity extends FragmentActivityController implements Meth
         super.onResume();
         try {
             AppController.saveChatNamesAvatar(HomeMainActivity.activity);
+        } catch (Exception e) {
+
+        }
+        try {
+            AsynGetDataController.getInstance().syncHomeData(activity);
+
         } catch (Exception e) {
 
         }

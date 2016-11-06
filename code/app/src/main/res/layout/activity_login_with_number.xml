@@ -92,7 +92,7 @@
                     android:paddingLeft="@dimen/margin_1"
                     android:textSize="@dimen/margin_2"
                     android:textColor="@color/who_do_u_medium_grey"
-                    app:mask="(***)*** -****"
+                    app:mask="(***)***-****"
                     app:notMaskedSymbol="*" />
 
                 <!--<include-->

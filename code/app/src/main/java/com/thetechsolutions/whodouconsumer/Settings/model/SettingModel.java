@@ -11,6 +11,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.vanguardmatrix.engine.android.AppPreferences;
 import org.vanguardmatrix.engine.android.webservice.WebService;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
 
@@ -26,7 +27,7 @@ public class SettingModel {
                                         String email_address, String zip_code, String subcategory_id, String imageUrl, int pos
     ) {
         String id = String.valueOf(RealmDataRetrive.getProfile().getUsername());
-        String user_id = String.valueOf(RealmDataRetrive.getProfile().getId());
+        String user_id = AppPreferences.getString(AppPreferences.PREF_USER_ID);
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 
         params.add(new BasicNameValuePair("username", providerName));
@@ -82,7 +83,7 @@ public class SettingModel {
     }
 
     public static boolean updatePreference(String preference_id, String preference_value) {
-        String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+        String id = AppPreferences.getString(AppPreferences.PREF_USER_ID);
 
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 

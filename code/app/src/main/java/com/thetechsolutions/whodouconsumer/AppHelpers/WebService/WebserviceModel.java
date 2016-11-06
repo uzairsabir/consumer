@@ -8,6 +8,7 @@ import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.vanguardmatrix.engine.android.AppPreferences;
 import org.vanguardmatrix.engine.android.webservice.WebService;
 
 import java.util.ArrayList;
@@ -18,7 +19,7 @@ import java.util.ArrayList;
 public class WebserviceModel {
 
     public static boolean getAppointments(String appointmentStatus) {
-        String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+        String id = AppPreferences.getString(AppPreferences.PREF_USER_ID);
 
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("consumer_id", id));
@@ -66,7 +67,7 @@ public class WebserviceModel {
     }
 
     public static boolean createAppointments(String vendorid, String appointmentdatetime, String duration, String description, String call_message, String calendarId) {
-        String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+        String id = AppPreferences.getString(AppPreferences.PREF_USER_ID);
 
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("consumer_id", id));
@@ -179,7 +180,7 @@ public class WebserviceModel {
     }
 
     public static boolean getPreference() {
-        String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+        String id = AppPreferences.getString(AppPreferences.PREF_USER_ID);
 
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("user_id", id));

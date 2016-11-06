@@ -248,6 +248,11 @@ public class HomeCreateNewContactActivity extends FragmentActivityController imp
             } catch (Exception e) {
 
             }
+            try{
+                email.setText(profileDT.getEmail_1());
+            }catch (Exception e){
+
+            }
 
             try {
                 provider_id = profileDT.getId();

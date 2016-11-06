@@ -13,7 +13,7 @@ public class ProfileDT extends RealmObject {
     }
 
     @PrimaryKey
-    private int id = 0;
+    private int user_id = 0;
 
     private String username = "";
     private String first_name = "";
@@ -50,13 +50,13 @@ public class ProfileDT extends RealmObject {
 //    }]
 
 
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
-    }
+//    public int getId() {
+//        return id;
+//    }
+//
+//    public void setId(int id) {
+//        this.id = id;
+//    }
 
     public String getUsername() {
         return username;
@@ -157,4 +157,11 @@ public class ProfileDT extends RealmObject {
     }
 
 
+    public int getUser_id() {
+        return user_id;
+    }
+
+    public void setUser_id(int user_id) {
+        this.user_id = user_id;
+    }
 }

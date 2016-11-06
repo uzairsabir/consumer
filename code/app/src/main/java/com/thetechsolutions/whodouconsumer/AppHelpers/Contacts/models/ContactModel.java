@@ -24,7 +24,7 @@ public class ContactModel {
 
     public static boolean SyncContacts(String contactJson) {
         try {
-            String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+            String id = AppPreferences.getString(AppPreferences.PREF_USER_ID);
             ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
             params.add(new BasicNameValuePair("sync_time", UtilityFunctions.getcurrentDateTime()));
             params.add(new BasicNameValuePair("user_id", id));
@@ -121,7 +121,7 @@ public class ContactModel {
     public static boolean checkDeleteConsumerVendorLink(String providerUserName) {
 
         String vendor_id = String.valueOf(RealmDataRetrive.getProviderDetail(providerUserName, 0).getId());
-        String consumer_id = String.valueOf(RealmDataRetrive.getProfile().getId());
+        String consumer_id = AppPreferences.getString(AppPreferences.PREF_USER_ID);
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("consumer_id", consumer_id));
         params.add(new BasicNameValuePair("vendor_id", vendor_id));
@@ -150,7 +150,7 @@ public class ContactModel {
     public static boolean checkDeleteConsumerFriendLink(String providerUserName) {
 
         String vendor_id = String.valueOf(RealmDataRetrive.getFriendDetail(providerUserName).getId());
-        String consumer_id = String.valueOf(RealmDataRetrive.getProfile().getId());
+        String consumer_id = AppPreferences.getString(AppPreferences.PREF_USER_ID);
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("consumer_id", consumer_id));
         params.add(new BasicNameValuePair("friend_id", vendor_id));

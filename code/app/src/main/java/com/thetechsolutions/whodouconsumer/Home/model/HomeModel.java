@@ -29,7 +29,7 @@ public class HomeModel {
                                          String email_address, String zip_code, String subcategory_id,
                                          String is_registered_user, String imageUrl
     ) {
-        String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+        String id = AppPreferences.getString(AppPreferences.PREF_USER_ID);
 
 
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
@@ -93,7 +93,7 @@ public class HomeModel {
     public static boolean createConsumerProviderLink(String providerId, String first_name, String last_name, String providerName, int tab_pos
 
     ) {
-        String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+        String id =AppPreferences.getString(AppPreferences.PREF_USER_ID);
 
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("consumer_id", id));
@@ -197,7 +197,7 @@ public class HomeModel {
 
     public static boolean getMyProviders() {
         //AppPreferences.getString(AppPreferences.User_i)
-        String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+        String id = AppPreferences.getString(AppPreferences.PREF_USER_ID);
 
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("user_id", id));
@@ -252,7 +252,7 @@ public class HomeModel {
     public static boolean createConsumerFriendLink(String friendId, String first_name, String last_name, String providerName
 
     ) {
-        String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+        String id = AppPreferences.getString(AppPreferences.PREF_USER_ID);
 
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("consumer_id", id));
@@ -286,7 +286,7 @@ public class HomeModel {
     }
 
     public static boolean getMyFriends() {
-        String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+        String id = AppPreferences.getString(AppPreferences.PREF_USER_ID);
 
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("user_id", id));
@@ -362,7 +362,7 @@ public class HomeModel {
     }
 
     public static boolean getMyFriendsProviders() {
-        String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+        String id = AppPreferences.getString(AppPreferences.PREF_USER_ID);
 
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
         params.add(new BasicNameValuePair("user_id", id));

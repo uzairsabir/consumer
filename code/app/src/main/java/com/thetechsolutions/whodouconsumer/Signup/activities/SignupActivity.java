@@ -184,6 +184,7 @@ public class SignupActivity extends MagicCreateActivity implements View.OnClickL
                 country_number = (MaskedEditText) findViewById(R.id.country_number);
 
 
+
             } catch (Exception e) {
 
             }
@@ -266,7 +267,6 @@ public class SignupActivity extends MagicCreateActivity implements View.OnClickL
         final FormEditText zip_Code = (FormEditText) workDialog.findViewById(R.id.zip_code);
 
 
-
 //        categorySelectedText = (TextView) workDialog.findViewById(R.id.categorylist);
 //        subcategorylist = (TextView) workDialog.findViewById(R.id.subcategorylist);
 
@@ -336,7 +336,7 @@ public class SignupActivity extends MagicCreateActivity implements View.OnClickL
             }
         });
 
-       // UtilityFunctions.showKeyboard(activity);
+        // UtilityFunctions.showKeyboard(activity);
         //email_address.setFocusable(true);
         //email_address.setFocusableInTouchMode(true);
 
@@ -356,7 +356,7 @@ public class SignupActivity extends MagicCreateActivity implements View.OnClickL
         final FormEditText code_2 = (FormEditText) workDialog.findViewById(R.id.code_two);
         final FormEditText code_3 = (FormEditText) workDialog.findViewById(R.id.code_three);
         final FormEditText code_4 = (FormEditText) workDialog.findViewById(R.id.code_four);
-     //   UtilityFunctions.showSoftKeyboard(activity, code_1);
+        //   UtilityFunctions.showSoftKeyboard(activity, code_1);
 
         code_1.addTextChangedListener(new TextWatcher() {
             @Override

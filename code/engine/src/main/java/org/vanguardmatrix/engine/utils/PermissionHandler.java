@@ -69,6 +69,10 @@ public class PermissionHandler {
                 permissionsNeeded.add("Write External Storage");
             if (!addPermission(permissionsList, Manifest.permission.CALL_PHONE, activity))
                 permissionsNeeded.add("Call Phone");
+            if (!addPermission(permissionsList, Manifest.permission.WRITE_CALENDAR, activity))
+                permissionsNeeded.add("Write Calendar");
+            if (!addPermission(permissionsList, Manifest.permission.READ_CALENDAR, activity))
+                permissionsNeeded.add("Read Calendar");
 
             if (permissionsList.size() > 0) {
                 if (permissionsNeeded.size() > 0) {

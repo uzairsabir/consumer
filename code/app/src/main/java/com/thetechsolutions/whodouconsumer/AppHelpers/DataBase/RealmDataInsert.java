@@ -16,6 +16,7 @@ import com.thetechsolutions.whodouconsumer.R;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.vanguardmatrix.engine.android.AppPreferences;
 import org.vanguardmatrix.engine.datatypes.PhoneContact;
 import org.vanguardmatrix.engine.utils.MyLogs;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
@@ -970,9 +971,10 @@ public class RealmDataInsert {
                     try {
                         MyLogs.printinfo("json_id " + jsonObject.getJSONObject(i).getInt("id"));
                         if (!jsonObject.getJSONObject(i).isNull("id")) {
-                            tempItem.setId(jsonObject.getJSONObject(i).getInt("id"));
+                            tempItem.setUser_id(jsonObject.getJSONObject(i).getInt("id"));
+                            AppPreferences.setString(AppPreferences.PREF_USER_ID,jsonObject.getJSONObject(i).getString("id"));
                         } else {
-                            tempItem.setId(0);
+                            tempItem.setUser_id(0);
                         }
                     } catch (Exception e) {
 

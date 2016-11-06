@@ -18,7 +18,9 @@ import com.thetechsolutions.whodouconsumer.Home.activities.HomeFriendProfileActi
 import com.thetechsolutions.whodouconsumer.Home.fragments.HomeMainFragment;
 import com.thetechsolutions.whodouconsumer.Home.model.HomeModel;
 
+import org.vanguardmatrix.engine.android.AppPreferences;
 import org.vanguardmatrix.engine.utils.MyLogs;
+import org.vanguardmatrix.engine.utils.UtilityFunctions;
 
 /**
  * Created by Uzair on 8/28/2016.
@@ -526,6 +528,176 @@ public class AsynGetDataController {
             }
 
 
+        }
+
+
+    }
+
+
+
+    public void syncHomeData(Activity activity) {
+
+        if(!UtilityFunctions.isEmpty(AppPreferences.getString(AppPreferences.PREF_USER_NUMBER))) {
+
+            new getMyProvidersSync(activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            new getMyFriendsSync(activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            new getFriendProviderSyn(activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        }
+
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    private class getMyProvidersSync extends AsyncTask<String, Void, Integer> {
+
+
+        Activity activity;
+
+
+        public getMyProvidersSync(Activity _activity) {
+            activity = _activity;
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected Integer doInBackground(String... params) {
+
+            try {
+
+                if (HomeModel.getMyProviders())
+
+                    return 0;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return 4;
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            super.onPostExecute(result);
+
+
+
+        }
+
+
+    }
+
+    private class getMyFriendsSync extends AsyncTask<String, Void, Integer> {
+
+
+        Activity activity;
+
+
+        public getMyFriendsSync(Activity _activity) {
+            activity = _activity;
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected Integer doInBackground(String... params) {
+
+            try {
+
+                if (HomeModel.getMyFriends()) {
+                    if (HomeModel.getMyFriendsProviders()) {
+                        return 0;
+                    } else {
+                        return 0;
+                    }
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return 4;
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            super.onPostExecute(result);
+
+            if (result == 0) {
+
+            }
+
+
+        }
+
+
+    }
+
+    private class getFriendProviderSyn extends AsyncTask<String, Void, Integer> {
+
+
+        Activity activity;
+
+
+        public getFriendProviderSyn(Activity _activity) {
+            activity = _activity;
+
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected Integer doInBackground(String... params) {
+
+            try {
+
+                if (HomeModel.getMyFriendsProviders())
+
+                    return 0;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return 4;
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            super.onPostExecute(result);
+            if (result == 0) {
+
+
+            }
         }
 
 
