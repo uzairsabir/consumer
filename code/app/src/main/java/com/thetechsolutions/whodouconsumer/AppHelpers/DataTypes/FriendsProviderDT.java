@@ -88,16 +88,21 @@ public class FriendsProviderDT extends RealmObject {
 
     public String getAddress() {
 
-        if(UtilityFunctions.isEmpty(address)){
-           return "Invitation Pending";
+        if (this.is_register_user.equals("0")) {
+            return "Invitation Pending";
         }
-        try{
-            if(address.contains(",")){
-                return address.replace(",USA","USA");
+        try {
+            if (UtilityFunctions.isEmpty(this.address)) {
+                return this.zip_code;
             }
-        }catch (Exception e){
+            if (address.contains(",")) {
+                return address.replace(", USA", " USA");
+            }
+        } catch (Exception e) {
 
         }
+
+       // return address;
 
         return address;
     }

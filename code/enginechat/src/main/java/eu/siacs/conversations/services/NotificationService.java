@@ -41,6 +41,7 @@ import eu.siacs.conversations.entities.Account;
 import eu.siacs.conversations.entities.Contact;
 import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.entities.Message;
+import eu.siacs.conversations.ui.ChatPreferences;
 import eu.siacs.conversations.ui.ConversationActivity;
 import eu.siacs.conversations.ui.ManageAccountActivity;
 import eu.siacs.conversations.ui.TimePreference;
@@ -281,7 +282,7 @@ public class NotificationService {
         mBuilder.setContentText(names.toString());
         mBuilder.setStyle(style);
         if (conversation != null) {
-            mBuilder.setContentIntent(createContentIntent(conversation));
+            mBuilder.setContentIntent(createContentIntent(conversation,"","",""));
         }
         mBuilder.setGroupSummary(true);
         mBuilder.setGroup(CONVERSATIONS_GROUP);
@@ -291,18 +292,22 @@ public class NotificationService {
     }
 
     private Builder buildSingleConversations(final ArrayList<Message> messages) {
+        String contact_name = "", contact_avatar = "abc.png", contact_display_name = "";
+
         final Builder mBuilder = new NotificationCompat.Builder(mXmppConnectionService);
         if (messages.size() >= 1) {
             final Conversation conversation = messages.get(0).getConversation();
 
 
             try {
+                contact_name = conversation.getName();
                 FriendNames item = getfriendProfile(mXmppConnectionService.getApplicationContext(), conversation.getName());
-                Log.d("item 2", "item 2" + item.getDisplayName());
+
+                contact_avatar = item.getDisplayAvatar();
+                contact_display_name = item.getDisplayName();
 
                 if (item.getDisplayName().isEmpty()) {
                     mBuilder.setContentTitle(getFormattedNumberToDisplay(mXmppConnectionService.getApplicationContext(), conversation.getName().split("_")[0]));
-
                 } else {
                     mBuilder.setContentTitle(item.getDisplayName());
                 }
@@ -357,7 +362,7 @@ public class NotificationService {
             mBuilder.setWhen(conversation.getLatestMessage().getTimeSent());
             mBuilder.setSmallIcon(R.drawable.ic_notification);
             mBuilder.setDeleteIntent(createDeleteIntent(conversation));
-            mBuilder.setContentIntent(createContentIntent(conversation));
+            mBuilder.setContentIntent(createContentIntent(conversation, contact_name, contact_display_name, contact_avatar));
         }
         return mBuilder;
     }
@@ -467,7 +472,7 @@ public class NotificationService {
         return createOpenConversationsIntent();
     }
 
-    private PendingIntent createContentIntent(final String conversationUuid, final String downloadMessageUuid) {
+    private PendingIntent createContentIntent(final String conversationUuid, final String downloadMessageUuid, String contact_name, String contact_display_name, String contact_avatar) {
         final Intent viewConversationIntent = new Intent(mXmppConnectionService, ConversationActivity.class);
         viewConversationIntent.setAction(ConversationActivity.ACTION_VIEW_CONVERSATION);
         viewConversationIntent.putExtra(ConversationActivity.CONVERSATION, conversationUuid);
@@ -478,19 +483,28 @@ public class NotificationService {
                     viewConversationIntent,
                     PendingIntent.FLAG_UPDATE_CURRENT);
         } else {
+            String accountNumber = "";
+            try {
+                ChatPreferences a = new ChatPreferences(mXmppConnectionService);
+                accountNumber = a.getString(ChatPreferences.USER_NAME);
+                Log.e("USER_NAME ", accountNumber);
+            } catch (Exception e) {
+
+            }
+            //Log.e("new_intent ", "get_intent");
             return PendingIntent.getActivity(mXmppConnectionService,
                     conversationUuid.hashCode() % 936236,
-                    viewConversationIntent,
+                    ConversationActivity.createIntent(mXmppConnectionService, accountNumber, "abc.png", contact_name, contact_display_name, contact_avatar),
                     PendingIntent.FLAG_UPDATE_CURRENT);
         }
     }
 
     private PendingIntent createDownloadIntent(final Message message) {
-        return createContentIntent(message.getConversationUuid(), message.getUuid());
+        return createContentIntent(message.getConversationUuid(), message.getUuid(), "", "", "");
     }
 
-    private PendingIntent createContentIntent(final Conversation conversation) {
-        return createContentIntent(conversation.getUuid(), null);
+    private PendingIntent createContentIntent(final Conversation conversation, String contact_name, String contact_displayname, String contact_avatar) {
+        return createContentIntent(conversation.getUuid(), null, contact_name, contact_displayname, contact_avatar);
     }
 
     private PendingIntent createDeleteIntent(Conversation conversation) {

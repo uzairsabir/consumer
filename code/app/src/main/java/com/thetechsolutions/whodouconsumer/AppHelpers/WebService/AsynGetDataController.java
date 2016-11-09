@@ -154,22 +154,7 @@ public class AsynGetDataController {
                 } catch (Exception e) {
 
                 }
-                try {
-                    HomeMainFragment.fragment.loadData();
-                } catch (Exception e) {
 
-                }
-
-                try {
-                    //  HomeMainFragment.fragment.refreshAdapters();
-                } catch (Exception e) {
-
-                }
-                try {
-                    //  ContactsMainFragment.fragment.loadData();
-                } catch (Exception e) {
-
-                }
 
                 try {
                     ((ContactsMainActivity) activity).viewUpdate();
@@ -275,11 +260,6 @@ public class AsynGetDataController {
 
                 }
 
-                try {
-                    HomeMainFragment.fragment.loadData();
-                } catch (Exception e) {
-
-                }
                 try {
                     ((ContactsMainActivity) activity).viewUpdate();
                     //ContactsMainFragment.fragment.loadData();

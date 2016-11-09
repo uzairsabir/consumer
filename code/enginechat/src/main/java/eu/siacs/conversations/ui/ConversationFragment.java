@@ -230,7 +230,7 @@ public class ConversationFragment extends Fragment implements EditMessage.Keyboa
                     conversation.getAccount().getPgpDecryptionService().continueDecryption(true);
                 }
             }
-            updateSnackBar(conversation);
+           // updateSnackBar(conversation);
         }
     };
     protected OnClickListener clickToVerify = new OnClickListener() {
@@ -919,7 +919,7 @@ public class ConversationFragment extends Fragment implements EditMessage.Keyboa
             final ConversationActivity activity = (ConversationActivity) getActivity();
             if (this.conversation != null) {
                 conversation.populateWithMessages(ConversationFragment.this.messageList);
-                updateSnackBar(conversation);
+                //updateSnackBar(conversation);
                 updateStatusMessages();
                 this.messageListAdapter.notifyDataSetChanged();
                 updateChatMsgHint();
@@ -1139,15 +1139,15 @@ public class ConversationFragment extends Fragment implements EditMessage.Keyboa
     }
 
     protected void showSnackbar(final int message, final int action, final OnClickListener clickListener) {
-        snackbar.setVisibility(View.VISIBLE);
-        snackbar.setOnClickListener(null);
-        snackbarMessage.setText(message);
-        snackbarMessage.setOnClickListener(null);
-        snackbarAction.setVisibility(clickListener == null ? View.GONE : View.VISIBLE);
-        if (action != 0) {
-            snackbarAction.setText(action);
-        }
-        snackbarAction.setOnClickListener(clickListener);
+//        snackbar.setVisibility(View.VISIBLE);
+//        snackbar.setOnClickListener(null);
+//        snackbarMessage.setText(message);
+//        snackbarMessage.setOnClickListener(null);
+//        snackbarAction.setVisibility(clickListener == null ? View.GONE : View.VISIBLE);
+//        if (action != 0) {
+//            snackbarAction.setText(action);
+//        }
+//        snackbarAction.setOnClickListener(clickListener);
     }
 
     protected void hideSnackbar() {

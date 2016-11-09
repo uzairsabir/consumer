@@ -4001,14 +4001,14 @@ public class UtilityFunctions {
 
     public static String getFormattedNumberToDisplay(Activity activity, String number) {
         PhoneFormat phoneFormat = new PhoneFormat(activity);
+        MyLogs.printinfo("number " + number);
 
-        String numberString;
-        if (number.startsWith("00")) {
-            numberString = number.substring(2);
-        } else if (number.startsWith("1")) {
-            numberString = number.substring(2);
+        String numberString,text;
+        text = number.replace("0011", "001");
+        if (text.startsWith("00")) {
+            numberString = text.substring(2);
         } else {
-            numberString = number.substring(1);
+            numberString = text.substring(1);
         }
         String formattedString = phoneFormat.format("+" + numberString);
         return formattedString;

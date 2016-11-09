@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.AppController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
+import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ScheduleDT;
 import com.thetechsolutions.whodouconsumer.R;
@@ -56,8 +57,9 @@ public class ChatListAdapter extends ItemViewHolder<Conversation> {
 
     static Activity activity;
     ProviderDT providerDT = new ProviderDT();
+    FriendDT friendDT = new FriendDT();
 
-
+    Conversation item_;
     public ChatListAdapter(View view) {
         super(view);
     }
@@ -71,24 +73,46 @@ public class ChatListAdapter extends ItemViewHolder<Conversation> {
 
     @Override
     public void onSetValues(Conversation item, PositionInfo positionInfo) {
-        //    MyLogs.printinfo("name_test  " + item.getJid().toBareJid().toString() + " : " + RealmDataRetrive.getHomeListOfMyProviderAndMyFriends().get(0));
-
+            MyLogs.printinfo("name_test  " + item.getJid().toBareJid().toString() + " : " );
+        item_=item;
         try {
             for (ProviderDT items : RealmDataRetrive.getProvider()) {
 
-                if (item.getJid().toBareJid().toString().contains(items.getUsername())) {
+                if (item.getJid().toBareJid().toString().split("@")[0].equals(items.getUsername()+"_v")) {
                     providerDT = items;
                     break;
 
                 }
             }
-            if (UtilityFunctions.isEmpty(providerDT.getFirst_name())) {
-                title.setText(UtilityFunctions.getFormattedNumberToDisplay(activity, item.getJid().toBareJid().toString().split("_")[0]));
-                sourceImageView.setImageURI(Uri.parse("test.png"));
-            } else {
-                title.setText(providerDT.getFirst_name() + " " + providerDT.getLast_name());
-                sourceImageView.setImageURI(Uri.parse(providerDT.getImage_url()));
+            for (FriendDT items : RealmDataRetrive.getFriendList()) {
+
+               // MyLogs.printinfo(items.getUsername()+"_c");
+                if (item.getJid().toBareJid().toString().split("@")[0].equals(items.getUsername()+"_c")) {
+                    friendDT = items;
+                    break;
+
+                }
             }
+
+            try{
+                if (UtilityFunctions.isEmpty(providerDT.getFirst_name())) {
+                   // title.setText(UtilityFunctions.getFormattedNumberToDisplay(activity, item.getJid().toBareJid().toString().split("_")[0]));
+                    //sourceImageView.setImageURI(Uri.parse("test.png"));
+                    if (UtilityFunctions.isEmpty(friendDT.getFirst_name())) {
+                        title.setText(UtilityFunctions.getFormattedNumberToDisplay(activity, item.getJid().toBareJid().toString().split("_")[0]));
+                        sourceImageView.setImageURI(Uri.parse("test.png"));
+                    } else {
+                        title.setText(friendDT.getFirst_name() + " " + friendDT.getLast_name());
+                        sourceImageView.setImageURI(Uri.parse(friendDT.getImage_url()));
+                    }
+                } else {
+                    title.setText(providerDT.getFirst_name() + " " + providerDT.getLast_name());
+                    sourceImageView.setImageURI(Uri.parse(providerDT.getImage_url()));
+                }
+            }catch (Exception e){
+
+            }
+
 
         } catch (Exception e) {
             try {
@@ -175,25 +199,36 @@ public class ChatListAdapter extends ItemViewHolder<Conversation> {
             @Override
             public void onClick(View v) {
 
+
                 String username="";
-                try{
-                    if (UtilityFunctions.isEmpty(providerDT.getFirst_name())) {
-                        username=UtilityFunctions.getFormattedNumberToDisplay(activity, getItem().getJid().toBareJid().toString().split("_")[0]);
-                    }else{
-                        username=providerDT.getFirst_name() + " " + providerDT.getLast_name();
+
+                if (item_.getJid().toBareJid().toString().split("@")[0].contains("_v")) {
+
+                    try{
+                        if (UtilityFunctions.isEmpty(providerDT.getFirst_name())) {
+                            username=UtilityFunctions.getFormattedNumberToDisplay(activity, getItem().getJid().toBareJid().toString().split("_")[0]);
+                        }else{
+                            username=providerDT.getFirst_name() + " " + providerDT.getLast_name();
+                        }
+
+                    }catch (Exception e){
+
                     }
-
-                }catch (Exception e){
-
-                }
-
-
-                if (getItem().getJid().toBareJid().toString().split("_")[1].equalsIgnoreCase("v")) {
 
                     AppController.openChat(activity, getItem().getJid().toBareJid().toString().split("_")[0], username, providerDT.getImage_url(), providerDT.getIs_register_user(), 0);
 
-                } else {
-                    AppController.openChat(activity, getItem().getJid().toBareJid().toString().split("_")[0], username, providerDT.getImage_url(), providerDT.getIs_register_user(), 1);
+                }   if (item_.getJid().toBareJid().toString().split("@")[0].contains("_c")) {
+                    try{
+                        if (UtilityFunctions.isEmpty(friendDT.getFirst_name())) {
+                            username=UtilityFunctions.getFormattedNumberToDisplay(activity, getItem().getJid().toBareJid().toString().split("_")[0]);
+                        }else{
+                            username=friendDT.getFirst_name() + " " + friendDT.getLast_name();
+                        }
+
+                    }catch (Exception e){
+
+                    }
+                    AppController.openChat(activity, getItem().getJid().toBareJid().toString().split("_")[0], username, friendDT.getImage_url(), friendDT.getIs_register_user(), 1);
 
                 }
 

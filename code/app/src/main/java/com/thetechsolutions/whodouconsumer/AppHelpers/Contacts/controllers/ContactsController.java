@@ -184,6 +184,7 @@ public class ContactsController {
             if (counterHomeService == 3) {
 
                 new sendContctToServer(activity, gson).execute();
+                counterHomeService = 0;
             }
 
         } catch (Exception e) {

@@ -502,7 +502,7 @@ public class SignupActivity extends MagicCreateActivity implements View.OnClickL
             try {
                 if (signup_type.equals(AppConstants.SIGNUP_FUNCTION_TYPE_NUMBER_VERIFICATION)) {
 
-                    if (SignUpAsynController.getInstance().callUserExistence(inputPhoneNumber)) {
+                    if (SignUpAsynController.getInstance().callUserExistence(activity,inputPhoneNumber)) {
                         return 0;
                     }
 

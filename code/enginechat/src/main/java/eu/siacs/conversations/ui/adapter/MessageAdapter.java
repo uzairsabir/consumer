@@ -21,6 +21,7 @@ import android.text.style.RelativeSizeSpan;
 import android.text.style.StyleSpan;
 import android.text.util.Linkify;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.util.Patterns;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -584,7 +585,8 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                 viewHolder.contact_picture.setVisibility(View.VISIBLE);
                 viewHolder.load_more_messages.setVisibility(View.GONE);
                 if (conversation.getMode() == Conversation.MODE_SINGLE) {
-                    if (ConversationActivity.accountAvatar.isEmpty()) {
+                    Log.e("image_url ", "" + ConversationActivity.contactAvatar);
+                    if (ConversationActivity.contactAvatar.isEmpty()) {
                         Picasso.with(activity).load("abc.png").error(R.drawable.empty_profile).into(viewHolder.contact_picture);
 
                     } else {
@@ -596,11 +598,25 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 //									activity.getPixel(32)));
 //					viewHolder.contact_picture.setAlpha(0.5f);
                 }
-                viewHolder.status_message.setText(message.getBody());
+                viewHolder.status_message.setText(ConversationActivity.getContactDisplayName()+" has seen");
             }
             return view;
-        } else {
-            try{
+        } else if (type == RECEIVED) {
+            try {
+                if (ConversationActivity.contactAvatar.isEmpty()) {
+                    Picasso.with(activity).load("abc.png").error(R.drawable.empty_profile).into(viewHolder.contact_picture);
+
+                } else {
+                    Picasso.with(activity).load(ConversationActivity.contactAvatar).error(R.drawable.empty_profile).into(viewHolder.contact_picture);
+
+                }
+            } catch (Exception e) {
+
+            }
+
+            //loadAvatar(message, viewHolder.contact_picture);
+        } else if (type == SENT) {
+            try {
                 if (ConversationActivity.accountAvatar.isEmpty()) {
                     Picasso.with(activity).load("abc.png").error(R.drawable.empty_profile).into(viewHolder.contact_picture);
 
@@ -608,13 +624,12 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                     Picasso.with(activity).load(ConversationActivity.accountAvatar).error(R.drawable.empty_profile).into(viewHolder.contact_picture);
 
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
 
             //loadAvatar(message, viewHolder.contact_picture);
         }
-
 		viewHolder.contact_picture
 			.setOnClickListener(new OnClickListener() {
 

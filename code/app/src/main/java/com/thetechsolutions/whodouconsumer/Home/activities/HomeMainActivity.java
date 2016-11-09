@@ -60,23 +60,6 @@ public class HomeMainActivity extends FragmentActivityController implements Meth
         }
 
 
-//        MyLogs.printinfo("providerList " + RealmDataRetrive.getProvider(0));
-//
-//
-//        TessBaseAPI baseApi = new TessBaseAPI();
-//
-//
-//        baseApi.init("/storage/emulated/0/Pictures/tessdata/", "eng");
-
-//
-//        TessBaseAPI baseApi = new TessBaseAPI();
-//        baseApi.init("/storage/emulated/0/Pictures/tessdata/", "eng"); // myDir + "/tessdata/eng.traineddata" must be present
-        //       baseApi.setImage(UtilityFunctions.getBitmap("storage/emulated/0/Pictures/tessdata/1ce72845-884f-43aa-80d0-8ad23e7b77f3-1188557854.jpg"));
-//
-        //       String recognizedText = baseApi.getUTF8Text(); // Log or otherwise display this string...
-//
-//       MyLogs.printinfo("recognizedText " + recognizedText);
-//        baseApi.end();
 
 
         BottomMenuController.getInstance(activity).setBottomMenu(activity);

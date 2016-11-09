@@ -7,6 +7,8 @@ import com.thetechsolutions.whodouconsumer.AppHelpers.WebService.AsynGetDataCont
 
 import java.util.concurrent.ExecutionException;
 
+import eu.siacs.conversations.ui.ChatPreferences;
+
 /**
  * Created by Uzair on 8/14/2016.
  */
@@ -20,9 +22,9 @@ public class SignUpAsynController {
     private SignUpAsynController() {
     }
 
-    public boolean callUserExistence(String username) {
+    public boolean callUserExistence(Activity activity,String username) {
         try {
-            return new callUserExistence(username).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
+            return new callUserExistence(activity,username).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -59,8 +61,11 @@ public class SignUpAsynController {
 
         String userName = "";
 
-        public callUserExistence(String username) {
+        Activity activity;
+
+        public callUserExistence(Activity _activity,String username) {
             this.userName = username;
+            activity=_activity;
 
         }
 
@@ -87,7 +92,12 @@ public class SignUpAsynController {
         @Override
         protected void onPostExecute(Boolean result) {
             super.onPostExecute(result);
+            try{
+                ChatPreferences a=new ChatPreferences(activity);
+                a.setString(ChatPreferences.USER_NAME,userName+"_v");
+            }catch (Exception e){
 
+            }
 
         }
     }

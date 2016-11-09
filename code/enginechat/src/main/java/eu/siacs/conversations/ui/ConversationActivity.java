@@ -35,6 +35,8 @@ import android.widget.PopupMenu;
 import android.widget.PopupMenu.OnMenuItemClickListener;
 import android.widget.Toast;
 
+import com.terrakok.phonematter.PhoneFormat;
+
 import net.java.otr4j.session.SessionStatus;
 
 import org.openintents.openpgp.util.OpenPgpApi;
@@ -176,7 +178,7 @@ public class ConversationActivity extends XmppActivity
 
    public static String accountNumber, contactNumber, accountAvatar, contactName,contactAvatar;
 
-    public static Intent createIntent(Activity _activity, String _accountNumber, String _accountAvatar, String _contactNumber, String _contactName,String _contactAvatar) {
+    public static Intent createIntent(Context _activity, String _accountNumber, String _accountAvatar, String _contactNumber, String _contactName,String _contactAvatar) {
         accountNumber = _accountNumber;
         contactNumber = _contactNumber;
         accountAvatar = _accountAvatar;
@@ -386,6 +388,10 @@ public class ConversationActivity extends XmppActivity
                     userStatus = "online";
                 }
 
+                if (contactName.isEmpty()) {
+
+                    contactName = getFormattedNumberToDisplay(this, conversation.getName().split("_")[0]);
+                }
                 if (conversation.getMode() == Conversation.MODE_SINGLE || useSubjectToIdentifyConference()) {
                     // ab.setTitle(conversation.getName());
 
@@ -1872,6 +1878,28 @@ public class ConversationActivity extends XmppActivity
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+    }
+
+    public static String getFormattedNumberToDisplay(Context activity, String number) {
+        PhoneFormat phoneFormat = new PhoneFormat(activity);
+
+        String numberString;
+        if (number.startsWith("00")) {
+            numberString = number.substring(2);
+        } else {
+            numberString = number.substring(1);
+        }
+        String formattedString = phoneFormat.format("+" + numberString);
+        return formattedString;
+    }
+
+    public static String getContactDisplayName() {
+        if (contactName.isEmpty()) {
+            return getFormattedNumberToDisplay(activity,contactNumber);
+
+        }
+        return contactName;
 
     }
 
