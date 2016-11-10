@@ -22,6 +22,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
+import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.AppController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.BottomMenuController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.FragmentActivityController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.MethodGenerator;
@@ -159,20 +160,20 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
             decline_btn.setVisibility(View.VISIBLE);
 
 
-//            calendar_icon.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
+            call_icon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
 //                    ListenerController.openScheduleDetail(activity, 0, 2, "Create Appointment", item_detail.getUsername());
-//                }
-//            });
-//
-//            chat_icon.setOnClickListener(new View.OnClickListener() {
-//                @Override
-//                public void onClick(View view) {
-//                    AppController.openChat(activity, item_detail.getUsername(), item_detail.getConsumer_name() + " " + item_detail.getConsumer_name(), item_detail.getSub_category_image_url(), item_detail.get, 0);
-//
-//                }
-//            });
+                }
+            });
+
+            chat_icon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                   // AppController.openChat(activity, item_detail.getUsername(), item_detail.getConsumer_name() + " " + item_detail.getConsumer_name(), item_detail.getSub_category_image_url(), item_detail.get, 0);
+
+                }
+            });
 
 
         }
