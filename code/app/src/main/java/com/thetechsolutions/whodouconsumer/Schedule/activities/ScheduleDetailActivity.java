@@ -22,7 +22,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
-import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.AppController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.BottomMenuController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.FragmentActivityController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.MethodGenerator;
@@ -42,8 +41,10 @@ import org.vanguardmatrix.engine.utils.MyLogs;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 
+import io.realm.RealmResults;
 import uk.co.ribot.easyadapter.EasyAdapter;
 
 /**
@@ -170,7 +171,7 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
             chat_icon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                   // AppController.openChat(activity, item_detail.getUsername(), item_detail.getConsumer_name() + " " + item_detail.getConsumer_name(), item_detail.getSub_category_image_url(), item_detail.get, 0);
+                    // AppController.openChat(activity, item_detail.getUsername(), item_detail.getConsumer_name() + " " + item_detail.getConsumer_name(), item_detail.getSub_category_image_url(), item_detail.get, 0);
 
                 }
             });
@@ -215,11 +216,24 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
                     R.id.suggested_text,
                     providers_name);
             auto_com_cutomer_name.setAdapter(adapter);
+
+
             auto_com_cutomer_name.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
                 @Override
                 public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
-                    vendorId = "" + RealmDataRetrive.getProvider().get(position).getId();
+                    String selected = (String) view.getItemAtPosition(position);
+                    int pos = -1;
+                   RealmResults<ProviderDT> arrayList= RealmDataRetrive.getProvider();
+                    for (int i = 0; i < arrayList.size(); i++) {
+                        if ((arrayList.get(i).getFirst_name()+" "+arrayList.get(i).getLast_name()).equals(selected)) {
+                            pos = i;
+                            System.out.println("Position " + pos);
+
+                            vendorId = "" + arrayList.get(i).getId();
+                            break;
+                        }
+                    }
 
                 }
             });
@@ -396,7 +410,7 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
             //calId = 0;
             int duration = 0;
             String onlyDuration = UtilityFunctions.spaceSplit(durationS)[0];
-           // MyLogs.printinfo("onlyDuration " + onlyDuration);
+            // MyLogs.printinfo("onlyDuration " + onlyDuration);
             if (durationS.contains("minutes")) {
                 if (onlyDuration.equals("30")) {
                     duration = 1;
@@ -412,7 +426,7 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
             } else if (durationS.contains("months") || durationS.contains("month")) {
                 duration = Integer.parseInt(onlyDuration) * 730;
 
-            }else{
+            } else {
                 duration = Integer.parseInt(onlyDuration);
             }
 
@@ -423,7 +437,7 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
                 //MyLogs.printinfo("calId " + calId);
 
                 UtilityFunctions.deleteEventNew(activity, calId);
-                if(!appointmentStatus.equals("rejected")){
+                if (!appointmentStatus.equals("rejected")) {
                     calId = UtilityFunctions.addEvent(activity, sqlDateTime, title_name.getText().toString(), duration);
                 }
 

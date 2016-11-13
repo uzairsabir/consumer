@@ -22,6 +22,8 @@ import org.vanguardmatrix.engine.android.AppPreferences;
 import org.vanguardmatrix.engine.utils.MyLogs;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
 
+import java.util.concurrent.ExecutionException;
+
 /**
  * Created by Uzair on 8/28/2016.
  */
@@ -36,14 +38,22 @@ public class AsynGetDataController {
     private AsynGetDataController() {
     }
 
-    public void getMyProvidersOrFriends(Activity activity, int tab_pos, boolean isAutoBack) {
+    public int getMyProvidersOrFriends(Activity activity, int tab_pos, boolean isAutoBack) {
         if (tab_pos == 0) {
-            new getMyProviders(activity, isAutoBack).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            try {
+              return  new getMyProviders(activity, isAutoBack).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            } catch (ExecutionException e) {
+                e.printStackTrace();
+            }
         } else if (tab_pos == 1) {
             new getMyFriends(activity, isAutoBack).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         } else if (tab_pos == 2) {
             new getFriendProvider(activity, isAutoBack).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
         }
+
+        return 1;
     }
 
     public void getSchedules(Activity activity) {

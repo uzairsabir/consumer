@@ -3,6 +3,7 @@ package com.thetechsolutions.whodouconsumer.Home.adapters;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.AsyncTask;
+import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -14,9 +15,11 @@ import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.ListenerContro
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendsProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.WebService.AsynGetDataController;
+import com.thetechsolutions.whodouconsumer.Home.fragments.HomeMainFragment;
 import com.thetechsolutions.whodouconsumer.Home.model.HomeModel;
 import com.thetechsolutions.whodouconsumer.R;
 
+import org.vanguardmatrix.engine.utils.MyLogs;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
 
 import uk.co.ribot.easyadapter.ItemViewHolder;
@@ -61,6 +64,7 @@ public class HomeListFriendsProviderAdapter extends ItemViewHolder<FriendsProvid
     boolean isRefresh = false;
 
 
+
     public HomeListFriendsProviderAdapter(View view) {
         super(view);
     }
@@ -68,12 +72,14 @@ public class HomeListFriendsProviderAdapter extends ItemViewHolder<FriendsProvid
     public static Class<HomeListFriendsProviderAdapter> newInstance(Activity _activity) {
         activity = _activity;
 
+
         return HomeListFriendsProviderAdapter.class;
     }
 
 
     @Override
     public void onSetValues(FriendsProviderDT item, PositionInfo positionInfo) {
+        MyLogs.printinfo("item_pay " + item.getImage_url());
         sourceImageView.setImageURI(Uri.parse(item.getImage_url()));
         title.setText(item.getFirst_name() + " " + item.getLast_name());
         service_name.setText(item.getSub_category_title());
@@ -193,12 +199,21 @@ public class HomeListFriendsProviderAdapter extends ItemViewHolder<FriendsProvid
             if (result) {
 
 
+
+
 //                if (isDeleteRequire) {
 //                    RealmDataDelete.deleteConsumerProviderLink(providername, 2);
 //                }
 
 
-                AsynGetDataController.getInstance().getMyProvidersOrFriends(activity, 0, false);
+                if(AsynGetDataController.getInstance().getMyProvidersOrFriends(activity, 0, false)==0){
+                    MyLogs.printinfo("refresh_fragment");
+                    try{
+                        HomeMainFragment.fragment.loadData();
+                    }catch (Exception e){
+
+                    }
+                }
 
 
             }

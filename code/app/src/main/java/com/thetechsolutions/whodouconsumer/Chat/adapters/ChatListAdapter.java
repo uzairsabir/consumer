@@ -60,6 +60,7 @@ public class ChatListAdapter extends ItemViewHolder<Conversation> {
     FriendDT friendDT = new FriendDT();
 
     Conversation item_;
+
     public ChatListAdapter(View view) {
         super(view);
     }
@@ -73,12 +74,12 @@ public class ChatListAdapter extends ItemViewHolder<Conversation> {
 
     @Override
     public void onSetValues(Conversation item, PositionInfo positionInfo) {
-            MyLogs.printinfo("name_test  " + item.getJid().toBareJid().toString() + " : " );
-        item_=item;
+        //  MyLogs.printinfo("name_test  " + item.getJid().toBareJid().toString() + " : " );
+        item_ = item;
         try {
             for (ProviderDT items : RealmDataRetrive.getProvider()) {
 
-                if (item.getJid().toBareJid().toString().split("@")[0].equals(items.getUsername()+"_v")) {
+                if (item.getJid().toBareJid().toString().split("@")[0].equals(items.getUsername() + "_v")) {
                     providerDT = items;
                     break;
 
@@ -86,21 +87,24 @@ public class ChatListAdapter extends ItemViewHolder<Conversation> {
             }
             for (FriendDT items : RealmDataRetrive.getFriendList()) {
 
-               // MyLogs.printinfo(items.getUsername()+"_c");
-                if (item.getJid().toBareJid().toString().split("@")[0].equals(items.getUsername()+"_c")) {
+                // MyLogs.printinfo(items.getUsername()+"_c");
+                if (item.getJid().toBareJid().toString().split("@")[0].equals(items.getUsername() + "_c")) {
                     friendDT = items;
                     break;
 
                 }
             }
 
-            try{
+            try {
                 if (UtilityFunctions.isEmpty(providerDT.getFirst_name())) {
-                   // title.setText(UtilityFunctions.getFormattedNumberToDisplay(activity, item.getJid().toBareJid().toString().split("_")[0]));
+                    // title.setText(UtilityFunctions.getFormattedNumberToDisplay(activity, item.getJid().toBareJid().toString().split("_")[0]));
                     //sourceImageView.setImageURI(Uri.parse("test.png"));
                     if (UtilityFunctions.isEmpty(friendDT.getFirst_name())) {
-                        title.setText(UtilityFunctions.getFormattedNumberToDisplay(activity, item.getJid().toBareJid().toString().split("_")[0]));
-                        sourceImageView.setImageURI(Uri.parse("test.png"));
+                        MyLogs.printinfo("item " + item.getLatestMessage());
+                        if (item.getLatestMessage() != null) {
+                            title.setText(UtilityFunctions.getFormattedNumberToDisplay(activity, item.getJid().toBareJid().toString().split("_")[0]));
+                            sourceImageView.setImageURI(Uri.parse("test.png"));
+                        }
                     } else {
                         title.setText(friendDT.getFirst_name() + " " + friendDT.getLast_name());
                         sourceImageView.setImageURI(Uri.parse(friendDT.getImage_url()));
@@ -109,14 +113,14 @@ public class ChatListAdapter extends ItemViewHolder<Conversation> {
                     title.setText(providerDT.getFirst_name() + " " + providerDT.getLast_name());
                     sourceImageView.setImageURI(Uri.parse(providerDT.getImage_url()));
                 }
-            }catch (Exception e){
+            } catch (Exception e) {
 
             }
 
 
         } catch (Exception e) {
             try {
-                MyLogs.printinfo("getid " + item.getJid().toBareJid().toString());
+                //   MyLogs.printinfo("getid " + item.getJid().toBareJid().toString());
                 title.setText(UtilityFunctions.getFormattedNumberToDisplay(activity, item.getJid().toBareJid().toString().split("_")[0]));
                 sourceImageView.setImageURI(Uri.parse("test.png"));
             } catch (Exception a) {
@@ -200,32 +204,33 @@ public class ChatListAdapter extends ItemViewHolder<Conversation> {
             public void onClick(View v) {
 
 
-                String username="";
+                String username = "";
 
                 if (item_.getJid().toBareJid().toString().split("@")[0].contains("_v")) {
 
-                    try{
+                    try {
                         if (UtilityFunctions.isEmpty(providerDT.getFirst_name())) {
-                            username=UtilityFunctions.getFormattedNumberToDisplay(activity, getItem().getJid().toBareJid().toString().split("_")[0]);
-                        }else{
-                            username=providerDT.getFirst_name() + " " + providerDT.getLast_name();
+                            username = UtilityFunctions.getFormattedNumberToDisplay(activity, getItem().getJid().toBareJid().toString().split("_")[0]);
+                        } else {
+                            username = providerDT.getFirst_name() + " " + providerDT.getLast_name();
                         }
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
 
                     }
 
                     AppController.openChat(activity, getItem().getJid().toBareJid().toString().split("_")[0], username, providerDT.getImage_url(), providerDT.getIs_register_user(), 0);
 
-                }   if (item_.getJid().toBareJid().toString().split("@")[0].contains("_c")) {
-                    try{
+                }
+                if (item_.getJid().toBareJid().toString().split("@")[0].contains("_c")) {
+                    try {
                         if (UtilityFunctions.isEmpty(friendDT.getFirst_name())) {
-                            username=UtilityFunctions.getFormattedNumberToDisplay(activity, getItem().getJid().toBareJid().toString().split("_")[0]);
-                        }else{
-                            username=friendDT.getFirst_name() + " " + friendDT.getLast_name();
+                            username = UtilityFunctions.getFormattedNumberToDisplay(activity, getItem().getJid().toBareJid().toString().split("_")[0]);
+                        } else {
+                            username = friendDT.getFirst_name() + " " + friendDT.getLast_name();
                         }
 
-                    }catch (Exception e){
+                    } catch (Exception e) {
 
                     }
                     AppController.openChat(activity, getItem().getJid().toBareJid().toString().split("_")[0], username, friendDT.getImage_url(), friendDT.getIs_register_user(), 1);

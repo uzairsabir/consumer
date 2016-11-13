@@ -277,8 +277,8 @@ public class TitleBarController {
                 SettingsController.updateProfile(activity,
                         AppPreferences.getString(AppPreferences.PREF_USER_NUMBER),
                         SettingProfileFragment.fragment.firstName.getText().toString(),
-                        SettingProfileFragment.fragment.lastName.getText().toString(), "", SettingProfileFragment.fragment.city_state.getText().toString(), "",
-                        "", "", SettingProfileFragment.fragment.zip_codes.getText().toString(), "", SettingProfileFragment.fragment.imageUrl, 1
+                        SettingProfileFragment.fragment.lastName.getText().toString(), SettingProfileFragment.address, SettingProfileFragment.fragment.city_state.getText().toString(), "",
+                        "", SettingProfileFragment.email, SettingProfileFragment.fragment.zip_codes.getText().toString(), "", SettingProfileFragment.fragment.imageUrl, 1
                 );
 
             }

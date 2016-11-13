@@ -201,6 +201,8 @@ public class SignupActivity extends MagicCreateActivity implements View.OnClickL
         signup_btn = (Button) findViewById(R.id.signup_btn);
         signup_btn.setOnClickListener(this);
 
+        UtilityFunctions.showKeyboard(activity);
+        country_number.setFocusable(true);
 
     }
 

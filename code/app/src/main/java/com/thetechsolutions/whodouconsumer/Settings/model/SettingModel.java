@@ -30,7 +30,7 @@ public class SettingModel {
         String user_id = AppPreferences.getString(AppPreferences.PREF_USER_ID);
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 
-        params.add(new BasicNameValuePair("username", providerName));
+        params.add(new BasicNameValuePair("myuserId", user_id));
         params.add(new BasicNameValuePair("user_type", "consumer"));
         params.add(new BasicNameValuePair("first_name", first_name));
         params.add(new BasicNameValuePair("last_name", last_name));

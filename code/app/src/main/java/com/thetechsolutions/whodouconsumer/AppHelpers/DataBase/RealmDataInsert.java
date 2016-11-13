@@ -42,11 +42,10 @@ public class RealmDataInsert {
         try {
 
 
-
             for (int i = 0; i < jsonArray.length(); i++) {
 
-              // ProviderDT item = new ProviderDT();
-                if(type==0){
+                // ProviderDT item = new ProviderDT();
+                if (type == 0) {
                     ProviderDT item = new ProviderDT();
                     realm.beginTransaction();
                     try {
@@ -232,7 +231,7 @@ public class RealmDataInsert {
 
                     realm.copyToRealmOrUpdate(item);
                     realm.commitTransaction();
-                }else if(type==1){
+                } else if (type == 1) {
                     FriendDT item = new FriendDT();
                     realm.beginTransaction();
                     try {
@@ -332,6 +331,7 @@ public class RealmDataInsert {
                         item.setLast_name("");
                     }
                     try {
+                        MyLogs.printinfo("friend_image_1 " + jsonArray.getJSONObject(i).getString("image_url"));
                         if (jsonArray.getJSONObject(i).has("image_url") && !jsonArray.getJSONObject(i).isNull("image_url")) {
                             //MyLogs.printinfo("image_url_"+jsonArray.getJSONObject(i).getString("image_url"));
                             item.setImage_url(jsonArray.getJSONObject(i).getString("image_url"));
@@ -418,7 +418,7 @@ public class RealmDataInsert {
 
                     realm.copyToRealmOrUpdate(item);
                     realm.commitTransaction();
-                }else {
+                } else {
                     FriendsProviderDT item = new FriendsProviderDT();
                     realm.beginTransaction();
                     try {
@@ -607,7 +607,6 @@ public class RealmDataInsert {
                 }
 
 
-
             }
 
 
@@ -622,13 +621,14 @@ public class RealmDataInsert {
     public static boolean insertSchedule(final JSONArray jsonObject) {
 
         Realm realm = Realm.getDefaultInstance();
-        realm.beginTransaction();
+
         try {
 
 
             for (int i = 0; i < jsonObject.length(); i++) {
+                realm.beginTransaction();
                 ScheduleDT tempItem = new ScheduleDT();
-
+              //  MyLogs.printinfo(" insertSchedule ");
                 try {
                     try {
                         tempItem.setAppointment_id(jsonObject.getJSONObject(i).getInt("appointment_id"));
@@ -794,11 +794,11 @@ public class RealmDataInsert {
                 }
 
 
-                realm.copyToRealmOrUpdate(tempItem);
+                realm.insertOrUpdate(tempItem);
                 realm.commitTransaction();
-                MyLogs.printinfo("tempItem " + tempItem.getAppointment_id());
+                //MyLogs.printinfo("tempItem " + tempItem.getAppointment_id());
 
-                return true;
+                //return true;
 
 
             }
@@ -807,7 +807,7 @@ public class RealmDataInsert {
             realm.cancelTransaction();
 
         }
-        return false;
+        return true;
     }
 
     public static void insertPay(final JSONObject jsonObject) {
@@ -864,7 +864,6 @@ public class RealmDataInsert {
 //
 //                }
 //            });
-
 
 
             //  }
@@ -972,7 +971,7 @@ public class RealmDataInsert {
                         MyLogs.printinfo("json_id " + jsonObject.getJSONObject(i).getInt("id"));
                         if (!jsonObject.getJSONObject(i).isNull("id")) {
                             tempItem.setUser_id(jsonObject.getJSONObject(i).getInt("id"));
-                            AppPreferences.setString(AppPreferences.PREF_USER_ID,jsonObject.getJSONObject(i).getString("id"));
+                            AppPreferences.setString(AppPreferences.PREF_USER_ID, jsonObject.getJSONObject(i).getString("id"));
                         } else {
                             tempItem.setUser_id(0);
                         }
@@ -988,6 +987,7 @@ public class RealmDataInsert {
                     } catch (Exception e) {
 
                     }
+
                     try {
                         if (!jsonObject.getJSONObject(i).isNull("mobile_number_1"))
                             tempItem.setMobile_number_1(jsonObject.getJSONObject(i).getString("mobile_number_1"));
@@ -996,6 +996,7 @@ public class RealmDataInsert {
                     } catch (Exception e) {
 
                     }
+
                     try {
                         if (!jsonObject.getJSONObject(i).isNull("address"))
                             tempItem.setAddress(jsonObject.getJSONObject(i).getString("address"));

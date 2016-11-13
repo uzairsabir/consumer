@@ -1,5 +1,7 @@
 package com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes;
 
+import com.thetechsolutions.whodouconsumer.R;
+
 import org.vanguardmatrix.engine.parser.ParseString;
 import org.vanguardmatrix.engine.utils.MyLogs;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
@@ -153,12 +155,18 @@ public class FriendDT extends RealmObject {
     public String getImage_url() {
         try {
             MyLogs.printinfo("cat_url " + this.subcategory_image_url);
-            if (image_url == null) {
-                return this.subcategory_image_url;
+            if (!(image_url.contains(".jpeg") || image_url.contains(".png") || image_url.contains(".jpg"))) {
+                if (!(subcategory_image_url.contains(".jpeg") || subcategory_image_url.contains(".png") || subcategory_image_url.contains(".jpg"))) {
 
-            } else if (!image_url.contains(".jpeg")) {
-                return this.subcategory_image_url;
+                    return "res:///" + R.drawable.com_facebook_profile_picture_blank_square;
+                } else {
+                    return this.subcategory_image_url;
+                }
+
             }
+//            else if (!image_url.contains(".jpeg") || !image_url.contains(".png")) {
+//                return this.subcategory_image_url;
+//            }
         } catch (Exception e) {
             return "";
 

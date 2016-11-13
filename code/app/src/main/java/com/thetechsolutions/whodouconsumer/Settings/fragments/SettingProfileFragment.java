@@ -37,7 +37,7 @@ public class SettingProfileFragment extends Fragment {
     public Dialog dialog;
     public static SimpleDraweeView fresco_view;
     public EditText firstName, lastName, cellno, city_state, zip_codes;
-    public static String imageUrl = "";
+    public static String imageUrl = "",email,address;
 
 
     public static Fragment newInstance(Activity _activity) {
@@ -145,6 +145,12 @@ public class SettingProfileFragment extends Fragment {
 
                     }
 
+                    try{
+                        email=profileDT.getEmail_1();
+                        address=profileDT.getAddress();
+                    }catch (Exception e){
+
+                    }
 //                    PhoneFormat phoneFormat = new PhoneFormat(activity);
 //
 //                    String numberString;
