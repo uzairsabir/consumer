@@ -10,7 +10,7 @@
     <color name="who_do_u_medium_grey">#959595</color>
     <color name="who_do_u_dark_grey">#808080</color>
     <color name="who_do_u_blue">#006BB6</color>
-
+    <color name="who_do_login_screen">#0088EE</color>
 
     <color name="colorPrimary">#3F51B5</color>
     <color name="colorPrimaryDark">#303F9F</color>

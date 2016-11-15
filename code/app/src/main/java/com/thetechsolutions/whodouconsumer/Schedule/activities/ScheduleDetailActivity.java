@@ -37,11 +37,9 @@ import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import org.vanguardmatrix.engine.android.AppPreferences;
-import org.vanguardmatrix.engine.utils.MyLogs;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 
 import io.realm.RealmResults;
@@ -145,7 +143,7 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
             location_name.setText(item_detail.getSub_categor_title());
             appointment_date.setText(item_detail.getAppointmentDate() + " @ " + UtilityFunctions.formatteSqlTime(UtilityFunctions.converMillisToDate(item_detail.getAppointment_date_time(), "yyyy-MM-dd HH:mm:ss")));
             duration.setText(item_detail.getEstimated_duration() + "");
-            fresco_view.setImageURI(Uri.parse(item_detail.getSub_category_image_url()));
+            fresco_view.setImageURI(Uri.parse(item_detail.getVendor_image_url()));
             description.setText(item_detail.getDescription());
             appointmentId = "" + item_detail.getAppointment_id();
             appointmentStatus = item_detail.getStatus();
@@ -224,9 +222,9 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
                 public void onItemClick(AdapterView<?> view, View arg1, int position, long arg3) {
                     String selected = (String) view.getItemAtPosition(position);
                     int pos = -1;
-                   RealmResults<ProviderDT> arrayList= RealmDataRetrive.getProvider();
+                    RealmResults<ProviderDT> arrayList = RealmDataRetrive.getProvider();
                     for (int i = 0; i < arrayList.size(); i++) {
-                        if ((arrayList.get(i).getFirst_name()+" "+arrayList.get(i).getLast_name()).equals(selected)) {
+                        if ((arrayList.get(i).getFirst_name() + " " + arrayList.get(i).getLast_name()).equals(selected)) {
                             pos = i;
                             System.out.println("Position " + pos);
 

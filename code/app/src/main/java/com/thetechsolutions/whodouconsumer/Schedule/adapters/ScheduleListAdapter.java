@@ -56,7 +56,7 @@ public class ScheduleListAdapter extends ItemViewHolder<ScheduleDT> {
 
     @Override
     public void onSetValues(ScheduleDT item, PositionInfo positionInfo) {
-        sourceImageView.setImageURI(Uri.parse(item.getSub_category_image_url()));
+        sourceImageView.setImageURI(Uri.parse(item.getVendor_image_url()));
         title.setText(item.getVendor_name());
         appointment_date.setText(item.getAppointmentDate());
         appointment_time.setText(item.getAppointmentTime());

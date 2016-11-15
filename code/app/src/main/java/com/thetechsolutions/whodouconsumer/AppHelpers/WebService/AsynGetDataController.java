@@ -15,7 +15,6 @@ import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.VendorProfileDT;
 import com.thetechsolutions.whodouconsumer.Home.activities.HomeCreateNewContactActivity;
 import com.thetechsolutions.whodouconsumer.Home.activities.HomeFriendProfileActivity;
-import com.thetechsolutions.whodouconsumer.Home.fragments.HomeMainFragment;
 import com.thetechsolutions.whodouconsumer.Home.model.HomeModel;
 
 import org.vanguardmatrix.engine.android.AppPreferences;
@@ -41,7 +40,7 @@ public class AsynGetDataController {
     public int getMyProvidersOrFriends(Activity activity, int tab_pos, boolean isAutoBack) {
         if (tab_pos == 0) {
             try {
-              return  new getMyProviders(activity, isAutoBack).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
+                return new getMyProviders(activity, isAutoBack).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR).get();
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {
@@ -524,31 +523,29 @@ public class AsynGetDataController {
     }
 
 
-
     public void syncHomeData(Activity activity) {
 
-        if(!UtilityFunctions.isEmpty(AppPreferences.getString(AppPreferences.PREF_USER_NUMBER))) {
+        if (!UtilityFunctions.isEmpty(AppPreferences.getString(AppPreferences.PREF_USER_NUMBER))) {
 
             new getMyProvidersSync(activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             new getMyFriendsSync(activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             new getFriendProviderSyn(activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+            try {
+                new getAppointments(activity, "upcoming").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
+            try {
+                new getAppointments(activity, "recent").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            } catch (Exception e) {
+                e.printStackTrace();
+
+            }
         }
 
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
     private class getMyProvidersSync extends AsyncTask<String, Void, Integer> {
@@ -587,7 +584,6 @@ public class AsynGetDataController {
         @Override
         protected void onPostExecute(Integer result) {
             super.onPostExecute(result);
-
 
 
         }

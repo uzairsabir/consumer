@@ -631,6 +631,63 @@ public class RealmDataInsert {
               //  MyLogs.printinfo(" insertSchedule ");
                 try {
                     try {
+                        if (!jsonObject.getJSONObject(i).isNull("consumer_image_url")) {
+                            tempItem.setConsumer_image_url(jsonObject.getJSONObject(i).getString("consumer_image_url"));
+                        } else {
+                            tempItem.setConsumer_image_url("");
+                        }
+                    } catch (Exception e) {
+
+                    }
+                    try {
+                        if (!jsonObject.getJSONObject(i).isNull("vendor_image_url")) {
+                            tempItem.setVendor_image_url(jsonObject.getJSONObject(i).getString("vendor_image_url"));
+                        } else {
+                            tempItem.setVendor_image_url("");
+                        }
+                    } catch (Exception e) {
+
+                    }
+                    try {
+                        if (!jsonObject.getJSONObject(i).isNull("consumer_address")) {
+                            tempItem.setConsumer_address(jsonObject.getJSONObject(i).getString("consumer_address"));
+                        } else {
+                            tempItem.setConsumer_address("");
+                        }
+                    } catch (Exception e) {
+
+                    }
+                    try {
+                        if (!jsonObject.getJSONObject(i).isNull("vendor_address")) {
+                            tempItem.setVendor_address(jsonObject.getJSONObject(i).getString("vendor_address"));
+                        } else {
+                            tempItem.setVendor_address("");
+                        }
+                    } catch (Exception e) {
+
+                    }
+                    try {
+                        if (!jsonObject.getJSONObject(i).isNull("consumer_zip_code")) {
+                            tempItem.setConsumer_zip_code(jsonObject.getJSONObject(i).getString("consumer_zip_code"));
+                        } else {
+                            tempItem.setConsumer_zip_code("");
+                        }
+                    } catch (Exception e) {
+
+                    }
+                    try {
+                        if (!jsonObject.getJSONObject(i).isNull("vendor_zip_code")) {
+                            tempItem.setVendor_zip_code(jsonObject.getJSONObject(i).getString("vendor_zip_code"));
+                        } else {
+                            tempItem.setVendor_zip_code("");
+                        }
+                    } catch (Exception e) {
+
+                    }
+
+
+
+                    try {
                         tempItem.setAppointment_id(jsonObject.getJSONObject(i).getInt("appointment_id"));
                     } catch (Exception e) {
 

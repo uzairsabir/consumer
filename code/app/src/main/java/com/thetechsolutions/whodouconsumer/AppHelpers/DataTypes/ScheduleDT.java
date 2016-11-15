@@ -1,5 +1,7 @@
 package com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes;
 
+import com.thetechsolutions.whodouconsumer.R;
+
 import org.vanguardmatrix.engine.utils.MyLogs;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
 
@@ -36,7 +38,13 @@ public class ScheduleDT extends RealmObject {
 
     private long appointment_date_time;
     private String estimated_duration;
-
+    private String vendor_calendar_guid;
+    private String consumer_image_url;
+    private String vendor_image_url;
+    private String consumer_address;
+    private String vendor_address;
+    private String consumer_zip_code;
+    private String vendor_zip_code;
 
     public int getConsumer_id() {
         return consumer_id;
@@ -205,6 +213,114 @@ public class ScheduleDT extends RealmObject {
 
     public void setCall_message(int call_message) {
         this.call_message = call_message;
+    }
+
+
+    public String getVendor_calendar_guid() {
+        return vendor_calendar_guid;
+    }
+
+    public void setVendor_calendar_guid(String vendor_calendar_guid) {
+        this.vendor_calendar_guid = vendor_calendar_guid;
+    }
+
+    public String getConsumer_image_url() {
+        try {
+            MyLogs.printinfo("cat_url " + this.sub_category_image_url);
+            if (!(consumer_image_url.contains(".jpeg") || consumer_image_url.contains(".png") || consumer_image_url.contains(".jpg"))) {
+
+                return "res:///" + R.drawable.com_facebook_profile_picture_blank_square;
+
+
+            }
+//            else if (!image_url.contains(".jpeg") || !image_url.contains(".png")) {
+//                return this.subcategory_image_url;
+//            }
+        } catch (Exception e) {
+            return "";
+
+        }
+
+        return consumer_image_url;
+    }
+
+    public void setConsumer_image_url(String consumer_image_url) {
+        this.consumer_image_url = consumer_image_url;
+    }
+
+    public String getVendor_image_url() {
+        try {
+            MyLogs.printinfo("cat_url " + this.sub_category_image_url);
+            if (!(vendor_image_url.contains(".jpeg") || vendor_image_url.contains(".png") || vendor_image_url.contains(".jpg"))) {
+                if (!(sub_category_image_url.contains(".jpeg") || sub_category_image_url.contains(".png") || sub_category_image_url.contains(".jpg"))) {
+
+                    return "res:///" + R.drawable.com_facebook_profile_picture_blank_square;
+                } else {
+                    return this.consumer_image_url;
+                }
+
+            }
+//            else if (!image_url.contains(".jpeg") || !image_url.contains(".png")) {
+//                return this.subcategory_image_url;
+//            }
+        } catch (Exception e) {
+            return "";
+
+        }
+        return vendor_image_url;
+    }
+
+    public void setVendor_image_url(String vendor_image_url) {
+        this.vendor_image_url = vendor_image_url;
+    }
+
+    public String getConsumer_address() {
+        try {
+            if (UtilityFunctions.isEmpty(this.consumer_address)) {
+                return this.consumer_zip_code;
+            }
+
+        } catch (Exception e) {
+
+        }
+
+        return consumer_address;
+    }
+
+    public void setConsumer_address(String consumer_address) {
+        this.consumer_address = consumer_address;
+    }
+
+    public String getVendor_address() {
+        try {
+            if (UtilityFunctions.isEmpty(this.vendor_address)) {
+                return this.vendor_zip_code;
+            }
+
+        } catch (Exception e) {
+
+        }
+        return vendor_address;
+    }
+
+    public void setVendor_address(String vendor_address) {
+        this.vendor_address = vendor_address;
+    }
+
+    public String getConsumer_zip_code() {
+        return consumer_zip_code;
+    }
+
+    public void setConsumer_zip_code(String consumer_zip_code) {
+        this.consumer_zip_code = consumer_zip_code;
+    }
+
+    public String getVendor_zip_code() {
+        return vendor_zip_code;
+    }
+
+    public void setVendor_zip_code(String vendor_zip_code) {
+        this.vendor_zip_code = vendor_zip_code;
     }
 
 
