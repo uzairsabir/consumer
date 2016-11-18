@@ -88,6 +88,9 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="2dp"
                 android:text="Dallas, Texas"
+                android:maxLines="1"
+                android:singleLine="true"
+                android:ellipsize="end"
                 android:textColor="@color/who_do_u_medium_grey"
                 android:textSize="@dimen/textsize_label_3" />
 

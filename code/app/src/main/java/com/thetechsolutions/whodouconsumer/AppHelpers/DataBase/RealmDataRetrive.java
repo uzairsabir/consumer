@@ -71,6 +71,18 @@ public class RealmDataRetrive {
 
     }
 
+    public static RealmResults<FriendsProviderDT> getFriendsProviderByUserName(String friendUserName) {
+
+
+        final Realm realm = Realm.getDefaultInstance();
+        String[] a = {"first_name", "last_name"};
+        Sort[] b = {Sort.ASCENDING, Sort.ASCENDING};
+
+        return realm.where(FriendsProviderDT.class).equalTo("friend_number",friendUserName).findAllSorted(a, b).distinct("username");
+
+    }
+
+
 
     public static RealmResults<ProviderDT> getHomeSearchList(String keyword, int tabId, int cat_id, int sub_cat_id) {
 

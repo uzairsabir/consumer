@@ -9,9 +9,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.facebook.drawee.view.SimpleDraweeView;
+import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Contacts.models.ContactModel;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.AppController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.BottomMenuController;
@@ -25,19 +28,24 @@ import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendsProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.WebService.AsynGetDataController;
+import com.thetechsolutions.whodouconsumer.Home.adapters.HomeListFriendsProviderAdapter;
 import com.thetechsolutions.whodouconsumer.Home.controllers.HomeMainController;
 import com.thetechsolutions.whodouconsumer.Home.fragments.HomeMainFragment;
 import com.thetechsolutions.whodouconsumer.R;
 
 import org.vanguardmatrix.engine.android.AppPreferences;
+import org.vanguardmatrix.engine.customviews.FullLengthListView;
+import org.vanguardmatrix.engine.utils.MyLogs;
 import org.vanguardmatrix.engine.utils.PermissionHandler;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
 
 import java.io.File;
+import java.util.ArrayList;
 
 import pl.aprilapps.easyphotopicker.DefaultCallback;
 import pl.aprilapps.easyphotopicker.EasyImage;
 import pl.aprilapps.easyphotopicker.EasyImageConfig;
+import uk.co.ribot.easyadapter.EasyAdapter;
 
 /**
  * Created by Uzair on 7/12/2016.
@@ -51,14 +59,18 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
 
     EditText cell_no, email, city_state, zip_code;
     ImageView dollar_icon, calendar_icon, chat_icon, call_icon;
-    Button save_btn, delete_btn;
+    Button save_btn, delete_btn,edit_profile;
 
     static int tab_pos, subCatId;
     static String providerName;
     String text_first_name, text_last_name,
             text_city_state, text_zip_codes, text_email;
     String imageUrl;
-
+    RelativeLayout list_container;
+    ArrayList<FriendsProviderDT> friendsProviderDTs;
+    EasyAdapter easyAdapter;
+    FullLengthListView dynamicListView;
+    LinearLayout top_lay;
 
     public static Intent createIntent(Activity _activity, int _tab_pos, String _providerName) {
         activity = _activity;
@@ -111,17 +123,26 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
 
         save_btn = (Button) findViewById(R.id.save_btn);
         delete_btn = (Button) findViewById(R.id.delete_btn);
+        dynamicListView = (FullLengthListView) findViewById(R.id.dynamiclistview);
+        list_container = (RelativeLayout) findViewById(R.id.list_container);
+        edit_profile=(Button) findViewById(R.id.edit_profile);
         //MyLogs.printinfo("tab_pos " + tab_pos);
+
+        top_lay = (LinearLayout) findViewById(R.id.top_lay);
 
         if (HomeMainFragment.pos == 1) {
             calendar_icon.setVisibility(View.GONE);
             service_name.setVisibility(View.GONE);
             dollar_icon.setVisibility(View.GONE);
+
+            MyLogs.printinfo("tab_position ");
         }
-        if(tab_pos==2){
+        if (tab_pos == 2) {
             save_btn.setVisibility(View.GONE);
             delete_btn.setVisibility(View.GONE);
+
         }
+
         listeners();
 
 
@@ -173,7 +194,7 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
         save_btn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(HomeMainFragment.pos==0){
+                if (HomeMainFragment.pos == 0) {
                     ProviderDT item_detail = RealmDataRetrive.getProviderDetail(providerName, 0);
                     text_first_name = item_detail.getFirst_name();
                     text_last_name = item_detail.getLast_name();
@@ -181,7 +202,7 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
                     text_email = email.getText().toString();
                     text_zip_codes = zip_code.getText().toString();
                     subCatId = item_detail.getSub_category_id();
-                }else if(HomeMainFragment.pos==1){
+                } else if (HomeMainFragment.pos == 1) {
                     FriendDT item_detail = RealmDataRetrive.getFriendDetail(providerName);
                     text_first_name = item_detail.getFirst_name();
                     text_last_name = item_detail.getLast_name();
@@ -189,7 +210,7 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
                     text_email = email.getText().toString();
                     text_zip_codes = zip_code.getText().toString();
                     subCatId = item_detail.getSub_category_id();
-                }else if(HomeMainFragment.pos==2){
+                } else if (HomeMainFragment.pos == 2) {
                     FriendsProviderDT item_detail = RealmDataRetrive.getFriendProviderDetail(providerName);
                     text_first_name = item_detail.getFirst_name();
                     text_last_name = item_detail.getLast_name();
@@ -209,10 +230,14 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
 
     @Override
     public void viewUpdate() {
-        // MyLogs.printinfo("userName " + providerName + " : " + tab_pos);
-       // ProviderDT item_detail = RealmDataRetrive.getProviderDetail(providerName, HomeMainFragment.pos);
 
-        if(HomeMainFragment.pos==0){
+        loadData();
+
+
+    }
+
+    public void loadData(){
+        if (HomeMainFragment.pos == 0) {
             final ProviderDT item_detail = RealmDataRetrive.getProviderDetail(providerName, 0);
 
             if (item_detail != null) {
@@ -295,13 +320,13 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
                     @Override
                     public void onClick(View view) {
 
-                        new callConsumerVendorDelete(""+item_detail.getUsername()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        new callConsumerVendorDelete("" + item_detail.getUsername()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     }
                 });
 
             }
 
-        }else if(HomeMainFragment.pos==1){
+        } else if (HomeMainFragment.pos == 1) {
             final FriendDT item_detail = RealmDataRetrive.getFriendDetail(providerName);
             if (item_detail != null) {
                 title_name.setText(item_detail.getFirst_name() + " " + item_detail.getLast_name());
@@ -383,13 +408,50 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
                     @Override
                     public void onClick(View view) {
 
-                        new callConsumerVendorDelete(""+item_detail.getUsername()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        new callConsumerVendorDelete("" + item_detail.getUsername()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     }
                 });
 
+
+                friendsProviderDTs = new ArrayList<>();
+                friendsProviderDTs.addAll(RealmDataRetrive.getFriendsProviderByUserName(item_detail.getUsername()));
+                if (friendsProviderDTs.size() > 0) {
+                    list_container.setVisibility(View.VISIBLE);
+                    easyAdapter = new EasyAdapter<>(
+                            activity,
+                            HomeListFriendsProviderAdapter.newInstance(activity),
+                            friendsProviderDTs, mListener);
+                    AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(easyAdapter);
+                    animationAdapter.setAbsListView(dynamicListView);
+                    dynamicListView.setAdapter(animationAdapter);
+                    dynamicListView.setExpanded(true);
+                    top_lay.setVisibility(View.GONE);
+                    edit_profile.setVisibility(View.VISIBLE);
+                    int dpValue = 230; // margin in dips
+                    float d = activity.getResources().getDisplayMetrics().density;
+                    int margin = (int)(dpValue * d); // margin in pixels
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    lp.setMargins(0, margin, 0, 0);
+                    mobile_edit.setLayoutParams(lp);
+
+                    edit_profile.setOnClickListener(new View.OnClickListener() {
+                        @Override
+                        public void onClick(View v) {
+                            if(list_container.getVisibility()==View.VISIBLE){
+                                list_container.setVisibility(View.GONE);
+                                top_lay.setVisibility(View.VISIBLE);
+                                edit_profile.setText("Profile Detail");
+                            }else{
+                                list_container.setVisibility(View.VISIBLE);
+                                top_lay.setVisibility(View.GONE);
+                                edit_profile.setText("Friend Providers");
+                            }
+                        }
+                    });
+                }
             }
 
-        }else if(HomeMainFragment.pos==2){
+        } else if (HomeMainFragment.pos == 2) {
             final FriendsProviderDT item_detail = RealmDataRetrive.getFriendProviderDetail(providerName);
             if (item_detail != null) {
                 title_name.setText(item_detail.getFirst_name() + " " + item_detail.getLast_name());
@@ -471,15 +533,13 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
                     @Override
                     public void onClick(View view) {
 
-                        new callConsumerVendorDelete(""+item_detail.getUsername()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        new callConsumerVendorDelete("" + item_detail.getUsername()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     }
                 });
 
             }
 
         }
-
-
 
     }
 
@@ -608,7 +668,7 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
 
                 RealmDataDelete.deleteHomeItem(providername, HomeMainFragment.pos);
 
-                AsynGetDataController.getInstance().getMyProvidersOrFriends(activity,HomeMainFragment.pos, true);
+                AsynGetDataController.getInstance().getMyProvidersOrFriends(activity, HomeMainFragment.pos, true);
 
 
             }
@@ -617,5 +677,16 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
         }
     }
 
+    public HomeListFriendsProviderAdapter.Listener mListener = new HomeListFriendsProviderAdapter.Listener() {
 
+        @Override
+        public void onButtonClicked(FriendsProviderDT person) {
+            refreshAdapters();
+        }
+    };
+
+    public void refreshAdapters() {
+        easyAdapter.notifyDataSetChanged();
+        dynamicListView.invalidate();
+    }
 }

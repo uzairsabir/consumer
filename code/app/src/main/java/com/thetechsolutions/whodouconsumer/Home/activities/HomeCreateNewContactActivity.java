@@ -165,10 +165,13 @@ public class HomeCreateNewContactActivity extends FragmentActivityController imp
 
                         EasyImage.openChooserWithGallery(activity, "Profile Photo", EasyImageConfig.REQ_PICK_PICTURE_FROM_GALLERY);
                     }
-                } else if (profileDT.getCreated_by().equals(AppPreferences.getString(AppPreferences.PREF_USER_NUMBER))) {
-                    if (PermissionHandler.isStoragePermissionGranted(activity)) {
+                }else if (profileDT.getCreated_by() != null) {
 
-                        EasyImage.openChooserWithGallery(activity, "Profile Photo", EasyImageConfig.REQ_PICK_PICTURE_FROM_GALLERY);
+                    if (profileDT.getCreated_by().equals(AppPreferences.getString(AppPreferences.PREF_USER_NUMBER))) {
+                        if (PermissionHandler.isStoragePermissionGranted(activity)) {
+
+                            EasyImage.openChooserWithGallery(activity, "Profile Photo", EasyImageConfig.REQ_PICK_PICTURE_FROM_GALLERY);
+                        }
                     }
                 }
 

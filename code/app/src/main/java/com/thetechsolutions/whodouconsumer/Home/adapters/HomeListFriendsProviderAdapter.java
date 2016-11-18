@@ -3,7 +3,6 @@ package com.thetechsolutions.whodouconsumer.Home.adapters;
 import android.app.Activity;
 import android.net.Uri;
 import android.os.AsyncTask;
-import android.support.v4.app.Fragment;
 import android.view.View;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -15,6 +14,7 @@ import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.ListenerContro
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendsProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.WebService.AsynGetDataController;
+import com.thetechsolutions.whodouconsumer.Home.activities.HomeFriendProfileActivity;
 import com.thetechsolutions.whodouconsumer.Home.fragments.HomeMainFragment;
 import com.thetechsolutions.whodouconsumer.Home.model.HomeModel;
 import com.thetechsolutions.whodouconsumer.R;
@@ -62,7 +62,6 @@ public class HomeListFriendsProviderAdapter extends ItemViewHolder<FriendsProvid
     FriendsProviderDT item;
 
     boolean isRefresh = false;
-
 
 
     public HomeListFriendsProviderAdapter(View view) {
@@ -199,18 +198,21 @@ public class HomeListFriendsProviderAdapter extends ItemViewHolder<FriendsProvid
             if (result) {
 
 
-
-
 //                if (isDeleteRequire) {
 //                    RealmDataDelete.deleteConsumerProviderLink(providername, 2);
 //                }
 
 
-                if(AsynGetDataController.getInstance().getMyProvidersOrFriends(activity, 0, false)==0){
+                if (AsynGetDataController.getInstance().getMyProvidersOrFriends(activity, 0, false) == 0) {
                     MyLogs.printinfo("refresh_fragment");
-                    try{
+                    try {
                         HomeMainFragment.fragment.loadData();
-                    }catch (Exception e){
+                    } catch (Exception e) {
+
+                    }
+                    try {
+                        ((HomeFriendProfileActivity) activity).loadData();
+                    } catch (Exception e) {
 
                     }
                 }

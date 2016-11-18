@@ -44,7 +44,7 @@ public class FriendsProviderDT extends RealmObject {
     private String created_by = "";
     private int tab_pos;
     private String friend_name = "";
-
+    private String friend_number = "";
     public int getId() {
         return id;
     }
@@ -272,5 +272,13 @@ public class FriendsProviderDT extends RealmObject {
 
     public void setFriend_name(String friend_name) {
         this.friend_name = friend_name;
+    }
+
+    public String getFriend_number() {
+        return friend_number;
+    }
+
+    public void setFriend_number(String friend_number) {
+        this.friend_number = friend_number;
     }
 }

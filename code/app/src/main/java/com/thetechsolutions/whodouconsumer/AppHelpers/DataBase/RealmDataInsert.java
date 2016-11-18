@@ -600,9 +600,17 @@ public class RealmDataInsert {
                     } catch (RealmException e) {
                         item.setFriend_name("");
                     }
+                    try {
+                        if (jsonArray.getJSONObject(i).has("friend_number"))
+                            item.setFriend_number(jsonArray.getJSONObject(i).getString("friend_number"));
+                        else item.setFriend_number("");
+
+                    } catch (RealmException e) {
+                        item.setFriend_name("");
+                    }
 
 
-                    realm.copyToRealmOrUpdate(item);
+                    realm.insertOrUpdate(item);
                     realm.commitTransaction();
                 }
 
