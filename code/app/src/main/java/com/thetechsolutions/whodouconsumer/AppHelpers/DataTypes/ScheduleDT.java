@@ -256,7 +256,7 @@ public class ScheduleDT extends RealmObject {
 
                     return "res:///" + R.drawable.com_facebook_profile_picture_blank_square;
                 } else {
-                    return this.consumer_image_url;
+                    return this.sub_category_image_url;
                 }
 
             }

@@ -41,6 +41,8 @@ import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.ui.ConversationActivity;
 import eu.siacs.conversations.utils.FriendNames;
 import eu.siacs.conversations.utils.UIHelper;
+import io.realm.Realm;
+import io.realm.RealmObject;
 import io.realm.RealmResults;
 
 /**
@@ -364,16 +366,23 @@ public class AppController {
 
     public static ArrayList<FriendsProviderDT> filterFriendsProvider(ArrayList<FriendsProviderDT> friendsProviders) {
 
-        //  RealmResults<FriendsProviderDT> friendsProviderDTs = realm.where(FriendsProviderDT.class).findAllSorted(a, b).distinct("username");
-
         ArrayList<FriendsProviderDT> filterList = new ArrayList<>();
+       // Realm realmObject= Realm.getDefaultInstance();
+       // realmObject.setAutoRefresh(true);
+
 
         RealmResults<ProviderDT> providerDTs = RealmDataRetrive.getProvider();
+//        for(ProviderDT object2: providerDTs){
+//            MyLogs.printinfo("provider_username "+object2.getUsername() +" : "+object2.getFirst_name()+" "+object2.getLast_name());
+//        }
+
         if (RealmDataRetrive.getProvider().size() > 0) {
 
             boolean found = false;
             for(FriendsProviderDT object1 : friendsProviders){
+
                 for(ProviderDT object2: providerDTs){
+
                     if(object1.getUsername().equals(object2.getUsername())){
                         found = true;
 

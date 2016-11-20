@@ -8,6 +8,7 @@ import com.thetechsolutions.whodouconsumer.AppHelpers.WebService.WebserviceModel
 import com.thetechsolutions.whodouconsumer.R;
 
 import org.vanguardmatrix.engine.utils.MyLogs;
+import org.vanguardmatrix.engine.utils.UtilityFunctions;
 
 /**
  * Created by Uzair on 7/16/2016.
@@ -104,6 +105,7 @@ public class ScheduleController {
 
             if (result == 0) {
                 AppController.returnIntent(activity, "done");
+                UtilityFunctions.showToast_onCenter("Appointment has been created.",activity);
 
             } else {
                 MyLogs.printinfo(
@@ -169,6 +171,7 @@ public class ScheduleController {
 
             if (result == 0) {
                 AppController.returnIntent(activity, "done");
+                UtilityFunctions.showToast_onCenter("Appointment has been updated.",activity);
             } else {
                 MyLogs.printinfo(
                         "Error in getting my providers"

@@ -598,7 +598,7 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 //									activity.getPixel(32)));
 //					viewHolder.contact_picture.setAlpha(0.5f);
                 }
-                viewHolder.status_message.setText(ConversationActivity.getContactDisplayName()+" has seen");
+                viewHolder.status_message.setText(ConversationActivity.getContactDisplayName() + " has seen");
             }
             return view;
         } else if (type == RECEIVED) {
@@ -609,6 +609,15 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                 } else {
                     Picasso.with(activity).load(ConversationActivity.contactAvatar).error(R.drawable.empty_profile).into(viewHolder.contact_picture);
 
+                    viewHolder.contact_picture
+                            .setOnClickListener(new OnClickListener() {
+
+                                @Override
+                                public void onClick(View v) {
+                                    UIHelper.showFullImage(activity, "", ConversationActivity.contactAvatar, null, 0);
+
+                                }
+                            });
                 }
             } catch (Exception e) {
 
@@ -620,9 +629,22 @@ public class MessageAdapter extends ArrayAdapter<Message> {
                 if (ConversationActivity.accountAvatar.isEmpty()) {
                     Picasso.with(activity).load("abc.png").error(R.drawable.empty_profile).into(viewHolder.contact_picture);
 
+
                 } else {
+
                     Picasso.with(activity).load(ConversationActivity.accountAvatar).error(R.drawable.empty_profile).into(viewHolder.contact_picture);
 
+                    viewHolder.contact_picture
+                            .setOnClickListener(new OnClickListener() {
+
+                                @Override
+                                public void onClick(View v) {
+                                    Log.e("Friend_image ",""+ ConversationActivity.accountAvatar
+                                    );
+                                    UIHelper.showFullImage(activity, "Friend", ConversationActivity.accountAvatar, null, 0);
+
+                                }
+                            });
                 }
             } catch (Exception e) {
 
@@ -630,32 +652,21 @@ public class MessageAdapter extends ArrayAdapter<Message> {
 
             //loadAvatar(message, viewHolder.contact_picture);
         }
-		viewHolder.contact_picture
-			.setOnClickListener(new OnClickListener() {
 
-				@Override
-				public void onClick(View v) {
-					if (MessageAdapter.this.mOnContactPictureClickedListener != null) {
-						MessageAdapter.this.mOnContactPictureClickedListener
-								.onContactPictureClicked(message);
-					}
-
-				}
-			});
-        viewHolder.contact_picture
-                .setOnLongClickListener(new OnLongClickListener() {
-
-                    @Override
-                    public boolean onLongClick(View v) {
-                        if (MessageAdapter.this.mOnContactPictureLongClickedListener != null) {
-                            MessageAdapter.this.mOnContactPictureLongClickedListener
-                                    .onContactPictureLongClicked(message);
-                            return true;
-                        } else {
-                            return false;
-                        }
-                    }
-                });
+//        viewHolder.contact_picture
+//                .setOnLongClickListener(new OnLongClickListener() {
+//
+//                    @Override
+//                    public boolean onLongClick(View v) {
+//                        if (MessageAdapter.this.mOnContactPictureLongClickedListener != null) {
+//                            MessageAdapter.this.mOnContactPictureLongClickedListener
+//                                    .onContactPictureLongClicked(message);
+//                            return true;
+//                        } else {
+//                            return false;
+//                        }
+//                    }
+//                });
 
         final Transferable transferable = message.getTransferable();
         if (transferable != null && transferable.getStatus() != Transferable.STATUS_UPLOADING) {

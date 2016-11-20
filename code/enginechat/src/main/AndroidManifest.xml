@@ -192,6 +192,10 @@
             android:theme="@style/noAnimThemeAim"
             tools:replace="android:theme" />
         <activity
+            android:name=".utils.FullImageView"
+            android:theme="@style/noAnimThemeAim"
+            tools:replace="android:theme" />
+        <activity
             android:name=".ui.AboutActivity"
             android:theme="@style/noAnimThemeAim"
             android:label="@string/title_activity_about"

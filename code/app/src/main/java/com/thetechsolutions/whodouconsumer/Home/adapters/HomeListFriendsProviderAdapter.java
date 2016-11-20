@@ -15,11 +15,11 @@ import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendsProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.WebService.AsynGetDataController;
 import com.thetechsolutions.whodouconsumer.Home.activities.HomeFriendProfileActivity;
+import com.thetechsolutions.whodouconsumer.Home.activities.HomeMainActivity;
 import com.thetechsolutions.whodouconsumer.Home.fragments.HomeMainFragment;
 import com.thetechsolutions.whodouconsumer.Home.model.HomeModel;
 import com.thetechsolutions.whodouconsumer.R;
 
-import org.vanguardmatrix.engine.utils.MyLogs;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
 
 import uk.co.ribot.easyadapter.ItemViewHolder;
@@ -61,8 +61,6 @@ public class HomeListFriendsProviderAdapter extends ItemViewHolder<FriendsProvid
     static Activity activity;
     FriendsProviderDT item;
 
-    boolean isRefresh = false;
-
 
     public HomeListFriendsProviderAdapter(View view) {
         super(view);
@@ -78,7 +76,7 @@ public class HomeListFriendsProviderAdapter extends ItemViewHolder<FriendsProvid
 
     @Override
     public void onSetValues(FriendsProviderDT item, PositionInfo positionInfo) {
-        MyLogs.printinfo("item_pay " + item.getImage_url());
+        // MyLogs.printinfo("item_pay " + item.getImage_url());
         sourceImageView.setImageURI(Uri.parse(item.getImage_url()));
         title.setText(item.getFirst_name() + " " + item.getLast_name());
         service_name.setText(item.getSub_category_title());
@@ -117,6 +115,11 @@ public class HomeListFriendsProviderAdapter extends ItemViewHolder<FriendsProvid
         container.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                //MyLogs.printinfo("username " + activity);
+                HomeMainFragment.pos = 2;
+//                if (activity == null) {
+//                    activity = HomeFriendProfileActivity.activity;
+//                }
                 ListenerController.openFriendProfileActivity(activity, 2, item.getUsername());
                 //ListenerController.openFriendProfileActivity(activity, 0, getItem().getId());
             }
@@ -168,7 +171,18 @@ public class HomeListFriendsProviderAdapter extends ItemViewHolder<FriendsProvid
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
-            AppController.showDialoge(activity);
+
+            try {
+                if (activity instanceof HomeMainActivity) {
+                    AppController.showDialoge(activity);
+                } else {
+                    AppController.showDialoge(HomeFriendProfileActivity.activity);
+                }
+
+            } catch (Exception e) {
+                AppController.showDialoge(HomeFriendProfileActivity.activity);
+            }
+
 
         }
 
@@ -204,17 +218,30 @@ public class HomeListFriendsProviderAdapter extends ItemViewHolder<FriendsProvid
 
 
                 if (AsynGetDataController.getInstance().getMyProvidersOrFriends(activity, 0, false) == 0) {
-                    MyLogs.printinfo("refresh_fragment");
+                    //MyLogs.printinfo("refresh_fragment");
+                    try {
+                        ((HomeFriendProfileActivity) HomeFriendProfileActivity.activity).loadData();
+//                        activity.finish();
+//                        try {
+//                            HomeMainActivity.activity.finish();
+//                        } catch (Exception e) {
+//
+//                        }
+//
+//                        try {
+//                            ListenerController.openHomeActivity(activity, 0);
+//                        } catch (Exception e) {
+//
+//                        }
+                    } catch (Exception e) {
+
+                    }
                     try {
                         HomeMainFragment.fragment.loadData();
                     } catch (Exception e) {
 
                     }
-                    try {
-                        ((HomeFriendProfileActivity) activity).loadData();
-                    } catch (Exception e) {
 
-                    }
                 }
 
 

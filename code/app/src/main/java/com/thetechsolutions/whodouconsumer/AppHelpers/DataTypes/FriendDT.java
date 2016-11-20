@@ -154,7 +154,7 @@ public class FriendDT extends RealmObject {
 
     public String getImage_url() {
         try {
-            MyLogs.printinfo("cat_url " + this.subcategory_image_url);
+        //    MyLogs.printinfo("cat_url " + this.subcategory_image_url);
             if (!(image_url.contains(".jpeg") || image_url.contains(".png") || image_url.contains(".jpg"))) {
                 if (!(subcategory_image_url.contains(".jpeg") || subcategory_image_url.contains(".png") || subcategory_image_url.contains(".jpg"))) {
 

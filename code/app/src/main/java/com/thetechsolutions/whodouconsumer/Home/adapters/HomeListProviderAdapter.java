@@ -73,7 +73,7 @@ public class HomeListProviderAdapter extends ItemViewHolder<ProviderDT> {
         this.item = item;
         this.positioninfo = positionInfo.getPosition();
         try {
-            MyLogs.printinfo("cat_image " + item.getImage_url());
+      //      MyLogs.printinfo("cat_image " + item.getImage_url());
             //sourceImageView.
             sourceImageView.setImageURI(Uri.parse(item.getImage_url()));
 

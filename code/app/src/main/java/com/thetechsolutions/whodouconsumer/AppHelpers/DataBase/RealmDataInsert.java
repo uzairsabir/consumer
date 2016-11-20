@@ -229,7 +229,7 @@ public class RealmDataInsert {
                     }
 
 
-                    realm.copyToRealmOrUpdate(item);
+                    realm.insertOrUpdate(item);
                     realm.commitTransaction();
                 } else if (type == 1) {
                     FriendDT item = new FriendDT();

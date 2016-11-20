@@ -59,7 +59,7 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
 
     EditText cell_no, email, city_state, zip_code;
     ImageView dollar_icon, calendar_icon, chat_icon, call_icon;
-    Button save_btn, delete_btn,edit_profile;
+    Button save_btn, delete_btn, edit_profile;
 
     static int tab_pos, subCatId;
     static String providerName;
@@ -125,7 +125,7 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
         delete_btn = (Button) findViewById(R.id.delete_btn);
         dynamicListView = (FullLengthListView) findViewById(R.id.dynamiclistview);
         list_container = (RelativeLayout) findViewById(R.id.list_container);
-        edit_profile=(Button) findViewById(R.id.edit_profile);
+        edit_profile = (Button) findViewById(R.id.edit_profile);
         //MyLogs.printinfo("tab_pos " + tab_pos);
 
         top_lay = (LinearLayout) findViewById(R.id.top_lay);
@@ -236,7 +236,8 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
 
     }
 
-    public void loadData(){
+    public void loadData() {
+        
         if (HomeMainFragment.pos == 0) {
             final ProviderDT item_detail = RealmDataRetrive.getProviderDetail(providerName, 0);
 
@@ -415,40 +416,8 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
 
                 friendsProviderDTs = new ArrayList<>();
                 friendsProviderDTs.addAll(RealmDataRetrive.getFriendsProviderByUserName(item_detail.getUsername()));
-                if (friendsProviderDTs.size() > 0) {
-                    list_container.setVisibility(View.VISIBLE);
-                    easyAdapter = new EasyAdapter<>(
-                            activity,
-                            HomeListFriendsProviderAdapter.newInstance(activity),
-                            friendsProviderDTs, mListener);
-                    AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(easyAdapter);
-                    animationAdapter.setAbsListView(dynamicListView);
-                    dynamicListView.setAdapter(animationAdapter);
-                    dynamicListView.setExpanded(true);
-                    top_lay.setVisibility(View.GONE);
-                    edit_profile.setVisibility(View.VISIBLE);
-                    int dpValue = 230; // margin in dips
-                    float d = activity.getResources().getDisplayMetrics().density;
-                    int margin = (int)(dpValue * d); // margin in pixels
-                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
-                    lp.setMargins(0, margin, 0, 0);
-                    mobile_edit.setLayoutParams(lp);
+                new getFriendsProviderList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-                    edit_profile.setOnClickListener(new View.OnClickListener() {
-                        @Override
-                        public void onClick(View v) {
-                            if(list_container.getVisibility()==View.VISIBLE){
-                                list_container.setVisibility(View.GONE);
-                                top_lay.setVisibility(View.VISIBLE);
-                                edit_profile.setText("Profile Detail");
-                            }else{
-                                list_container.setVisibility(View.VISIBLE);
-                                top_lay.setVisibility(View.GONE);
-                                edit_profile.setText("Friend Providers");
-                            }
-                        }
-                    });
-                }
             }
 
         } else if (HomeMainFragment.pos == 2) {
@@ -688,5 +657,93 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
     public void refreshAdapters() {
         easyAdapter.notifyDataSetChanged();
         dynamicListView.invalidate();
+    }
+
+
+    private class getFriendsProviderList extends AsyncTask<String, Void, Boolean> {
+
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+
+        @Override
+        protected Boolean doInBackground(String... params) {
+            try {
+
+                if (friendsProviderDTs.size() > 0) {
+                    return true;
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return false;
+        }
+
+        @Override
+        protected void onPostExecute(Boolean result) {
+            super.onPostExecute(result);
+            if (result) {
+                ArrayList<FriendsProviderDT> tempList = new ArrayList<>();
+                tempList = AppController.filterFriendsProvider(friendsProviderDTs);
+                if (tempList.size() > 0) {
+                  // MyLogs.printinfo("tempList " + tempList.size());
+
+                    list_container.setVisibility(View.VISIBLE);
+                    easyAdapter = new EasyAdapter<>(
+                            activity,
+                            HomeListFriendsProviderAdapter.newInstance(activity),
+                            tempList, mListener);
+                    AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(easyAdapter);
+                    animationAdapter.setAbsListView(dynamicListView);
+                    dynamicListView.setAdapter(animationAdapter);
+                    dynamicListView.setExpanded(true);
+                    top_lay.setVisibility(View.GONE);
+                    edit_profile.setVisibility(View.VISIBLE);
+                    int dpValue = 230; // margin in dips
+                    int dpvalue_2 = 10;
+                    float d = activity.getResources().getDisplayMetrics().density;
+                    int margin = (int) (dpValue * d);
+                    int margin_2 = (int) (dpvalue_2 * d);// margin in pixels
+                    RelativeLayout.LayoutParams lp = new RelativeLayout.LayoutParams(RelativeLayout.LayoutParams.WRAP_CONTENT, RelativeLayout.LayoutParams.WRAP_CONTENT);
+                    lp.setMargins(margin_2, margin, 0, 0);
+                    mobile_edit.setLayoutParams(lp);
+                    edit_profile.setText("View Detail");
+
+                }else{
+                    list_container.setVisibility(View.GONE);
+                    top_lay.setVisibility(View.VISIBLE);
+                    edit_profile.setText("View Providers");
+                }
+
+                edit_profile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (list_container.getVisibility() == View.VISIBLE) {
+                            list_container.setVisibility(View.GONE);
+                            top_lay.setVisibility(View.VISIBLE);
+                            edit_profile.setText("View Providers");
+
+                        } else {
+                            list_container.setVisibility(View.VISIBLE);
+                            top_lay.setVisibility(View.GONE);
+                            edit_profile.setText("View Detail");
+                        }
+                    }
+                });
+
+            } else {
+
+
+            }
+
+        }
+
     }
 }
