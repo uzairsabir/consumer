@@ -72,8 +72,8 @@ public class ListenerController {
     }
 
     public static void openPaymentDetail(Activity activity, int id, int tab_pos, String title) {
-        activity.startActivity(PayDetailActivity.createIntent(
-                activity, id, tab_pos, title));
+        activity.startActivityForResult(PayDetailActivity.createIntent(
+                activity, id, tab_pos, title),1);
 
     }
 

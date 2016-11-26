@@ -2,7 +2,6 @@ package com.thetechsolutions.whodouconsumer.AppHelpers.WebService;
 
 import com.thetechsolutions.whodouconsumer.AppHelpers.Config.AppConstants;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataInsert;
-import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
 
 import org.apache.http.NameValuePair;
 import org.apache.http.message.BasicNameValuePair;
@@ -94,7 +93,7 @@ public class WebserviceModel {
 
                         try {
 
-                           return RealmDataInsert.insertSchedule(resultJson.getJSONArray(AppConstants.BODY));
+                            return RealmDataInsert.insertSchedule(resultJson.getJSONArray(AppConstants.BODY));
                         } catch (JSONException e) {
                             e.printStackTrace();
                         } catch (Exception e) {
@@ -118,20 +117,10 @@ public class WebserviceModel {
     }
 
     public static boolean updateAppointments(String appointment_id, String appointmentdatetime, String duration, String description, String appointment_status, String calendarId) {
-      //  String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+        //  String id = String.valueOf(RealmDataRetrive.getProfile().getId());
 
         ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
 
-//        {
-//            "appointment_id": "258",
-//                "appointment_date_time": "2017-05-15 16:00:00",
-//                "estimated_duration": "4",
-//                "appointment_status": "accepted",
-//                "new_description": "testing",
-//                "consumer_device_type": "android",
-//                "calender_guid": "calendarGuid"
-//        }
-      //  params.add(new BasicNameValuePair("consumer_id", id));
         params.add(new BasicNameValuePair("appointment_id", appointment_id));
         params.add(new BasicNameValuePair("appointment_date_time", appointmentdatetime));
         params.add(new BasicNameValuePair("estimated_duration", duration));
@@ -214,6 +203,107 @@ public class WebserviceModel {
                 }
 
                 return true;
+            }
+
+        } catch (OutOfMemoryError e) {
+            e.printStackTrace();
+
+        }
+        return false;
+
+    }
+
+    public static boolean createPayment(String vendor_id, String payment_amount, String payment_description, String service_date, String payment_status, String request_receipt) {
+        //  String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+        String id = AppPreferences.getString(AppPreferences.PREF_USER_ID);
+        ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        params.add(new BasicNameValuePair("vendor_id", vendor_id));
+        params.add(new BasicNameValuePair("consumer_id", id));
+        params.add(new BasicNameValuePair("payment_amount", payment_amount));
+        params.add(new BasicNameValuePair("appointment_id", ""));
+        params.add(new BasicNameValuePair("payment_description", payment_description));
+        params.add(new BasicNameValuePair("service_date", service_date));
+        params.add(new BasicNameValuePair("payment_status", payment_status));
+        params.add(new BasicNameValuePair("request_receipt", request_receipt));
+
+        JSONObject resultJson;
+        try {
+
+            resultJson = WebService.callHTTPPost(
+                    ServiceUrl.call_create_payment, params, true)
+                    .extractJSONObject();
+
+            if (WebService.getResponseCode(resultJson) == 0) {
+
+                try {
+
+                    if (resultJson.getJSONArray(AppConstants.BODY) != null) {
+
+
+                        try {
+
+                            return RealmDataInsert.insertPay(resultJson.getJSONArray(AppConstants.BODY));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+
+        } catch (OutOfMemoryError e) {
+            e.printStackTrace();
+
+        }
+        return false;
+
+    }
+
+    public static boolean getPayment(String payment_status) {
+        //  String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+        String id = AppPreferences.getString(AppPreferences.PREF_USER_ID);
+        ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        params.add(new BasicNameValuePair("my_consumer_id", id));
+        params.add(new BasicNameValuePair("payment_status", payment_status));
+
+
+        JSONObject resultJson;
+        try {
+
+            resultJson = WebService.callHTTPPost(
+                    ServiceUrl.call_get_payment, params, true)
+                    .extractJSONObject();
+
+            if (WebService.getResponseCode(resultJson) == 0) {
+
+                try {
+
+                    if (resultJson.getJSONArray(AppConstants.BODY) != null) {
+
+
+                        try {
+
+                            return RealmDataInsert.insertPay(resultJson.getJSONArray(AppConstants.BODY));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
             }
 
         } catch (OutOfMemoryError e) {

@@ -9,6 +9,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
+import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.PayDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ScheduleDT;
@@ -17,8 +19,6 @@ import com.thetechsolutions.whodouconsumer.Pay.adapters.PayListAdapter;
 import com.thetechsolutions.whodouconsumer.Pay.controller.PayController;
 import com.thetechsolutions.whodouconsumer.R;
 import com.thetechsolutions.whodouconsumer.Schedule.adapters.ScheduleListAdapter;
-import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
-import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
 
 import org.vanguardmatrix.engine.customviews.ProgressActivity;
 import org.vanguardmatrix.engine.utils.MyLogs;
@@ -91,12 +91,37 @@ public class PayMainFragment extends Fragment implements View.OnClickListener {
     }
 
     private void loadData() {
-        new getDataList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        if (getArguments().getInt(ARG_SECTION_POSITION) == 0) {
+            if (RealmDataRetrive.getPayList(0).size() > 0) {
+                new getDataList(0).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            } else {
+                progressActivity.showEmpty(activity.getResources().getDrawable(R.drawable.dollar_gray_icon), "",
+                        "No payments pending.Click on Setup to experience the simplicity of mobile payments! No more worries about having " +
+                                "to track down payment from customers.");
+            }
+
+        } else if (getArguments().getInt(ARG_SECTION_POSITION) == 1) {
+            if (RealmDataRetrive.getPayList(1).size() > 0) {
+                new getDataList(1).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            } else {
+                progressActivity.showEmpty(activity.getResources().getDrawable(R.drawable.dollar_gray_icon), "",
+                        "No past payments.Click on Setup to experience the simplicity of mobile payments! No more worries about having " +
+                                "to track down payment from customers.");
+
+            }
+        }
+
+
+        // new getDataList().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
     class getDataList extends AsyncTask<String, Void, Boolean> {
 
-
+        int _tab_id;
+        getDataList(int tab_id) {
+            _tab_id = tab_id;
+        }
         @Override
         protected void onPreExecute() {
             super.onPreExecute();
@@ -151,7 +176,7 @@ public class PayMainFragment extends Fragment implements View.OnClickListener {
         MyLogs.printinfo("arrayList " + arrayList.size());
         easyAdapter = new EasyAdapter<>(
                 activity,
-                PayListAdapter.newInstance(activity,getArguments().getInt(ARG_SECTION_POSITION)),
+                PayListAdapter.newInstance(activity, getArguments().getInt(ARG_SECTION_POSITION)),
                 arrayList, mListener);
         AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(easyAdapter);
         animationAdapter.setAbsListView(dynamicListView);
