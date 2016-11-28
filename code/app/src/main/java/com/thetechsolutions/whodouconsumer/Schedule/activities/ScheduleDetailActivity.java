@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.view.Window;
 import android.widget.AdapterView;
@@ -23,7 +24,6 @@ import com.kyleduo.switchbutton.SwitchButton;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.BottomMenuController;
-import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.FragmentActivityController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.MethodGenerator;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.TitleBarController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
@@ -37,19 +37,30 @@ import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
 import org.vanguardmatrix.engine.android.AppPreferences;
+import org.vanguardmatrix.engine.utils.MyLogs;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.UUID;
 
+import eu.siacs.conversations.Config;
+import eu.siacs.conversations.entities.Account;
+import eu.siacs.conversations.entities.Contact;
+import eu.siacs.conversations.entities.Conversation;
+import eu.siacs.conversations.entities.Message;
+import eu.siacs.conversations.services.XmppConnectionService;
+import eu.siacs.conversations.ui.XmppActivity;
+import eu.siacs.conversations.xmpp.jid.InvalidJidException;
+import eu.siacs.conversations.xmpp.jid.Jid;
 import io.realm.RealmResults;
 import uk.co.ribot.easyadapter.EasyAdapter;
 
 /**
  * Created by Uzair on 7/12/2016.
  */
-public class ScheduleDetailActivity extends FragmentActivityController implements MethodGenerator,
-        View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class ScheduleDetailActivity extends XmppActivity implements MethodGenerator,
+        View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, XmppConnectionService.OnShowErrorToast {
 
     static Activity activity;
 
@@ -61,7 +72,7 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
     RelativeLayout switch_button_container;
     AutoCompleteTextView auto_com_cutomer_name;
     RelativeLayout item_container;
-    static String title, providerUserName;
+    static String title, providerUserName, contact_number;
     SwitchButton switch_button;
     String selectedDateTime, appointmentId, appointmentStatus;
     EditText description;
@@ -85,6 +96,12 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
 
     }
 
+
+    @Override
+    protected void refreshUiReal() {
+
+    }
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -94,6 +111,11 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
         BottomMenuController.getInstance(activity).setBottomMenu(activity);
         viewInitialize();
         viewUpdate();
+        try {
+            getActionBar().hide();
+        } catch (Exception e) {
+
+        }
 
     }
 
@@ -173,6 +195,12 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
 
                 }
             });
+            try {
+                MyLogs.printinfo("item_detail " + item_detail.getVendor_username());
+                contact_number = item_detail.getVendor_username();
+            } catch (Exception e) {
+
+            }
 
 
         }
@@ -198,6 +226,7 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
                 auto_com_cutomer_name.setText("" + item.getFirst_name() + " " + item.getLast_name());
                 vendorId = "" + item.getId();
                 auto_com_cutomer_name.setEnabled(false);
+                contact_number = providerUserName;
 
 
             }
@@ -205,6 +234,7 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
             ArrayList<String> providers_name = new ArrayList<>();
             for (ProviderDT item : RealmDataRetrive.getProvider()) {
                 providers_name.add(item.getFirst_name() + " " + item.getLast_name());
+
             }
 
 
@@ -229,6 +259,7 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
                             System.out.println("Position " + pos);
 
                             vendorId = "" + arrayList.get(i).getId();
+                            contact_number = arrayList.get(i).getUsername();
                             break;
                         }
                     }
@@ -273,7 +304,7 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
                 break;
             case R.id.decline_btn:
 
-                appointmentStatus = "rejected";
+                appointmentStatus = "cancelled";
                 validator(true);
 
                 break;
@@ -435,7 +466,7 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
                 //MyLogs.printinfo("calId " + calId);
 
                 UtilityFunctions.deleteEventNew(activity, calId);
-                if (!appointmentStatus.equals("rejected")) {
+                if (!((appointmentStatus.equals("rejected")||(appointmentStatus.equals("cancelled"))))) {
                     calId = UtilityFunctions.addEvent(activity, sqlDateTime, title_name.getText().toString(), duration);
                 }
 
@@ -448,12 +479,120 @@ public class ScheduleDetailActivity extends FragmentActivityController implement
         if (isUpdate) {
 
             ScheduleController.getInstance().updateAppointments(activity, appointmentId, sqlDateTime, durationS, description.getText().toString(), appointmentStatus, "" + calId);
-
+            sendMessage(contact_number + "_v", "Update Appointment Request!\n(" + selectedDateTime + ")");
         } else {
             ScheduleController.getInstance().createAppointments(activity, vendorId, sqlDateTime, durationS, description.getText().toString(), callMessgae, "" + calId);
-
+            sendMessage(contact_number + "_v", "New Appointment Request!\n(" + selectedDateTime + ")");
         }
 
     }
 
+    public void sendMessage(String contactNumber, String message) {
+        String accountNumber = AppPreferences.getString(AppPreferences.PREF_USER_NUMBER) + "_c";
+        Log.e("prefilledJid ", " " + accountNumber + " " + contactNumber);
+
+        Jid accountJid = null;
+        try {
+
+            accountJid = Jid.fromString(accountNumber + "@" + Config.MAGIC_CREATE_DOMAIN);
+
+        } catch (InvalidJidException e) {
+            e.printStackTrace();
+        }
+        Jid contactJid = null;
+        try {
+            contactJid = Jid.fromString(contactNumber + "@" + Config.MAGIC_CREATE_DOMAIN);
+        } catch (InvalidJidException e) {
+            e.printStackTrace();
+        }
+        if (!xmppConnectionServiceBound) {
+            return;
+        }
+
+        final Account account = xmppConnectionService.findAccountByJid(accountJid);
+        if (account == null) {
+            return;
+        }
+
+        try {
+            final Contact contact = account.getRoster().getContact(contactJid);
+            Conversation conversation = null;
+            if (contact.showInRoster()) {
+
+                conversation = xmppConnectionService
+                        .findOrCreateConversation(contact.getAccount(),
+                                contact.getJid(), false);
+
+
+            } else {
+                xmppConnectionService.createContact(contact);
+                //    switchToConversation(contact);
+
+                conversation = xmppConnectionService
+                        .findOrCreateConversation(contact.getAccount(),
+                                contact.getJid(), false);
+                ///  switchToConversation(conversation);
+
+
+            }
+            sendMessage(conversation, message);
+        } catch (Exception e) {
+
+        }
+
+        return;
+
+
+    }
+
+    private void sendMessage(Conversation conversation, String messagea) {
+        final String body = messagea;
+        if (body.length() == 0 || conversation == null) {
+            return;
+        }
+        final Message message;
+        if (conversation.getCorrectingMessage() == null) {
+            message = new Message(conversation, body, conversation.getNextEncryption());
+            if (conversation.getMode() == Conversation.MODE_MULTI) {
+                if (conversation.getNextCounterpart() != null) {
+                    message.setCounterpart(conversation.getNextCounterpart());
+                    message.setType(Message.TYPE_PRIVATE);
+                }
+            }
+        } else {
+            message = conversation.getCorrectingMessage();
+            message.setBody(body);
+            message.setEdited(message.getUuid());
+            message.setUuid(UUID.randomUUID().toString());
+            conversation.setCorrectingMessage(null);
+        }
+        xmppConnectionService.sendMessage(message);
+        //messageSent();
+        //sendPlainTextMessage(message);
+//        switch (conversation.getNextEncryption()) {
+//            case Message.ENCRYPTION_OTR:
+//                sendOtrMessage(message);
+//                break;
+//            case Message.ENCRYPTION_PGP:
+//                sendPgpMessage(message);
+//                break;
+//            case Message.ENCRYPTION_AXOLOTL:
+//                if (!activity.trustKeysIfNeeded(ConversationActivity.REQUEST_TRUST_KEYS_TEXT)) {
+//                    sendAxolotlMessage(message);
+//                }
+//                break;
+//            default:
+//                sendPlainTextMessage(message);
+//        }
+    }
+
+    @Override
+    protected void onBackendConnected() {
+
+    }
+
+    @Override
+    public void onShowErrorToast(int resId) {
+
+    }
 }

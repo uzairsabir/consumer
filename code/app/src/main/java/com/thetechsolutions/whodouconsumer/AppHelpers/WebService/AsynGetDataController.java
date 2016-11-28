@@ -555,6 +555,18 @@ public class AsynGetDataController {
                 e.printStackTrace();
 
             }
+            try {
+                new getPayments(activity, "paid").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+            } catch (Exception e) {
+
+            }
+            try {
+                new getPayments(activity, "pending").executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+            } catch (Exception e) {
+
+            }
         }
 
     }

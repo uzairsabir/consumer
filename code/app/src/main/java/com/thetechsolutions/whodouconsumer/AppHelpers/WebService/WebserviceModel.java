@@ -226,6 +226,7 @@ public class WebserviceModel {
         params.add(new BasicNameValuePair("service_date", service_date));
         params.add(new BasicNameValuePair("payment_status", payment_status));
         params.add(new BasicNameValuePair("request_receipt", request_receipt));
+        params.add(new BasicNameValuePair("user_type", AppConstants.APP_TYPE));
 
         JSONObject resultJson;
         try {

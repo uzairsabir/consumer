@@ -154,9 +154,9 @@ public class RealmDataRetrive {
         // MyLogs.printinfo("scheduleList " + tabId + "  " + realm.where(ScheduleDT.class).findAll().size());
 
         if (tabId == 0) {
-            return realm.where(ScheduleDT.class).greaterThan("appointment_date_time", System.currentTimeMillis()).notEqualTo("status", "rejected").findAllSorted("appointment_date_time", Sort.ASCENDING);
+            return realm.where(ScheduleDT.class).greaterThan("appointment_date_time", System.currentTimeMillis()).notEqualTo("status", "rejected").notEqualTo("status", "cancelled").findAllSorted("appointment_date_time", Sort.ASCENDING);
         } else if (tabId == 1) {
-            return realm.where(ScheduleDT.class).lessThanOrEqualTo("appointment_date_time", System.currentTimeMillis()).notEqualTo("status", "rejected").findAllSorted("appointment_date_time", Sort.DESCENDING);
+            return realm.where(ScheduleDT.class).lessThanOrEqualTo("appointment_date_time", System.currentTimeMillis()).notEqualTo("status", "rejected").notEqualTo("status", "cancelled").findAllSorted("appointment_date_time", Sort.DESCENDING);
         }
 
         return null;

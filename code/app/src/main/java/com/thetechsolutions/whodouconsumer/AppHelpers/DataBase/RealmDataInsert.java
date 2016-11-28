@@ -683,6 +683,24 @@ public class RealmDataInsert {
 
                     }
                     try {
+                        if (!jsonObject.getJSONObject(i).isNull("consumer_username"))
+                            tempItem.setConsumer_username(jsonObject.getJSONObject(i).getString("consumer_username"));
+                        else {
+                            tempItem.setConsumer_username("");
+                        }
+                    } catch (Exception e) {
+
+                    }
+                    try {
+                        if (!jsonObject.getJSONObject(i).isNull("vendor_username"))
+                            tempItem.setVendor_username(jsonObject.getJSONObject(i).getString("vendor_username"));
+                        else {
+                            tempItem.setVendor_username("");
+                        }
+                    } catch (Exception e) {
+
+                    }
+                    try {
                         if (!jsonObject.getJSONObject(i).isNull("vendor_zip_code")) {
                             tempItem.setVendor_zip_code(jsonObject.getJSONObject(i).getString("vendor_zip_code"));
                         } else {
@@ -902,6 +920,25 @@ public class RealmDataInsert {
                     } catch (Exception e) {
 
                     }
+                    try {
+                        if (!jsonObject.getJSONObject(i).isNull("consumer_username"))
+                            tempItem.setConsumer_username(jsonObject.getJSONObject(i).getString("consumer_username"));
+                        else {
+                            tempItem.setConsumer_username("");
+                        }
+                    } catch (Exception e) {
+
+                    }
+                    try {
+                        if (!jsonObject.getJSONObject(i).isNull("vendor_username"))
+                            tempItem.setVendor_username(jsonObject.getJSONObject(i).getString("vendor_username"));
+                        else {
+                            tempItem.setVendor_username("");
+                        }
+                    } catch (Exception e) {
+
+                    }
+
 
                     try {
                         if (!jsonObject.getJSONObject(i).isNull("consumer_image_url")) {

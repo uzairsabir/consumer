@@ -158,12 +158,12 @@ public class PayMainFragment extends Fragment implements View.OnClickListener {
                 if (getArguments().getInt(ARG_SECTION_POSITION) == 1) {
                     progressActivity.showEmpty(activity.getResources().getDrawable(R.drawable.dollar_gray_icon), "",
                             "No past payments.Click on Setup to experience the simplicity of mobile payments! No more worries about having " +
-                                    "to track down payment from customers.");
+                                    "cash on hand or writing checks.");
 
                 } else if (getArguments().getInt(ARG_SECTION_POSITION) == 0) {
                     progressActivity.showEmpty(activity.getResources().getDrawable(R.drawable.dollar_gray_icon), "",
                             "No payments pending.Click on Setup to experience the simplicity of mobile payments! No more worries about having " +
-                                    "to track down payment from customers.");
+                                    "cash on hand or writing checks.");
                 }
 
 

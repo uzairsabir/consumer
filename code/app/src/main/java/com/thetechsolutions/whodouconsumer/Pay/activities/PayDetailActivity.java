@@ -172,6 +172,7 @@ public class PayDetailActivity extends FragmentActivityController implements Met
             amount.setText(item_detail.getAmount());
             service_date.setText(item_detail.getDateToDisplay());
             fresco_view.setImageURI(Uri.parse(item_detail.getVendor_image_url()));
+            vendorId=""+item_detail.getVendor_id();
             if (item_detail.getRequest_receipt().equals("1")) {
                 switch_button.setChecked(true);
             } else {
