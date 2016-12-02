@@ -23,6 +23,7 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
+import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.AppController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.BottomMenuController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.MethodGenerator;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.TitleBarController;
@@ -184,19 +185,19 @@ public class ScheduleDetailActivity extends XmppActivity implements MethodGenera
             call_icon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-//                    ListenerController.openScheduleDetail(activity, 0, 2, "Create Appointment", item_detail.getUsername());
+                    UtilityFunctions.directCall(activity, item_detail.getVendor_username());
                 }
             });
 
             chat_icon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    // AppController.openChat(activity, item_detail.getUsername(), item_detail.getConsumer_name() + " " + item_detail.getConsumer_name(), item_detail.getSub_category_image_url(), item_detail.get, 0);
+                    //AppController.openChat(activity, item_detail.getConsumer_username(), item_detail.getConsumer_name(), item_detail.getSub_category_image_url(), item_detail.getis, 0);
 
                 }
             });
             try {
-                MyLogs.printinfo("item_detail " + item_detail.getVendor_username());
+                //MyLogs.printinfo("item_detail " + item_detail.getVendor_username());
                 contact_number = item_detail.getVendor_username();
             } catch (Exception e) {
 
@@ -236,7 +237,16 @@ public class ScheduleDetailActivity extends XmppActivity implements MethodGenera
                 providers_name.add(item.getFirst_name() + " " + item.getLast_name());
 
             }
+            auto_com_cutomer_name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) {
+                        MyLogs.printinfo("has_got_focus");
+                        auto_com_cutomer_name.showDropDown();
 
+                    }
+                }
+            });
 
             ArrayAdapter<String> adapter = new ArrayAdapter<String>(
                     activity,
@@ -466,7 +476,7 @@ public class ScheduleDetailActivity extends XmppActivity implements MethodGenera
                 //MyLogs.printinfo("calId " + calId);
 
                 UtilityFunctions.deleteEventNew(activity, calId);
-                if (!((appointmentStatus.equals("rejected")||(appointmentStatus.equals("cancelled"))))) {
+                if (!((appointmentStatus.equals("rejected") || (appointmentStatus.equals("cancelled"))))) {
                     calId = UtilityFunctions.addEvent(activity, sqlDateTime, title_name.getText().toString(), duration);
                 }
 
@@ -477,9 +487,14 @@ public class ScheduleDetailActivity extends XmppActivity implements MethodGenera
         }
 
         if (isUpdate) {
-
             ScheduleController.getInstance().updateAppointments(activity, appointmentId, sqlDateTime, durationS, description.getText().toString(), appointmentStatus, "" + calId);
-            sendMessage(contact_number + "_v", "Update Appointment Request!\n(" + selectedDateTime + ")");
+
+            if (appointmentStatus.equals("cancelled")) {
+                sendMessage(contact_number + "_v", "Appointment has been cancelled!");
+            } else {
+                sendMessage(contact_number + "_v", "Update Appointment Request!\n(" + selectedDateTime + ")");
+            }
+
         } else {
             ScheduleController.getInstance().createAppointments(activity, vendorId, sqlDateTime, durationS, description.getText().toString(), callMessgae, "" + calId);
             sendMessage(contact_number + "_v", "New Appointment Request!\n(" + selectedDateTime + ")");

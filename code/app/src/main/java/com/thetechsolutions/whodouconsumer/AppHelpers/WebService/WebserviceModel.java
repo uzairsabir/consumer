@@ -266,6 +266,58 @@ public class WebserviceModel {
         return false;
 
     }
+    public static boolean updatePayment(String id, String payment_amount, String payment_description, String service_date, String payment_status, String request_receipt) {
+        //  String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+     //   String id = AppPreferences.getString(AppPreferences.PREF_USER_ID);
+        ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        params.add(new BasicNameValuePair("payment_request_id", id));
+        params.add(new BasicNameValuePair("paid_amount", payment_amount));
+        params.add(new BasicNameValuePair("new_description", payment_description));
+        params.add(new BasicNameValuePair("service_date", service_date));
+        params.add(new BasicNameValuePair("payment_status", payment_status));
+        //params.add(new BasicNameValuePair("request_receipt", request_receipt));
+       // params.add(new BasicNameValuePair("user_type", AppConstants.APP_TYPE));
+
+        JSONObject resultJson;
+        try {
+
+            resultJson = WebService.callHTTPPost(
+                    ServiceUrl.call_update_payment, params, true)
+                    .extractJSONObject();
+
+            if (WebService.getResponseCode(resultJson) == 0) {
+
+                try {
+
+                    if (resultJson.getJSONArray(AppConstants.BODY) != null) {
+
+
+                        try {
+
+                            return RealmDataInsert.insertPay(resultJson.getJSONArray(AppConstants.BODY));
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        } catch (Exception e) {
+                            e.printStackTrace();
+
+                        }
+                    }
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+
+
+            }
+
+        } catch (OutOfMemoryError e) {
+            e.printStackTrace();
+
+        }
+        return false;
+
+    }
+
 
     public static boolean getPayment(String payment_status) {
         //  String id = String.valueOf(RealmDataRetrive.getProfile().getId());

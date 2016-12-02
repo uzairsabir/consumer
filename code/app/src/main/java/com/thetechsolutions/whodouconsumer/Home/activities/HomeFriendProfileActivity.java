@@ -237,7 +237,7 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
     }
 
     public void loadData() {
-        
+
         if (HomeMainFragment.pos == 0) {
             final ProviderDT item_detail = RealmDataRetrive.getProviderDetail(providerName, 0);
 
@@ -278,7 +278,7 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
                 dollar_icon.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        ListenerController.openPaymentDetail(activity, 0, 3, "Create Payment", item_detail.getUsername());
                     }
                 });
                 calendar_icon.setOnClickListener(new View.OnClickListener() {
@@ -366,7 +366,7 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
                 dollar_icon.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-
+                        ListenerController.openPaymentDetail(activity, 0, 3, "Create Payment", item_detail.getUsername());
                     }
                 });
                 calendar_icon.setOnClickListener(new View.OnClickListener() {
@@ -693,7 +693,7 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
                 ArrayList<FriendsProviderDT> tempList = new ArrayList<>();
                 tempList = AppController.filterFriendsProvider(friendsProviderDTs);
                 if (tempList.size() > 0) {
-                  // MyLogs.printinfo("tempList " + tempList.size());
+                    // MyLogs.printinfo("tempList " + tempList.size());
 
                     list_container.setVisibility(View.VISIBLE);
                     easyAdapter = new EasyAdapter<>(
@@ -716,7 +716,7 @@ public class HomeFriendProfileActivity extends FragmentActivityController implem
                     mobile_edit.setLayoutParams(lp);
                     edit_profile.setText("View Detail");
 
-                }else{
+                } else {
                     list_container.setVisibility(View.GONE);
                     top_lay.setVisibility(View.VISIBLE);
                     edit_profile.setText("View Providers");

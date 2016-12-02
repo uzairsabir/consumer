@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -12,6 +13,7 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
@@ -19,7 +21,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.BottomMenuController;
-import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.FragmentActivityController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.MethodGenerator;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.TitleBarController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
@@ -31,41 +32,66 @@ import com.wdullaer.materialdatetimepicker.date.DatePickerDialog;
 import com.wdullaer.materialdatetimepicker.time.RadialPickerLayout;
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog;
 
+import org.vanguardmatrix.engine.android.AppPreferences;
+import org.vanguardmatrix.engine.utils.MyLogs;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
 
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.UUID;
 
+import eu.siacs.conversations.Config;
+import eu.siacs.conversations.entities.Account;
+import eu.siacs.conversations.entities.Contact;
+import eu.siacs.conversations.entities.Conversation;
+import eu.siacs.conversations.entities.Message;
+import eu.siacs.conversations.services.XmppConnectionService;
+import eu.siacs.conversations.ui.XmppActivity;
+import eu.siacs.conversations.xmpp.jid.InvalidJidException;
+import eu.siacs.conversations.xmpp.jid.Jid;
 import io.realm.RealmResults;
 
 /**
  * Created by Uzair on 7/12/2016.
  */
-public class PayDetailActivity extends FragmentActivityController implements MethodGenerator, View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
+public class PayDetailActivity extends XmppActivity implements MethodGenerator, View.OnClickListener, DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener, XmppConnectionService.OnShowErrorToast {
 
     static Activity activity;
 
-    TextView title_name, service_name, location_name, default_gateway, receipt;
+    TextView title_name, service_name, location_name, default_gateway, receipt, service_date;
     SimpleDraweeView fresco_view;
-    EditText amount, service_date, description;
+    EditText amount, description;
     SwitchButton switch_button;
     Button payment_btn;
     static int id, tab_pos;
     RelativeLayout top_item;
     AutoCompleteTextView auto_com_cutomer_name;
-    static String title;
+    static String title, providerUserName, contact_number;
     MaterialSpinner spinner;
     String selectedDateTime;
     String vendorId;
     String sqlDateTime;
     String callMessgae = "1";
+    String paymentId;
+    ImageView call_icon, chat_icon;
 
-    public static Intent createIntent(Activity _activity, int _id, int _tab_pos, String _title) {
+    public static Intent createIntent(Activity _activity, int _id, int _tab_pos, String _title, String _providerUserName) {
         activity = _activity;
         id = _id;
         title = _title;
         tab_pos = _tab_pos;
+        providerUserName = _providerUserName;
         return new Intent(activity, PayDetailActivity.class);
+
+    }
+
+    @Override
+    protected void refreshUiReal() {
+
+    }
+
+    @Override
+    protected void onBackendConnected() {
 
     }
 
@@ -78,6 +104,11 @@ public class PayDetailActivity extends FragmentActivityController implements Met
         BottomMenuController.getInstance(activity).setBottomMenu(activity);
         viewInitialize();
         viewUpdate();
+        try {
+            getActionBar().hide();
+        } catch (Exception e) {
+
+        }
 
     }
 
@@ -87,10 +118,11 @@ public class PayDetailActivity extends FragmentActivityController implements Met
         service_name = (TextView) findViewById(R.id.service_name);
         location_name = (TextView) findViewById(R.id.address);
         amount = (EditText) findViewById(R.id.amount);
-        service_date = (EditText) findViewById(R.id.service_date);
+        service_date = (TextView) findViewById(R.id.service_date);
         description = (EditText) findViewById(R.id.description);
         default_gateway = (TextView) findViewById(R.id.default_gateway);
-
+        call_icon = (ImageView) findViewById(R.id.call_icon);
+        chat_icon = (ImageView) findViewById(R.id.chat_icon);
         fresco_view = (SimpleDraweeView) findViewById(R.id.fresco_view);
         switch_button = (SwitchButton) findViewById(R.id.switch_button);
         payment_btn = (Button) findViewById(R.id.payment_btn);
@@ -116,6 +148,8 @@ public class PayDetailActivity extends FragmentActivityController implements Met
 
         service_date.setOnClickListener(this);
 
+
+
         // search_view = (MaterialSearchView) findViewById(R.id.search_view);
 
 
@@ -125,8 +159,20 @@ public class PayDetailActivity extends FragmentActivityController implements Met
     public void viewUpdate() {
 
         if (id == 0) {
+            auto_com_cutomer_name.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+                @Override
+                public void onFocusChange(View v, boolean hasFocus) {
+                    if (hasFocus) {
+                        MyLogs.printinfo("has_got_focus");
+                        auto_com_cutomer_name.showDropDown();
+
+                    }
+                }
+            });
+
             top_item.setVisibility(View.GONE);
             auto_com_cutomer_name.setVisibility(View.VISIBLE);
+
             //  final String[] names = new String[]{"Ricky", "Aubery", "David"};
             ArrayList<String> providers_name = new ArrayList<>();
             for (ProviderDT item : RealmDataRetrive.getProvider()) {
@@ -155,16 +201,26 @@ public class PayDetailActivity extends FragmentActivityController implements Met
                             System.out.println("Position " + pos);
 
                             vendorId = "" + arrayList.get(i).getId();
+                            contact_number = arrayList.get(i).getUsername();
                             break;
                         }
                     }
 
                 }
             });
+            if (!UtilityFunctions.isEmpty(providerUserName)) {
+                ProviderDT item = RealmDataRetrive.getProviderDetail(providerUserName, 0);
+                auto_com_cutomer_name.setText("" + item.getFirst_name() + " " + item.getLast_name());
+                vendorId = "" + item.getId();
+                auto_com_cutomer_name.setEnabled(false);
+                contact_number = providerUserName;
+
+
+            }
 
         } else {
 
-            PayDT item_detail = RealmDataRetrive.getPayDetail(id);
+            final PayDT item_detail = RealmDataRetrive.getPayDetail(id);
 
             title_name.setText(item_detail.getVendor_name());
             service_name.setText(item_detail.getSub_categor_title());
@@ -172,14 +228,37 @@ public class PayDetailActivity extends FragmentActivityController implements Met
             amount.setText(item_detail.getAmount());
             service_date.setText(item_detail.getDateToDisplay());
             fresco_view.setImageURI(Uri.parse(item_detail.getVendor_image_url()));
-            vendorId=""+item_detail.getVendor_id();
+            vendorId = "" + item_detail.getVendor_id();
+            sqlDateTime = UtilityFunctions.converMillisToDate(item_detail.getService_date(), "yyyy-MM-dd HH:mm:ss");
+            paymentId = "" + item_detail.getId();
             if (item_detail.getRequest_receipt().equals("1")) {
                 switch_button.setChecked(true);
             } else {
                 switch_button.setChecked(false);
             }
 
+            contact_number = item_detail.getVendor_username();
 
+            call_icon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    UtilityFunctions.directCall(activity, item_detail.getVendor_username());
+                }
+            });
+
+            chat_icon.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    //AppController.openChat(activity, item_detail.getConsumer_username(), item_detail.getConsumer_name(), item_detail.getSub_category_image_url(), item_detail.getis, 0);
+
+                }
+            });
+            try {
+                //MyLogs.printinfo("item_detail " + item_detail.getVendor_username());
+                contact_number = item_detail.getVendor_username();
+            } catch (Exception e) {
+
+            }
         }
 
 
@@ -212,6 +291,10 @@ public class PayDetailActivity extends FragmentActivityController implements Met
             amount.setEnabled(false);
             service_date.setEnabled(false);
             description.setEnabled(false);
+        } else if (tab_pos == 0) {
+            amount.setEnabled(false);
+
+
         }
 
     }
@@ -284,8 +367,102 @@ public class PayDetailActivity extends FragmentActivityController implements Met
         }
 
 
-        PayController.getInstance().createPayment(activity, vendorId, amount.getText().toString(), description.getText().toString(), sqlDateTime, "paid", callMessgae);
+        if (tab_pos == 0) {
 
+            PayController.getInstance().updatePayment(activity, paymentId, amount.getText().toString(), description.getText().toString(), sqlDateTime, "paid", callMessgae);
+            sendMessage(contact_number + "_v", "Payment Received!\n($ " + amount.getText().toString() + " On "+selectedDateTime+")");
+        } else {
+            PayController.getInstance().createPayment(activity, vendorId, amount.getText().toString(), description.getText().toString(), sqlDateTime, "paid", callMessgae);
+            sendMessage(contact_number + "_v", "Payment Received!\n($ " + amount.getText().toString() + " On "+selectedDateTime+")");
+        }
+
+    }
+
+    @Override
+    public void onShowErrorToast(int resId) {
+
+    }
+
+    public void sendMessage(String contactNumber, String message) {
+        String accountNumber = AppPreferences.getString(AppPreferences.PREF_USER_NUMBER) + "_c";
+        Log.e("prefilledJid ", " " + accountNumber + " " + contactNumber);
+
+        Jid accountJid = null;
+        try {
+
+            accountJid = Jid.fromString(accountNumber + "@" + Config.MAGIC_CREATE_DOMAIN);
+
+        } catch (InvalidJidException e) {
+            e.printStackTrace();
+        }
+        Jid contactJid = null;
+        try {
+            contactJid = Jid.fromString(contactNumber + "@" + Config.MAGIC_CREATE_DOMAIN);
+        } catch (InvalidJidException e) {
+            e.printStackTrace();
+        }
+        if (!xmppConnectionServiceBound) {
+            return;
+        }
+
+        final Account account = xmppConnectionService.findAccountByJid(accountJid);
+        if (account == null) {
+            return;
+        }
+
+        try {
+            final Contact contact = account.getRoster().getContact(contactJid);
+            Conversation conversation = null;
+            if (contact.showInRoster()) {
+
+                conversation = xmppConnectionService
+                        .findOrCreateConversation(contact.getAccount(),
+                                contact.getJid(), false);
+
+
+            } else {
+                xmppConnectionService.createContact(contact);
+                //    switchToConversation(contact);
+
+                conversation = xmppConnectionService
+                        .findOrCreateConversation(contact.getAccount(),
+                                contact.getJid(), false);
+                ///  switchToConversation(conversation);
+
+
+            }
+            sendMessage(conversation, message);
+        } catch (Exception e) {
+
+        }
+
+        return;
+
+
+    }
+
+    private void sendMessage(Conversation conversation, String messagea) {
+        final String body = messagea;
+        if (body.length() == 0 || conversation == null) {
+            return;
+        }
+        final Message message;
+        if (conversation.getCorrectingMessage() == null) {
+            message = new Message(conversation, body, conversation.getNextEncryption());
+            if (conversation.getMode() == Conversation.MODE_MULTI) {
+                if (conversation.getNextCounterpart() != null) {
+                    message.setCounterpart(conversation.getNextCounterpart());
+                    message.setType(Message.TYPE_PRIVATE);
+                }
+            }
+        } else {
+            message = conversation.getCorrectingMessage();
+            message.setBody(body);
+            message.setEdited(message.getUuid());
+            message.setUuid(UUID.randomUUID().toString());
+            conversation.setCorrectingMessage(null);
+        }
+        xmppConnectionService.sendMessage(message);
 
     }
 }
