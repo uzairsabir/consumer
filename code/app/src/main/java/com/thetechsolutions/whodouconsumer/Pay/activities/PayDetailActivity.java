@@ -225,6 +225,7 @@ public class PayDetailActivity extends XmppActivity implements MethodGenerator, 
             title_name.setText(item_detail.getVendor_name());
             service_name.setText(item_detail.getSub_categor_title());
             // location_name.setText("");
+            description.setText(item_detail.getDescription());
             amount.setText(item_detail.getAmount());
             service_date.setText(item_detail.getDateToDisplay());
             fresco_view.setImageURI(Uri.parse(item_detail.getVendor_image_url()));
