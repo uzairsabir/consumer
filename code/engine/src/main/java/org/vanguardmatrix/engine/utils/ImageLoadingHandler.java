@@ -72,7 +72,7 @@ public class ImageLoadingHandler {
             ImageLoader.getInstance().init(config);
 
         } catch (Exception e) {
-            e.printStackTrace();
+           // e.printStackTrace();
         }
 
         try {

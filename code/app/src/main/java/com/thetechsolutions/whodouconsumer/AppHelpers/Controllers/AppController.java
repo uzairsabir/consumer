@@ -10,6 +10,7 @@ import com.afollestad.materialdialogs.GravityEnum;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.johnpersano.supertoasts.library.Style;
 import com.github.johnpersano.supertoasts.library.SuperActivityToast;
+import com.paypal.android.MEP.PayPal;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataInsert;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendDT;
@@ -41,8 +42,6 @@ import eu.siacs.conversations.entities.Conversation;
 import eu.siacs.conversations.ui.ConversationActivity;
 import eu.siacs.conversations.utils.FriendNames;
 import eu.siacs.conversations.utils.UIHelper;
-import io.realm.Realm;
-import io.realm.RealmObject;
 import io.realm.RealmResults;
 
 /**
@@ -227,11 +226,11 @@ public class AppController {
 
         // GsonBuilder gsonb = new GsonBuilder();
 
-        RealmResults<ProviderDT> providerDTs=RealmDataRetrive.getProvider();
-        RealmResults<FriendDT> friendDTs=RealmDataRetrive.getFriendList();
+        RealmResults<ProviderDT> providerDTs = RealmDataRetrive.getProvider();
+        RealmResults<FriendDT> friendDTs = RealmDataRetrive.getFriendList();
         List<FriendNames> list = new ArrayList<>();
 
-        if(providerDTs.size() > 0){
+        if (providerDTs.size() > 0) {
 
             for (ProviderDT providerDT : providerDTs) {
                 FriendNames item = new FriendNames();
@@ -242,7 +241,7 @@ public class AppController {
             }
         }
 
-        if(friendDTs.size() > 0 ){
+        if (friendDTs.size() > 0) {
             for (FriendDT providerDT : friendDTs) {
                 FriendNames item = new FriendNames();
                 item.setDisplayName(providerDT.getFirst_name() + " " + providerDT.getLast_name());
@@ -272,8 +271,6 @@ public class AppController {
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
 
 
 //        if (RealmDataRetrive.getHomeListOfMyProviderAndMyFriends().size() > 0) {
@@ -367,8 +364,8 @@ public class AppController {
     public static ArrayList<FriendsProviderDT> filterFriendsProvider(ArrayList<FriendsProviderDT> friendsProviders) {
 
         ArrayList<FriendsProviderDT> filterList = new ArrayList<>();
-       // Realm realmObject= Realm.getDefaultInstance();
-       // realmObject.setAutoRefresh(true);
+        // Realm realmObject= Realm.getDefaultInstance();
+        // realmObject.setAutoRefresh(true);
 
 
         RealmResults<ProviderDT> providerDTs = RealmDataRetrive.getProvider();
@@ -379,17 +376,17 @@ public class AppController {
         if (RealmDataRetrive.getProvider().size() > 0) {
 
             boolean found = false;
-            for(FriendsProviderDT object1 : friendsProviders){
+            for (FriendsProviderDT object1 : friendsProviders) {
 
-                for(ProviderDT object2: providerDTs){
+                for (ProviderDT object2 : providerDTs) {
 
-                    if(object1.getUsername().equals(object2.getUsername())){
+                    if (object1.getUsername().equals(object2.getUsername())) {
                         found = true;
 
                         //also do something
                     }
                 }
-                if(!found){
+                if (!found) {
                     filterList.add(object1);
                     //do something
                 }
@@ -402,6 +399,37 @@ public class AppController {
             // return finalUniq=filterList;
         }
         return friendsProviders;
+    }
+
+    public static void initLibrary(Activity activity) {
+        try {
+            PayPal pp = PayPal.getInstance();
+
+            if (pp == null) {  // Test to see if the library is already initialized
+
+                // This main initialization call takes your Context, AppID, and target server
+                pp = PayPal.initWithAppID(activity, "APP-80W284485P519543T", PayPal.ENV_NONE);
+
+                // Required settings:
+
+                // Set the language for the library
+                pp.setLanguage("en_US");
+
+                // Some Optional settings:
+
+                // Sets who pays any transaction fees. Possible values are:
+                // FEEPAYER_SENDER, FEEPAYER_PRIMARYRECEIVER, FEEPAYER_EACHRECEIVER, and FEEPAYER_SECONDARYONLY
+                pp.setFeesPayer(PayPal.FEEPAYER_EACHRECEIVER);
+
+                // true = transaction requires shipping
+                pp.setShippingEnabled(true);
+
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
     }
 
 }

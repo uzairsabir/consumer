@@ -20,6 +20,11 @@ import android.widget.TextView;
 import com.facebook.drawee.view.SimpleDraweeView;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.kyleduo.switchbutton.SwitchButton;
+import com.paypal.android.MEP.PayPal;
+import com.paypal.android.MEP.PayPalAdvancedPayment;
+import com.paypal.android.MEP.PayPalPayment;
+import com.paypal.android.MEP.PayPalReceiverDetails;
+import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.AppController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.BottomMenuController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.MethodGenerator;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.TitleBarController;
@@ -36,6 +41,7 @@ import org.vanguardmatrix.engine.android.AppPreferences;
 import org.vanguardmatrix.engine.utils.MyLogs;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
 
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.UUID;
@@ -137,7 +143,7 @@ public class PayDetailActivity extends XmppActivity implements MethodGenerator, 
         // MaterialSpinner spinner = (MaterialSpinner) findViewById(R.id.spinner);
 
 
-        spinner.setItems("PayPal (Default)", "Stripe");
+        spinner.setItems("Paid", "PayPal", "Stripe");
         spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
 
             @Override
@@ -148,7 +154,7 @@ public class PayDetailActivity extends XmppActivity implements MethodGenerator, 
 
         service_date.setOnClickListener(this);
 
-
+        AppController.initLibrary(activity);
 
         // search_view = (MaterialSearchView) findViewById(R.id.search_view);
 
@@ -367,15 +373,23 @@ public class PayDetailActivity extends XmppActivity implements MethodGenerator, 
             return;
         }
 
+        if (spinner.getSelectedIndex() == 2) {
 
-        if (tab_pos == 0) {
+        } else if (spinner.getSelectedIndex() == 1) {
 
-            PayController.getInstance().updatePayment(activity, paymentId, amount.getText().toString(), description.getText().toString(), sqlDateTime, "paid", callMessgae);
-            sendMessage(contact_number + "_v", "Payment Received!\n($ " + amount.getText().toString() + " On "+selectedDateTime+")");
+            testPayment();
+            //payUsingPayPal();
         } else {
-            PayController.getInstance().createPayment(activity, vendorId, amount.getText().toString(), description.getText().toString(), sqlDateTime, "paid", callMessgae);
-            sendMessage(contact_number + "_v", "Payment Received!\n($ " + amount.getText().toString() + " On "+selectedDateTime+")");
+            if (tab_pos == 0) {
+
+                PayController.getInstance().updatePayment(activity, paymentId, amount.getText().toString(), description.getText().toString(), sqlDateTime, "paid", callMessgae);
+                sendMessage(contact_number + "_v", "Payment Received!\n($ " + amount.getText().toString() + " On " + selectedDateTime + ")");
+            } else {
+                PayController.getInstance().createPayment(activity, vendorId, amount.getText().toString(), description.getText().toString(), sqlDateTime, "paid", callMessgae);
+                sendMessage(contact_number + "_v", "Payment Received!\n($ " + amount.getText().toString() + " On " + selectedDateTime + ")");
+            }
         }
+
 
     }
 
@@ -466,4 +480,72 @@ public class PayDetailActivity extends XmppActivity implements MethodGenerator, 
         xmppConnectionService.sendMessage(message);
 
     }
+
+    private void payUsingPayPal() {
+        PayPalPayment newPayment = new
+                PayPalPayment();
+        newPayment.setSubtotal(BigDecimal.valueOf(10.f));
+        newPayment.setCurrencyType("USD");
+        newPayment.setRecipient("my@email.com");
+        newPayment.setMerchantName("My Company");
+
+//        PayPalReceiverDetails vendor = new PayPalReceiverDetails();
+//        PayPalReceiverDetails app_owner = new PayPalReceiverDetails();
+//
+//        PayPalAdvancedPayment advPayment = new PayPalAdvancedPayment();
+//        advPayment.setCurrencyType("USD");
+//
+//        vendor.setSubtotal(BigDecimal.valueOf(9.f));
+//        app_owner.setSubtotal(BigDecimal.valueOf(1.f));
+//        ArrayList<PayPalReceiverDetails> list = new ArrayList<>();
+//        list.add(vendor);
+//        list.add(app_owner);
+//        advPayment.setReceivers(list);
+
+        // advPayment.getReceivers().add(vendor);
+        //advPayment.getReceivers().add(app_owner);
+
+
+        Intent paypalIntent = PayPal.getInstance().checkout(newPayment, this);
+        this.startActivityForResult(paypalIntent, 1);
+    }
+
+    private void testPayment() {
+        double secondary_payment = 1;
+        double primary_payment = 10;
+
+        PayPalAdvancedPayment advPayment = makeChainedPayment(secondary_payment, primary_payment, "vendor@gmail.com", "uzair92ssuet92@gmail.com", title_name.getText().toString());
+
+        Intent checkoutIntent = PayPal.getInstance().checkout(advPayment, activity);
+        startActivityForResult(checkoutIntent, 1);
+    }
+
+    private PayPalAdvancedPayment makeChainedPayment(double priceSecondary, double pricePrimary,
+                                                     String primary_email, String secondary_email, String vendorName) {
+        PayPalAdvancedPayment payment = new PayPalAdvancedPayment();
+        payment.setCurrencyType("USD");
+        //        payment.setMerchantName("PushND");
+        BigDecimal bigDecimalPrimary = new BigDecimal(pricePrimary);
+
+        PayPalReceiverDetails receiverPrimary = new PayPalReceiverDetails();
+        receiverPrimary.setRecipient(primary_email);
+        receiverPrimary.setMerchantName(vendorName);
+        //receiverPrimary.setRecipient("adaptive_receiver_1@pushnd.com");
+        receiverPrimary.setSubtotal(bigDecimalPrimary);
+        receiverPrimary.setIsPrimary(true);
+        payment.getReceivers().add(receiverPrimary);
+
+        PayPalReceiverDetails receiverSecondary = new PayPalReceiverDetails();
+        receiverSecondary.setRecipient(secondary_email);
+        receiverSecondary.setMerchantName("Who do u");
+
+        BigDecimal bigDecimalSecond = new BigDecimal(priceSecondary);
+        receiverSecondary.setSubtotal(bigDecimalSecond);
+        payment.getReceivers().add(receiverSecondary);
+
+        return payment;
+        // }
+    }
+
+
 }

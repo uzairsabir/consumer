@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 
+import com.paypal.android.MEP.PayPal;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.AppController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.BottomMenuController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.FragmentActivityController;
@@ -61,7 +62,6 @@ public class HomeMainActivity extends FragmentActivityController implements Meth
 
 
 
-
         BottomMenuController.getInstance(activity).setBottomMenu(activity);
 
     }
@@ -88,6 +88,12 @@ public class HomeMainActivity extends FragmentActivityController implements Meth
 
         } catch (Exception e) {
 
+        }
+        try {
+
+            //initLibrary();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
         //BottomMenuController.getInstance(activity).setBottomMenu(activity);
 
@@ -138,6 +144,8 @@ public class HomeMainActivity extends FragmentActivityController implements Meth
             }
         });
     }
+
+
 
 
 }

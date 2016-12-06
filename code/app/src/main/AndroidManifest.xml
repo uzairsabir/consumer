@@ -130,6 +130,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/noAnimTheme"
             android:windowSoftInputMode="adjustPan" />
+        <activity
+            android:name="com.paypal.android.MEP.PayPalActivity"
+            android:theme="@android:style/Theme.Translucent.NoTitleBar"
+            android:configChanges="keyboardHidden|orientation"></activity>
 
 
         <receiver
