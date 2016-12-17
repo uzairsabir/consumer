@@ -5,15 +5,15 @@ package com.thetechsolutions.whodouconsumer.AppHelpers.Config;
  */
 public class AppConstants {
     //--------------------------------------fragments--------------------------------------------
-    public static final String MY_PROVIDER = "My Providers";
+    public static final String MY_PROVIDER = "My Helpers";
     public static final String MY_FRIENDS = "My Friends";
-    public static final String FRIENDS_PROVIDERS = "Friend's Providers";
+    public static final String FRIENDS_PROVIDERS = "Friend's Helpers";
     public static final String LIST = "list";
     public static final String PAID = "Paid";
     public static final String PENDING = "Pending";
     public static final String SETUP = "Setup";
     public static final String UPCOMING = "Upcoming";
-    public static final String RECENT = "Recent";
+    public static final String RECENT = "Past";
     public static final String PREFERENCE = "Preference";
     public static final String PROFILE = "Profile";
 

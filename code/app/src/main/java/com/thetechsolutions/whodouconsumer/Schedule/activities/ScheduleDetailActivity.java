@@ -23,7 +23,6 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter;
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
-import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.AppController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.BottomMenuController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.MethodGenerator;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.TitleBarController;
@@ -384,7 +383,7 @@ public class ScheduleDetailActivity extends XmppActivity implements MethodGenera
         final ArrayList<String> list = new ArrayList<>();
         list.add("30 minutes");
         list.add("1 hour");
-        list.add("1 hour 30 minutes ");
+        list.add("1 hour 30 minutes");
         list.add("2 hours");
         list.add("2 hours 30 minutes");
         list.add("3 hours");
@@ -395,14 +394,20 @@ public class ScheduleDetailActivity extends XmppActivity implements MethodGenera
         list.add("5 hours 30 minutes");
         list.add("6 hours");
         list.add("6 hours 30 minutes");
-        list.add("1 day");
-        list.add("2 days");
-        list.add("3 days");
-        list.add("4 days");
-        list.add("5 days");
-        list.add("1 week");
-        list.add("2 weeks");
-        list.add("1 month");
+        list.add("7 hours");
+        list.add("7 hours 30 minutes");
+        list.add("8 hours");
+        list.add("8 hours 30 minutes");
+        list.add("9 hours");
+//        list.add("6 hours 30 minutes");
+//        list.add("1 day");
+//        list.add("2 days");
+//        list.add("3 days");
+//        list.add("4 days");
+//        list.add("5 days");
+//        list.add("1 week");
+//        list.add("2 weeks");
+//        list.add("1 month");
         title.setText(" Please Select Appointment Duration.");
 
         easyAdapter = new EasyAdapter<>(
@@ -486,8 +491,9 @@ public class ScheduleDetailActivity extends XmppActivity implements MethodGenera
 
         }
 
+
         if (isUpdate) {
-            ScheduleController.getInstance().updateAppointments(activity, appointmentId, sqlDateTime, durationS, description.getText().toString(), appointmentStatus, "" + calId);
+            ScheduleController.getInstance().updateAppointments(activity, appointmentId, sqlDateTime, getTimeInPoints(), description.getText().toString(), appointmentStatus, "" + calId);
 
             if (appointmentStatus.equals("cancelled")) {
                 sendMessage(contact_number + "_v", "Appointment has been cancelled!");
@@ -496,7 +502,7 @@ public class ScheduleDetailActivity extends XmppActivity implements MethodGenera
             }
 
         } else {
-            ScheduleController.getInstance().createAppointments(activity, vendorId, sqlDateTime, durationS, description.getText().toString(), callMessgae, "" + calId);
+            ScheduleController.getInstance().createAppointments(activity, vendorId, sqlDateTime, getTimeInPoints(), description.getText().toString(), callMessgae, "" + calId);
             sendMessage(contact_number + "_v", "New Appointment Request!\n(" + selectedDateTime + ")");
         }
 
@@ -609,5 +615,48 @@ public class ScheduleDetailActivity extends XmppActivity implements MethodGenera
     @Override
     public void onShowErrorToast(int resId) {
 
+    }
+
+    private String getTimeInPoints() {
+
+        if (durationS.equals("30 minutes")) {
+            return "0.5";
+        } else if (durationS.equals("1 hour")) {
+            return "1";
+        } else if (durationS.equals("1 hour 30 minutes")) {
+            return "1.5";
+        } else if (durationS.equals("2 hours")) {
+            return "2";
+        } else if (durationS.equals("2 hours 30 minutes")) {
+            return "2.5";
+        } else if (durationS.equals("3 hours")) {
+            return "3";
+        } else if (durationS.equals("3 hours 30 minutes")) {
+            return "3.5";
+        } else if (durationS.equals("4 hours")) {
+            return "4";
+        } else if (durationS.equals("4 hours 30 minutes")) {
+            return "4.5";
+        } else if (durationS.equals("5 hours")) {
+            return "5";
+        } else if (durationS.equals("5 hours 30 minutes")) {
+            return "5.5";
+        } else if (durationS.equals("6 hours")) {
+            return "6";
+        } else if (durationS.equals("6 hours 30 minutes")) {
+            return "6.5";
+        } else if (durationS.equals("7 hours")) {
+            return "7";
+        } else if (durationS.equals("7 hours 30 minutes")) {
+            return "7.5";
+        } else if (durationS.equals("8 hours")) {
+            return "8";
+        } else if (durationS.equals("8 hours 30 minutes")) {
+            return "8.5";
+        } else if (durationS.equals("9 hours")) {
+            return "8";
+        } else {
+            return durationS;
+        }
     }
 }

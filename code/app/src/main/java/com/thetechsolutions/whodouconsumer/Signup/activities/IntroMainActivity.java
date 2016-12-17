@@ -7,6 +7,7 @@ import android.support.v4.view.ViewPager;
 import android.view.View;
 import android.widget.TextView;
 
+import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.AppController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.FragmentActivityController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.ListenerController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.MethodGenerator;
@@ -43,6 +44,7 @@ public class IntroMainActivity extends FragmentActivityController implements Met
         activity = this;
         viewInitialize();
         viewUpdate();
+
 
     }
 

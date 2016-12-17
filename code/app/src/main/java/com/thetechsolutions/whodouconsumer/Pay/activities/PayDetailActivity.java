@@ -143,7 +143,7 @@ public class PayDetailActivity extends XmppActivity implements MethodGenerator, 
         // MaterialSpinner spinner = (MaterialSpinner) findViewById(R.id.spinner);
 
 
-        spinner.setItems("Paid", "PayPal", "Stripe");
+        spinner.setItems("Paid", "PayPal", "Card");
         spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
 
             @Override

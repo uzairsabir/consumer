@@ -128,7 +128,7 @@ public class BottomListAdapter extends ArrayAdapter<BottomListItemType> {
             if (itemId == 0) {
                 if (position == 0) {
                     //holder.container.setBackgroundColor(activity.getResources().getColor(R.color.bottom_list_hover));
-                    holder.imageView.setImageResource(R.drawable.home_icon_hover);
+                    holder.imageView.setImageResource(R.drawable.home_tab_blue);
                     // holder.textView.setTextColor(activity.getResources().getColor(R.color.app_text_blue));
 
 

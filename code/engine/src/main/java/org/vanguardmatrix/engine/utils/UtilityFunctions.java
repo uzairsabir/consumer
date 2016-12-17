@@ -3361,9 +3361,9 @@ public class UtilityFunctions {
 
         MyLogs.printinfo("duration " + estimated_hour);
 
-
+        int time_diff=estimated_hour*60;
         String getSqlDateObject[] = SqlDate.split("\\s+");
-        MyLogs.printinfo("" + getSqlDateObject[0]);
+        //MyLogs.printinfo("" + getSqlDateObject[0]);
 
         String getDate[] = getSqlDateObject[0].split("-");
         String getTime[] = getSqlDateObject[1].split(":");
@@ -3377,7 +3377,8 @@ public class UtilityFunctions {
             ContentValues values = new ContentValues();
             values.put(CalendarContract.Events.DTSTART, calDate.getTimeInMillis());
             //  values.put(CalendarContract.Events.DTEND, calDate.getTimeInMillis() + 60 * 60 * 1000);
-            values.put(CalendarContract.Events.DTEND, calDate.getTimeInMillis() + 60 * 60 * 1000 * estimated_hour);
+            //  values.put(CalendarContract.Events.DTEND, calDate.getTimeInMillis() + 60 * 60 * 1000 * estimated_hour);
+            values.put(CalendarContract.Events.DTEND, calDate.getTimeInMillis() + time_diff * 60 * 1000);
             values.put(CalendarContract.Events.TITLE, title);
             values.put(CalendarContract.Events.CALENDAR_ID, 1);
             values.put(CalendarContract.Events.EVENT_TIMEZONE, Calendar.getInstance()
@@ -3890,10 +3891,11 @@ public class UtilityFunctions {
 
         String date = spaceSplit(datetime)[0];
         int month = Integer.parseInt(date.split("-")[1]);
+        int year = Integer.parseInt(date.split("-")[0]);
 
         String monthString = "";
         monthString = new DateFormatSymbols().getMonths()[month - 1];
-        String formattedDate = dayName(datetime, "yyyy-MM-dd HH:mm:ss") + ", " + monthString + " " + ordinal(Integer.parseInt(date.split("-")[2]));
+        String formattedDate = dayName(datetime, "yyyy-MM-dd HH:mm:ss") + ", " + monthString + " " + ordinal(Integer.parseInt(date.split("-")[2])) + ", " + year;
 
         return formattedDate;
 
@@ -4003,7 +4005,7 @@ public class UtilityFunctions {
         PhoneFormat phoneFormat = new PhoneFormat(activity);
         MyLogs.printinfo("number " + number);
 
-        String numberString,text;
+        String numberString, text;
         text = number.replace("0011", "001");
         if (text.startsWith("00")) {
             numberString = text.substring(2);
