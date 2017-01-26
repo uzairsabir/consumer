@@ -196,7 +196,7 @@ public class ScheduleDT extends RealmObject {
             }
             return hour + " " + minutes;
 
-        }else{
+        } else {
             if (estimated_duration.equals("1")) {
                 hour = estimated_duration + " hour ";
             } else {
@@ -212,7 +212,12 @@ public class ScheduleDT extends RealmObject {
 
     public String getAppointmentTime() {
         try {
-            return UtilityFunctions.formatteSqlTime(UtilityFunctions.converMillisToDate(this.appointment_date_time, "yyyy-MM-dd HH:mm:ss")) + " (" + getEstimated_duration() + ".)";
+           // MyLogs.printinfo("this.estimated_duration " + this.estimated_duration);
+            //long a = (Long.parseLong(this.estimated_duration)*1000) * 1000 * 60;
+            //long b = this.appointment_date_time + a;
+           // MyLogs.printinfo("this.estimated_duration_test " + this.appointment_date_time + " : " + a);
+         //   String diff = UtilityFunctions.formatteSqlTime(UtilityFunctions.converMillisToDate(b, "yyyy-MM-dd HH:mm:ss"));
+            return UtilityFunctions.formatteSqlTime(UtilityFunctions.converMillisToDate(this.appointment_date_time, "yyyy-MM-dd HH:mm:ss")) +" (" + getEstimated_duration() + ".)";
         } catch (Exception e) {
 
         }

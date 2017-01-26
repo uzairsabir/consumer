@@ -54,6 +54,14 @@ public class AsynGetDataController {
 
         return 1;
     }
+    public void sendInvitation(Activity activity, String number, String name, int toVendor) {
+        boolean _toVendor = false;
+        if (toVendor == 0) {
+            _toVendor = true;
+        }
+        new sendInvitation(activity, number, name, _toVendor).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
 
     public void getSchedules(Activity activity) {
         try {
@@ -767,6 +775,69 @@ public class AsynGetDataController {
 
 
     }
+
+    private class sendInvitation extends AsyncTask<String, Void, Integer> {
+
+
+        Activity activity;
+        String number = "", name = "";
+        boolean toVendor;
+
+
+        public sendInvitation(Activity _activity, String _number, String _name, boolean _toVendor) {
+            activity = _activity;
+            number = _number;
+            name = _name;
+            toVendor = _toVendor;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+
+        }
+
+        @Override
+        protected Integer doInBackground(String... params) {
+
+            try {
+
+                if (toVendor) {
+                    WebserviceModel.sendInvitationToVendor(number, name);
+                } else {
+                    WebserviceModel.sendInvitationToConsumer(number, name);
+                }
+
+
+                return 0;
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return 4;
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            super.onPostExecute(result);
+
+
+            if (result == 0) {
+
+            } else {
+                MyLogs.printinfo(
+                        "Error in getting my payments"
+                );
+                //AppController.showToast(activity, activity.getResources().getString(R.string.went_wrong));
+            }
+
+
+        }
+
+
+    }
+
 
 
 }

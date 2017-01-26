@@ -22,6 +22,7 @@ import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.FragmentActivi
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.MethodGenerator;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.TitleBarController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
+import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ScheduleDT;
 import com.thetechsolutions.whodouconsumer.Chat.adapters.ChatListAdapter;
@@ -204,7 +205,7 @@ public class ChatMainActivity extends FragmentActivityController implements Meth
             try {
                 arrayList = AppController.getChatList(activity);
                 if (arrayList.size() > 0) {
-                  // MyLogs.printinfo("arrayList " + arrayList.size());
+                    // MyLogs.printinfo("arrayList " + arrayList.size());
                     finalList = AppController.removeDuplicates(arrayList);
                 }
                 MyLogs.printinfo("final_list " + finalList.size());
@@ -239,10 +240,36 @@ public class ChatMainActivity extends FragmentActivityController implements Meth
 
     private void setAdapter(ArrayList<Conversation> arrayList) {
 //        MyLogs.printinfo("arrayList " + arrayList.size());
+        ArrayList<Conversation> filterList = new ArrayList<>();
+        for (Conversation item : arrayList) {
+            boolean isFound = false;
+            for (ProviderDT providerDT : RealmDataRetrive.getProvider()) {
+                if (item.getJid().toBareJid().toString().split("@")[0].equals(providerDT.getUsername() + "_v")) {
+                    if (providerDT.getIs_register_user().equals("1")) {
+                        filterList.add(item);
+
+                    }
+                    isFound = true;
+                }
+            }
+            for (FriendDT providerDT : RealmDataRetrive.getFriendList()) {
+                if (item.getJid().toBareJid().toString().split("@")[0].equals(providerDT.getUsername() + "_c")) {
+                    if (providerDT.getIs_register_user().equals("1")) {
+                        filterList.add(item);
+
+                    }
+                    isFound = true;
+                }
+            }
+            if (!isFound) {
+                filterList.add(item);
+            }
+        }
+        // MyLogs.printinfo("filterList " + filterList.size());
         easyAdapter = new EasyAdapter<>(
                 activity,
                 ChatListAdapter.newInstance(activity),
-                arrayList, mListener);
+                filterList, mListener);
         AlphaInAnimationAdapter animationAdapter = new AlphaInAnimationAdapter(easyAdapter);
         animationAdapter.setAbsListView(dynamicListView);
         dynamicListView.setAdapter(animationAdapter);

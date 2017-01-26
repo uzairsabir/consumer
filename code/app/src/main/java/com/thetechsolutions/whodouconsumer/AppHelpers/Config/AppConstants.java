@@ -35,4 +35,6 @@ public class AppConstants {
     public static final String VENDOR_TYPE = "vendor";
     public static final String START_FROM = "0";
     public static final String TOTAL_RECORDS = "100";
+    public static final String PAYPAL_SANDBOX_ID = "APP-80W284485P519543T";
+    public static final String PAYPAL_OWNER_EMAIL = "r.alirizvi-facilitator-2@gmail.com";
 }

@@ -21,9 +21,10 @@ import com.facebook.drawee.view.SimpleDraweeView;
 import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.kyleduo.switchbutton.SwitchButton;
 import com.paypal.android.MEP.PayPal;
+import com.paypal.android.MEP.PayPalActivity;
 import com.paypal.android.MEP.PayPalAdvancedPayment;
-import com.paypal.android.MEP.PayPalPayment;
 import com.paypal.android.MEP.PayPalReceiverDetails;
+import com.thetechsolutions.whodouconsumer.AppHelpers.Config.AppConstants;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.AppController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.BottomMenuController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.MethodGenerator;
@@ -376,18 +377,15 @@ public class PayDetailActivity extends XmppActivity implements MethodGenerator, 
         if (spinner.getSelectedIndex() == 2) {
 
         } else if (spinner.getSelectedIndex() == 1) {
+            new Runnable() {
+                public void run() {
+                    testPayment();
+                }
+            };
 
-            testPayment();
-            //payUsingPayPal();
+
         } else {
-            if (tab_pos == 0) {
-
-                PayController.getInstance().updatePayment(activity, paymentId, amount.getText().toString(), description.getText().toString(), sqlDateTime, "paid", callMessgae);
-                sendMessage(contact_number + "_v", "Payment Received!\n($ " + amount.getText().toString() + " On " + selectedDateTime + ")");
-            } else {
-                PayController.getInstance().createPayment(activity, vendorId, amount.getText().toString(), description.getText().toString(), sqlDateTime, "paid", callMessgae);
-                sendMessage(contact_number + "_v", "Payment Received!\n($ " + amount.getText().toString() + " On " + selectedDateTime + ")");
-            }
+            markAsPaid();
         }
 
 
@@ -480,41 +478,42 @@ public class PayDetailActivity extends XmppActivity implements MethodGenerator, 
         xmppConnectionService.sendMessage(message);
 
     }
-
-    private void payUsingPayPal() {
-        PayPalPayment newPayment = new
-                PayPalPayment();
-        newPayment.setSubtotal(BigDecimal.valueOf(10.f));
-        newPayment.setCurrencyType("USD");
-        newPayment.setRecipient("my@email.com");
-        newPayment.setMerchantName("My Company");
-
-//        PayPalReceiverDetails vendor = new PayPalReceiverDetails();
-//        PayPalReceiverDetails app_owner = new PayPalReceiverDetails();
 //
-//        PayPalAdvancedPayment advPayment = new PayPalAdvancedPayment();
-//        advPayment.setCurrencyType("USD");
+//    private void payUsingPayPal() {
+//        PayPalPayment newPayment = new
+//                PayPalPayment();
+//        newPayment.setSubtotal(BigDecimal.valueOf(10.f));
+//        newPayment.setCurrencyType("USD");
+//        newPayment.setRecipient("my@email.com");
+//        newPayment.setMerchantName("My Company");
 //
-//        vendor.setSubtotal(BigDecimal.valueOf(9.f));
-//        app_owner.setSubtotal(BigDecimal.valueOf(1.f));
-//        ArrayList<PayPalReceiverDetails> list = new ArrayList<>();
-//        list.add(vendor);
-//        list.add(app_owner);
-//        advPayment.setReceivers(list);
-
-        // advPayment.getReceivers().add(vendor);
-        //advPayment.getReceivers().add(app_owner);
-
-
-        Intent paypalIntent = PayPal.getInstance().checkout(newPayment, this);
-        this.startActivityForResult(paypalIntent, 1);
-    }
+////        PayPalReceiverDetails vendor = new PayPalReceiverDetails();
+////        PayPalReceiverDetails app_owner = new PayPalReceiverDetails();
+////
+////        PayPalAdvancedPayment advPayment = new PayPalAdvancedPayment();
+////        advPayment.setCurrencyType("USD");
+////
+////        vendor.setSubtotal(BigDecimal.valueOf(9.f));
+////        app_owner.setSubtotal(BigDecimal.valueOf(1.f));
+////        ArrayList<PayPalReceiverDetails> list = new ArrayList<>();
+////        list.add(vendor);
+////        list.add(app_owner);
+////        advPayment.setReceivers(list);
+//
+//        // advPayment.getReceivers().add(vendor);
+//        //advPayment.getReceivers().add(app_owner);
+//
+//
+//        Intent paypalIntent = PayPal.getInstance().checkout(newPayment, this);
+//        this.startActivityForResult(paypalIntent, 1);
+//    }
 
     private void testPayment() {
         double secondary_payment = 1;
-        double primary_payment = 10;
+        double primary_payment = Double.parseDouble(amount.getText().toString());
 
-        PayPalAdvancedPayment advPayment = makeChainedPayment(secondary_payment, primary_payment, "vendor@gmail.com", "uzair92ssuet92@gmail.com", title_name.getText().toString());
+        //    PayPalAdvancedPayment advPayment = makeChainedPayment(secondary_payment, primary_payment, "vendor@gmail.com", "uzair92ssuet92@gmail.com", title_name.getText().toString());
+        PayPalAdvancedPayment advPayment = makeChainedPayment(secondary_payment, primary_payment, "r.alirizvi-Vendor@gmail.com", AppConstants.PAYPAL_OWNER_EMAIL, title_name.getText().toString());
 
         Intent checkoutIntent = PayPal.getInstance().checkout(advPayment, activity);
         startActivityForResult(checkoutIntent, 1);
@@ -547,5 +546,30 @@ public class PayDetailActivity extends XmppActivity implements MethodGenerator, 
         // }
     }
 
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (resultCode) {
+            case Activity.RESULT_OK:
+                data.getStringExtra(PayPalActivity.EXTRA_PAY_KEY);
+                markAsPaid();
+                break;
+            case Activity.RESULT_CANCELED:
+                break;
+            case PayPalActivity.RESULT_FAILURE:
+                String errorID = data.getStringExtra(PayPalActivity.EXTRA_ERROR_ID);
+                String errorMessage = data.getStringExtra(PayPalActivity.EXTRA_ERROR_MESSAGE);
+        }
+    }
+
+    private void markAsPaid() {
+        if (tab_pos == 0) {
+
+            PayController.getInstance().updatePayment(activity, paymentId, amount.getText().toString(), description.getText().toString(), sqlDateTime, "paid", callMessgae);
+            sendMessage(contact_number + "_v", "Payment Received!\n($ " + amount.getText().toString() + " On " + selectedDateTime + ")");
+        } else {
+            PayController.getInstance().createPayment(activity, vendorId, amount.getText().toString(), description.getText().toString(), sqlDateTime, "paid", callMessgae);
+            sendMessage(contact_number + "_v", "Payment Received!\n($ " + amount.getText().toString() + " On " + selectedDateTime + ")");
+        }
+    }
 
 }

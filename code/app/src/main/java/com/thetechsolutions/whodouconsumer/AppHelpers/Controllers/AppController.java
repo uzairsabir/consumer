@@ -11,12 +11,14 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.johnpersano.supertoasts.library.Style;
 import com.github.johnpersano.supertoasts.library.SuperActivityToast;
 import com.paypal.android.MEP.PayPal;
+import com.thetechsolutions.whodouconsumer.AppHelpers.Config.AppConstants;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataInsert;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendsProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProfileDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProviderDT;
+import com.thetechsolutions.whodouconsumer.AppHelpers.WebService.AsynGetDataController;
 import com.thetechsolutions.whodouconsumer.R;
 
 import org.json.JSONObject;
@@ -180,7 +182,7 @@ public class AppController {
 
     }
 
-    public static void openChat(final Activity activity, String contactNumber, String contactName, String contactAvatar, String isRegistered, int vendorOrconsumer) {
+    public static void openChat(final Activity activity, final String contactNumber, final String contactName, String contactAvatar, String isRegistered, final int vendorOrconsumer) {
         ProfileDT profileDT = RealmDataRetrive.getProfile();
         if (vendorOrconsumer == 0) {
             MyLogs.printinfo("chating with vendor");
@@ -197,6 +199,7 @@ public class AppController {
                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                            AsynGetDataController.getInstance().sendInvitation(activity,contactNumber,contactName,vendorOrconsumer);
                             showToast(activity, "Invitation has been sent");
                         }
                     })
@@ -401,31 +404,36 @@ public class AppController {
         return friendsProviders;
     }
 
-    public static void initLibrary(Activity activity) {
+    public static void initLibrary(final Activity activity) {
         try {
-            PayPal pp = PayPal.getInstance();
+            new Runnable() {
+                public void run() {
+                    PayPal pp = PayPal.getInstance();
 
-            if (pp == null) {  // Test to see if the library is already initialized
+                    if (pp == null) {  // Test to see if the library is already initialized
 
-                // This main initialization call takes your Context, AppID, and target server
-                pp = PayPal.initWithAppID(activity, "APP-80W284485P519543T", PayPal.ENV_NONE);
+                        // This main initialization call takes your Context, AppID, and target server
+                        pp = PayPal.initWithAppID(activity, AppConstants.PAYPAL_SANDBOX_ID, PayPal.ENV_SANDBOX);
 
-                // Required settings:
+                        // Required settings:
 
-                // Set the language for the library
-                pp.setLanguage("en_US");
+                        // Set the language for the library
+                        pp.setLanguage("en_US");
 
-                // Some Optional settings:
+                        // Some Optional settings:
 
-                // Sets who pays any transaction fees. Possible values are:
-                // FEEPAYER_SENDER, FEEPAYER_PRIMARYRECEIVER, FEEPAYER_EACHRECEIVER, and FEEPAYER_SECONDARYONLY
-                pp.setFeesPayer(PayPal.FEEPAYER_EACHRECEIVER);
+                        // Sets who pays any transaction fees. Possible values are:
+                        // FEEPAYER_SENDER, FEEPAYER_PRIMARYRECEIVER, FEEPAYER_EACHRECEIVER, and FEEPAYER_SECONDARYONLY
+                        pp.setFeesPayer(PayPal.FEEPAYER_PRIMARYRECEIVER);
 
-                // true = transaction requires shipping
-                pp.setShippingEnabled(true);
+                        // true = transaction requires shipping
+                        pp.setShippingEnabled(false);
 
 
-            }
+                    }
+
+                }
+            };
         } catch (Exception e) {
             e.printStackTrace();
         }

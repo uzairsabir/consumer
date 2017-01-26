@@ -367,4 +367,61 @@ public class WebserviceModel {
 
     }
 
+    public static boolean sendInvitationToVendor(String number,String name) {
+        //  String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+        String id = AppPreferences.getString(AppPreferences.PREF_USER_NUMBER);
+        ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        params.add(new BasicNameValuePair("number", number));
+        params.add(new BasicNameValuePair("name", name));
+
+
+        JSONObject resultJson;
+        try {
+
+            resultJson = WebService.callHTTPPost(
+                    ServiceUrl.call_consumer_to_vendor, params, true)
+                    .extractJSONObject();
+
+            if (WebService.getResponseCode(resultJson) == 0) {
+
+                return true;
+            }
+
+        } catch (OutOfMemoryError e) {
+            e.printStackTrace();
+
+        }
+        return false;
+
+    }
+    public static boolean sendInvitationToConsumer(String number,String name) {
+        //  String id = String.valueOf(RealmDataRetrive.getProfile().getId());
+        String id = AppPreferences.getString(AppPreferences.PREF_USER_NUMBER);
+        ArrayList<NameValuePair> params = new ArrayList<NameValuePair>();
+
+        params.add(new BasicNameValuePair("number", number));
+        params.add(new BasicNameValuePair("name", name));
+
+
+        JSONObject resultJson;
+        try {
+
+            resultJson = WebService.callHTTPPost(
+                    ServiceUrl.call_consumer_to_friend, params, true)
+                    .extractJSONObject();
+
+            if (WebService.getResponseCode(resultJson) == 0) {
+
+                return true;
+            }
+
+        } catch (OutOfMemoryError e) {
+            e.printStackTrace();
+
+        }
+        return false;
+
+    }
+
 }

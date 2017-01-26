@@ -20,6 +20,7 @@ import com.nhaarman.listviewanimations.appearance.simple.AlphaInAnimationAdapter
 import com.nhaarman.listviewanimations.itemmanipulation.DynamicListView;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ChatDT;
+import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ScheduleDT;
 import com.thetechsolutions.whodouconsumer.Chat.adapters.ChatListAdapter;
 import com.thetechsolutions.whodouconsumer.Chat.controllers.ChatController;
@@ -30,6 +31,8 @@ import org.vanguardmatrix.engine.customviews.ProgressActivity;
 import org.vanguardmatrix.engine.utils.MyLogs;
 import org.vanguardmatrix.engine.utils.NetworkManager;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
+
+import java.util.ArrayList;
 
 import io.realm.RealmResults;
 import uk.co.ribot.easyadapter.EasyAdapter;
@@ -183,6 +186,7 @@ public class ChatMainFragment extends Fragment implements View.OnClickListener {
 
     private void setAdapter(RealmResults<ChatDT> arrayList) {
         MyLogs.printinfo("arrayList " + arrayList.size());
+
         easyAdapter = new EasyAdapter<>(
                 activity,
                 ChatListAdapter.newInstance(activity),
