@@ -44,6 +44,7 @@ public class ProviderDT extends RealmObject {
     private String created_by = "";
     private int tab_pos;
     private String friend_name = "";
+    private String paypal_id = "";
 
     public int getId() {
         return id;
@@ -257,5 +258,13 @@ public class ProviderDT extends RealmObject {
 
     public void setFriend_name(String friend_name) {
         this.friend_name = friend_name;
+    }
+
+    public String getPaypal_id() {
+        return paypal_id;
+    }
+
+    public void setPaypal_id(String paypal_id) {
+        this.paypal_id = paypal_id;
     }
 }

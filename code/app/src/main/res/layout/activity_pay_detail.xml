@@ -117,6 +117,7 @@
                     android:id="@+id/spinner"
                     android:layout_width="match_parent"
                     android:layout_height="@dimen/margin_5"
+                    android:visibility="gone"
                     android:layout_marginTop="@dimen/margin_2"
                     android:background="@drawable/bg_white_round_blue_edges_grey_hover"
                     android:textSize="@dimen/margin_1_5"
@@ -179,7 +180,19 @@
                     android:layout_marginRight="@dimen/margin_small"
                     android:layout_marginTop="@dimen/margin_2"
                     android:background="@drawable/bg_new_green_with_round_edges"
-                    android:text="Submit Payment"
+                    android:text="Pay using PayPal"
+                    android:textColor="@color/white"
+                    android:textSize="@dimen/textsize_label_2" />
+
+                <Button
+                    android:id="@+id/mark_pay_btn"
+                    android:layout_width="@dimen/margin_15"
+                    android:layout_height="@dimen/margin_4"
+                    android:layout_gravity="center"
+                    android:layout_marginRight="@dimen/margin_small"
+                    android:layout_marginTop="@dimen/margin_2"
+                    android:background="@drawable/bg_new_green_with_round_edges"
+                    android:text="Mark as Paid"
                     android:textColor="@color/white"
                     android:textSize="@dimen/textsize_label_2" />
             </LinearLayout>

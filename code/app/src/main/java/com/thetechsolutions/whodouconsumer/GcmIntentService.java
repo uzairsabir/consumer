@@ -1,7 +1,9 @@
 package com.thetechsolutions.whodouconsumer;
 
 import android.app.IntentService;
+import android.app.Notification;
 import android.app.PendingIntent;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.SystemClock;
@@ -12,33 +14,23 @@ import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.vanguardmatrix.engine.android.data.notification.NotificationManager;
 import org.vanguardmatrix.engine.utils.MyLogs;
 
-import java.util.ArrayList;
+import me.leolin.shortcutbadger.ShortcutBadger;
 
 public class GcmIntentService extends IntentService {
 
 
-    public static final String TYPE_SYNC_DATA = "sync_data";
-    public static final String TYPE_TICKER = "type_nearby_loc";
-    // public static final String TYPE_MESSAGE = "type_message";
-
-    public static final String TYPE_CONSUMER_APPOINTMENT = "consumer_appoinment";
-    public static final String TYPE_PAYMENT = "payment";
-    public static final String TYPE_CONSUMER = "type_message";
-    public static final String TYPE_MESSAGE = "p_message";
-
-    public static int new_location_count = 0;
-    String finalMessage = "";
-    String targetId = "";
-    String currTitle = "";
-    String extra = "";
+    public static final String CREATE_PAYMENT_REQUEST = "create_payment_request";
+    public static final String APPOINTMENT_STATUS = "appointment_status";
+    public static final String VENDOR_COSUMER_LINK = "vendor_consumer_link";
+    public static final String CONSUMER_VENDOR_PROFILE = "consumer_vendor_profile";
+    public static final String VENDOR_CONSUMER_PROFILE = "vendor_consumer_profile";
+    public static final String CONSUMER_FRIEND_LINK = "consumer_friend_link";
     String gcmMsg;
     JSONObject gcmMsgJson;
-    PendingIntent contentIntent = null;
-    NotificationCompat.Builder builder;
     String TAG = "GcmIntentService";
-    private int currNotificationId = 1;
 
     public GcmIntentService() {
         super("GcmIntentService");
@@ -93,7 +85,7 @@ public class GcmIntentService extends IntentService {
             gcmMsgJson = new JSONObject(gcmMsg);
 
             try {
-               // gcmMsgJson.put(GcmNotificationsModel.N_TIME, System.currentTimeMillis());
+                // gcmMsgJson.put(GcmNotificationsModel.N_TIME, System.currentTimeMillis());
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -113,66 +105,132 @@ public class GcmIntentService extends IntentService {
 
 
             MyLogs.printerror("GCMIntentService updateGcmIntent() : " + _gcmMsgJson.toString());
-            ArrayList<String> data_list = new ArrayList<>();
-            JSONArray jsonArray = new JSONArray();
+            
+
+            ShortcutBadger.applyCount(getApplicationContext(), 1);
+
+            JSONArray jsonArray;
             try {
-                jsonArray = _gcmMsgJson.getJSONArray(TYPE_CONSUMER_APPOINTMENT);
+
+                jsonArray = _gcmMsgJson.getJSONArray(CREATE_PAYMENT_REQUEST);
                 for (int i = 0; i < jsonArray.length(); i++) {
 
+                    createNotification(getApplicationContext(), HomeScreenActivity.createIntent(getApplicationContext(), 3), 70, "Payment Request", jsonArray.getJSONObject(i).getString("amount"));
 
-//                    Intent notificationIntent = CalendarCenterActivity.createIntent(
-//                            Application.getInstance().getApplicationContext(), true, false);
-
-//                    Intent notificationIntent = AppointmentMainActivity.createIntent(
-//                            Application.getInstance().getApplicationContext());
-//                    // DatabaseController.addAllRecords(Application.getInstance().getApplicationContext(), jsonArray.getJSONObject(i), AccountObject.ID, AppConstants.NOTIFICATION_TABLE_NAME);
-//                    NotificationManager.notifyTestingSyncData(
-//                            Application.getInstance().getApplicationContext(),
-//                            data_list, notificationIntent, R.mipmap.ic_launcher, jsonArray, 1);
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+
 
             }
+
             try {
-                jsonArray = _gcmMsgJson.getJSONArray(TYPE_PAYMENT);
+
+                jsonArray = _gcmMsgJson.getJSONArray(APPOINTMENT_STATUS);
                 for (int i = 0; i < jsonArray.length(); i++) {
 
-//
-//                    Intent notificationIntent = PaymentMainActivity.createIntent(
-//                            Application.getInstance().getApplicationContext());
-//                    // DatabaseController.addAllRecords(Application.getInstance().getApplicationContext(), jsonArray.getJSONObject(i), AccountObject.ID, AppConstants.NOTIFICATION_TABLE_NAME);
-//                    NotificationManager.notifyTestingSyncData(
-//                            Application.getInstance().getApplicationContext(),
-//                            data_list, notificationIntent, R.mipmap.ic_launcher, jsonArray, 2);
+                    createNotification(getApplicationContext(), HomeScreenActivity.createIntent(getApplicationContext(), 3), 70, "Appointment", "Your appointment with " + jsonArray.getJSONObject(i).getString("vendor_name") + " has been " + jsonArray.getJSONObject(i).getString("status"));
+
                 }
             } catch (Exception e) {
-                e.printStackTrace();
+
 
             }
-            try {
-//                jsonArray = _gcmMsgJson.getJSONArray(TYPE_MESSAGE);
-//                Intent notificationIntent = MessageCenterActivity.createIntent(
-//                        Application.getInstance().getApplicationContext(), false, true);
-//                NotificationManager.notifyTestingSyncData(
-//                        Application.getInstance().getApplicationContext(),
-//                        data_list, notificationIntent, R.mipmap.ic_launcher, jsonArray, 3);
-//
-//                try {
-//                    RequestAppointmentFragment.refereshMessages();
-//                } catch (Exception e) {
-//
-//                }
 
+
+            try {
+
+                jsonArray = _gcmMsgJson.getJSONArray(VENDOR_COSUMER_LINK);
+                for (int i = 0; i < jsonArray.length(); i++) {
+
+                    createNotification(getApplicationContext(), HomeScreenActivity.createIntent(getApplicationContext(), 3), 70, "Consumer Added", jsonArray.getJSONObject(i).getString("vendor_firstName") + jsonArray.getJSONObject(i).getString("vendor_lastName") + " has added you as a consumer");
+
+                }
             } catch (Exception e) {
-                e.printStackTrace();
+
+
+            }
+
+
+            try {
+
+                jsonArray = _gcmMsgJson.getJSONArray(CONSUMER_VENDOR_PROFILE);
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    createNotification(getApplicationContext(), HomeScreenActivity.createIntent(getApplicationContext(), 3), 70, "Consumer Profile", jsonArray.getJSONObject(i).getString("status"));
+
+
+                }
+            } catch (Exception e) {
+
+
+            }
+
+
+            try {
+
+                jsonArray = _gcmMsgJson.getJSONArray(VENDOR_CONSUMER_PROFILE);
+                for (int i = 0; i < jsonArray.length(); i++) {
+
+                    createNotification(getApplicationContext(), HomeScreenActivity.createIntent(getApplicationContext(), 3), 70, "Vendor Profile", jsonArray.getJSONObject(i).getString("status"));
+
+                }
+            } catch (Exception e) {
+
+
+            }
+
+
+            try {
+
+                jsonArray = _gcmMsgJson.getJSONArray(CONSUMER_FRIEND_LINK);
+                for (int i = 0; i < jsonArray.length(); i++) {
+
+                    createNotification(getApplicationContext(), HomeScreenActivity.createIntent(getApplicationContext(), 3), 70, "Consumer Added", jsonArray.getJSONObject(i).getString("vendor_firstName") + jsonArray.getJSONObject(i).getString("vendor_lastName") + " has added you as a consumer");
+
+
+                    // createNotification(getApplicationContext(), HomeScreenActivity.createIntent(getApplicationContext(), 3), 70, "Payment Request", jsonArray.getJSONObject(i).getString("amount"));
+
+                }
+            } catch (Exception e) {
+
 
             }
 
 
         } catch (Exception e) {
-            e.printStackTrace();
+
         }
+
+    }
+
+    public static void createNotification(Context _activity,
+                                          Intent intent, int code, String title, String content) {
+
+        android.app.NotificationManager mNotificationManager =
+                (android.app.NotificationManager) _activity.getSystemService(Context.NOTIFICATION_SERVICE);
+
+        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP
+                | Intent.FLAG_ACTIVITY_SINGLE_TOP);
+        PendingIntent contentIntents = PendingIntent.getActivity(_activity, code, intent, PendingIntent.FLAG_UPDATE_CURRENT);
+
+        // String name = "", ticker = "", contenttitle = "", message = "";
+
+        NotificationCompat.Builder notifyBuilder = new NotificationCompat.Builder(_activity.getApplicationContext());
+        notifyBuilder.setAutoCancel(true)
+                .setDefaults(Notification.DEFAULT_ALL)
+                .setWhen(System.currentTimeMillis())
+                .setSmallIcon(R.mipmap.ic_launcher)
+                .setTicker(title)
+                .setContentTitle(title)
+                .setContentText(content)
+                .setDefaults(Notification.DEFAULT_LIGHTS | Notification.DEFAULT_VIBRATE | Notification.DEFAULT_SOUND)
+                .setContentIntent(contentIntents)
+                .setContentInfo("");
+
+        mNotificationManager.notify(code, notifyBuilder.build());
+
+        String ns = Context.NOTIFICATION_SERVICE;
+        NotificationManager nMgr = (NotificationManager) _activity.getApplicationContext().getSystemService(ns);
+        nMgr.cancelNotificaiton(code);
 
     }
 

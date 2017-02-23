@@ -69,7 +69,7 @@ public class PayDetailActivity extends XmppActivity implements MethodGenerator, 
     SimpleDraweeView fresco_view;
     EditText amount, description;
     SwitchButton switch_button;
-    Button payment_btn;
+    Button payment_btn, mark_pay_btn;
     static int id, tab_pos;
     RelativeLayout top_item;
     AutoCompleteTextView auto_com_cutomer_name;
@@ -81,6 +81,7 @@ public class PayDetailActivity extends XmppActivity implements MethodGenerator, 
     String callMessgae = "1";
     String paymentId;
     ImageView call_icon, chat_icon;
+    String vendor_paypal_id = "";
 
     public static Intent createIntent(Activity _activity, int _id, int _tab_pos, String _title, String _providerUserName) {
         activity = _activity;
@@ -133,9 +134,10 @@ public class PayDetailActivity extends XmppActivity implements MethodGenerator, 
         fresco_view = (SimpleDraweeView) findViewById(R.id.fresco_view);
         switch_button = (SwitchButton) findViewById(R.id.switch_button);
         payment_btn = (Button) findViewById(R.id.payment_btn);
-
+        mark_pay_btn = (Button) findViewById(R.id.mark_pay_btn);
         top_item = (RelativeLayout) findViewById(R.id.top_item);
         payment_btn.setOnClickListener(this);
+        mark_pay_btn.setOnClickListener(this);
 
         auto_com_cutomer_name = (AutoCompleteTextView) findViewById(R.id.auto_com_cutomer_name);
         receipt = (TextView) findViewById(R.id.receipt);
@@ -156,6 +158,7 @@ public class PayDetailActivity extends XmppActivity implements MethodGenerator, 
         service_date.setOnClickListener(this);
 
         AppController.initLibrary(activity);
+
 
         // search_view = (MaterialSearchView) findViewById(R.id.search_view);
 
@@ -205,10 +208,10 @@ public class PayDetailActivity extends XmppActivity implements MethodGenerator, 
                     for (int i = 0; i < arrayList.size(); i++) {
                         if ((arrayList.get(i).getFirst_name() + " " + arrayList.get(i).getLast_name()).equals(selected)) {
                             pos = i;
-                            System.out.println("Position " + pos);
 
                             vendorId = "" + arrayList.get(i).getId();
                             contact_number = arrayList.get(i).getUsername();
+                            vendor_paypal_id = arrayList.get(i).getPaypal_id();
                             break;
                         }
                     }
@@ -221,6 +224,7 @@ public class PayDetailActivity extends XmppActivity implements MethodGenerator, 
                 vendorId = "" + item.getId();
                 auto_com_cutomer_name.setEnabled(false);
                 contact_number = providerUserName;
+                vendor_paypal_id = item.getPaypal_id();
 
 
             }
@@ -313,6 +317,9 @@ public class PayDetailActivity extends XmppActivity implements MethodGenerator, 
             case R.id.payment_btn:
                 validator(false);
                 break;
+            case R.id.mark_pay_btn:
+                validator(true);
+                break;
             case R.id.service_date:
                 // MyLogs.printinfo("appointment_date");
                 Calendar now = Calendar.getInstance();
@@ -359,7 +366,7 @@ public class PayDetailActivity extends XmppActivity implements MethodGenerator, 
 
     }
 
-    private void validator(boolean isUpdate) {
+    private void validator(boolean markAsPaid) {
         // MyLogs.printinfo("sqlDatetime " + sqlDateTime);
         if (UtilityFunctions.isEmpty(vendorId)) {
             UtilityFunctions.showToast_onCenter("Please select a Provider", activity);
@@ -373,20 +380,33 @@ public class PayDetailActivity extends XmppActivity implements MethodGenerator, 
             UtilityFunctions.showToast_onCenter("Please enter amount", activity);
             return;
         }
-
-        if (spinner.getSelectedIndex() == 2) {
-
-        } else if (spinner.getSelectedIndex() == 1) {
-            new Runnable() {
-                public void run() {
-                    testPayment();
-                }
-            };
-
-
-        } else {
-            markAsPaid();
+        if (UtilityFunctions.isEmpty(vendor_paypal_id) || vendor_paypal_id == null) {
+            UtilityFunctions.showToast_onCenter("vendor has not been setup its paypal account", activity);
+            return;
         }
+
+        if (markAsPaid) {
+            markAsPaid();
+        } else {
+
+            testPayment();
+        }
+
+//        if (spinner.getSelectedIndex() == 2) {
+//
+//        } else if (spinner.getSelectedIndex() == 1) {
+////            new Runnable() {
+////                public void run() {
+////
+////                }
+////            };
+//
+//            testPayment();
+//
+//
+//        } else {
+//            markAsPaid();
+//        }
 
 
     }
@@ -509,11 +529,15 @@ public class PayDetailActivity extends XmppActivity implements MethodGenerator, 
 //    }
 
     private void testPayment() {
-        double secondary_payment = 1;
+        double secondary_payment = 0.5;
         double primary_payment = Double.parseDouble(amount.getText().toString());
 
+        //"r.alirizvi-Vendor@gmail.com"
         //    PayPalAdvancedPayment advPayment = makeChainedPayment(secondary_payment, primary_payment, "vendor@gmail.com", "uzair92ssuet92@gmail.com", title_name.getText().toString());
-        PayPalAdvancedPayment advPayment = makeChainedPayment(secondary_payment, primary_payment, "r.alirizvi-Vendor@gmail.com", AppConstants.PAYPAL_OWNER_EMAIL, title_name.getText().toString());
+
+        MyLogs.printinfo("vendor_paypal" + vendor_paypal_id);
+        PayPalAdvancedPayment advPayment = makeChainedPayment(secondary_payment, primary_payment, vendor_paypal_id, AppConstants.PAYPAL_OWNER_EMAIL, auto_com_cutomer_name.getText().toString());
+
 
         Intent checkoutIntent = PayPal.getInstance().checkout(advPayment, activity);
         startActivityForResult(checkoutIntent, 1);
@@ -541,6 +565,7 @@ public class PayDetailActivity extends XmppActivity implements MethodGenerator, 
         BigDecimal bigDecimalSecond = new BigDecimal(priceSecondary);
         receiverSecondary.setSubtotal(bigDecimalSecond);
         payment.getReceivers().add(receiverSecondary);
+
 
         return payment;
         // }

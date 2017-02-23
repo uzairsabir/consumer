@@ -81,6 +81,14 @@ public class RealmDataInsert {
                         item.setAddress("");
                     }
                     try {
+                        if (jsonArray.getJSONObject(i).has("paypal_id") && !jsonArray.getJSONObject(i).isNull("paypal_id"))
+                            item.setPaypal_id(jsonArray.getJSONObject(i).getString("paypal_id"));
+                        else
+                            item.setPaypal_id("");
+                    } catch (RealmException e) {
+                        item.setAddress("");
+                    }
+                    try {
                         if (jsonArray.getJSONObject(i).has("category_id") && !jsonArray.getJSONObject(i).isNull("category_id"))
                             item.setCategory_id(jsonArray.getJSONObject(i).getInt("category_id"));
                         else
@@ -1161,7 +1169,6 @@ public class RealmDataInsert {
                     } catch (Exception e) {
 
                     }
-
 
 
                 } catch (Exception e) {

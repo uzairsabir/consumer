@@ -16,7 +16,7 @@ import java.io.IOException;
 public class GCMController {
     static GoogleCloudMessaging gcm;
     static String regid;
-    static String SENDER_ID = "324611973215";
+    static String SENDER_ID = "1072548990944";
 
     //343262953399
     //AIzaSyC3oWcqq9ekcfZnBgdw8y64NqzKcnD4uWs

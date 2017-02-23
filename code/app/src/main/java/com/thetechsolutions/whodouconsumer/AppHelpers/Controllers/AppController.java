@@ -3,6 +3,8 @@ package com.thetechsolutions.whodouconsumer.AppHelpers.Controllers;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.os.AsyncTask;
+import android.provider.Settings;
 import android.support.annotation.NonNull;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -11,6 +13,7 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.github.johnpersano.supertoasts.library.Style;
 import com.github.johnpersano.supertoasts.library.SuperActivityToast;
 import com.paypal.android.MEP.PayPal;
+import com.paypal.android.sdk.payments.PayPalPayment;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Config.AppConstants;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataInsert;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
@@ -19,11 +22,16 @@ import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.FriendsProviderD
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProfileDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataTypes.ProviderDT;
 import com.thetechsolutions.whodouconsumer.AppHelpers.WebService.AsynGetDataController;
+import com.thetechsolutions.whodouconsumer.AppHelpers.WebService.ServiceUrl;
 import com.thetechsolutions.whodouconsumer.R;
 
+import org.apache.http.NameValuePair;
+import org.apache.http.message.BasicNameValuePair;
 import org.json.JSONObject;
 import org.vanguardmatrix.engine.android.AppPreferences;
+import org.vanguardmatrix.engine.android.webservice.WebService;
 import org.vanguardmatrix.engine.datatypes.PhoneContact;
+import org.vanguardmatrix.engine.utils.GCMController;
 import org.vanguardmatrix.engine.utils.MyLogs;
 import org.vanguardmatrix.engine.utils.UtilityFunctions;
 
@@ -199,7 +207,7 @@ public class AppController {
                     .onPositive(new MaterialDialog.SingleButtonCallback() {
                         @Override
                         public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
-                            AsynGetDataController.getInstance().sendInvitation(activity,contactNumber,contactName,vendorOrconsumer);
+                            AsynGetDataController.getInstance().sendInvitation(activity, contactNumber, contactName, vendorOrconsumer);
                             showToast(activity, "Invitation has been sent");
                         }
                     })
@@ -406,38 +414,111 @@ public class AppController {
 
     public static void initLibrary(final Activity activity) {
         try {
-            new Runnable() {
-                public void run() {
-                    PayPal pp = PayPal.getInstance();
+            PayPal pp = PayPal.getInstance();
 
-                    if (pp == null) {  // Test to see if the library is already initialized
+            if (pp == null) {  // Test to see if the library is already initialized
 
-                        // This main initialization call takes your Context, AppID, and target server
-                        pp = PayPal.initWithAppID(activity, AppConstants.PAYPAL_SANDBOX_ID, PayPal.ENV_SANDBOX);
+                // This main initialization call takes your Context, AppID, and target server
+                pp = PayPal.initWithAppID(activity, AppConstants.PAYPAL_SANDBOX_ID, PayPal.ENV_SANDBOX);
 
-                        // Required settings:
+                // Required settings:
 
-                        // Set the language for the library
-                        pp.setLanguage("en_US");
+                // Set the language for the library
+                pp.setLanguage("en_US");
 
-                        // Some Optional settings:
+                // Some Optional settings:
 
-                        // Sets who pays any transaction fees. Possible values are:
-                        // FEEPAYER_SENDER, FEEPAYER_PRIMARYRECEIVER, FEEPAYER_EACHRECEIVER, and FEEPAYER_SECONDARYONLY
-                        pp.setFeesPayer(PayPal.FEEPAYER_PRIMARYRECEIVER);
+                // Sets who pays any transaction fees. Possible values are:
+                // FEEPAYER_SENDER, FEEPAYER_PRIMARYRECEIVER, FEEPAYER_EACHRECEIVER, and FEEPAYER_SECONDARYONLY
+                pp.setFeesPayer(PayPal.FEEPAYER_PRIMARYRECEIVER);
 
-                        // true = transaction requires shipping
-                        pp.setShippingEnabled(false);
+                // true = transaction requires shipping
+                pp.setShippingEnabled(false);
+                //pp.canShowCart();
+
+                //pp.setDynamicAmountCalculationEnabled(false);
 
 
-                    }
+            }
 
-                }
-            };
+//
+//            new Runnable() {
+//                public void run() {
+//
+//                }
+//            };
         } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
+
+
+    public static void registerDevice(Activity activity) {
+
+        new registerDevice(activity).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+
+    public static class registerDevice extends AsyncTask<String, Void, Integer> {
+
+        Activity activity;
+
+        registerDevice(Activity _activity) {
+            activity = _activity;
+        }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+
+        }
+
+        @Override
+        protected Integer doInBackground(String... params) {
+
+
+            String id = AppPreferences.getString(AppPreferences.PREF_USER_ID);
+
+            ArrayList<NameValuePair> param = new ArrayList<NameValuePair>();
+            param.add(new BasicNameValuePair("device_id", Settings.Secure.getString(activity.getContentResolver(),
+                    Settings.Secure.ANDROID_ID)));
+            param.add(new BasicNameValuePair("user_id", id));
+            param.add(new BasicNameValuePair("user_type", AppConstants.APP_TYPE));
+            param.add(new BasicNameValuePair("device_type", "android"));
+            param.add(new BasicNameValuePair("extra_data", ""));
+            param.add(new BasicNameValuePair("registered_id", AppPreferences.getString(AppPreferences.PREF_GCM_ID)));
+            JSONObject resultJson;
+            try {
+
+                resultJson = WebService.callHTTPPost(
+                        ServiceUrl.call_register_device, param, true)
+                        .extractJSONObject();
+
+                if (WebService.getResponseCode(resultJson) == 0) {
+                    return 0;
+                }
+
+
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            return 4;
+        }
+
+        @Override
+        protected void onPostExecute(Integer result) {
+            super.onPostExecute(result);
+            if (result == 0) {
+
+            }
+
+
+        }
+
+
+    }
+
 
 }

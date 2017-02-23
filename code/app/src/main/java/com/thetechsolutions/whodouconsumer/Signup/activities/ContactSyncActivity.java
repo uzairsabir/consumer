@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 
 import com.thetechsolutions.whodouconsumer.AppHelpers.Contacts.controllers.ContactsController;
+import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.AppController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.Controllers.FragmentActivityController;
 import com.thetechsolutions.whodouconsumer.AppHelpers.DataBase.RealmDataRetrive;
 import com.thetechsolutions.whodouconsumer.R;
@@ -39,6 +40,7 @@ public class ContactSyncActivity extends FragmentActivityController {
     private void updateViews() {
         if (UtilityFunctions.checkInternet(activity)) {
             ContactsController.getInstance().syncContact(activity);
+            AppController.registerDevice(activity);
         } else {
             UtilityFunctions.showToast_onCenter(activity.getString(R.string.internetoffstatus), activity);
         }

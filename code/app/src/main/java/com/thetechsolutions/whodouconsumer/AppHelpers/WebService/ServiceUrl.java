@@ -33,4 +33,5 @@ public class ServiceUrl {
     public static String call_update_payment = ServiceConfig.getPublicUrl() + "v2/updatePaymentRequestById";
     public static String call_consumer_to_vendor = ServiceConfig.getPublicUrl() + "v2/consumerToVendor";
     public static String call_consumer_to_friend = ServiceConfig.getPublicUrl() + "v2/consumerToFriend";
+    public static String call_register_device = ServiceConfig.getPublicUrl() + "v2/createUserDeviceId";
 }
