@@ -40,6 +40,8 @@ public class HomeScreenActivity extends ManagedActivity {
             ShortcutBadger.removeCount(getApplicationContext());
             open_page = 0;
         }
+        ShortcutBadger.removeCount(getApplicationContext());
+
 
     }
 

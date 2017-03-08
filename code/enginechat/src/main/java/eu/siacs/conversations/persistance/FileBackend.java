@@ -439,7 +439,7 @@ public class FileBackend {
 		pathBuilder.append("IMG_" + this.imageDateFormat.format(new Date()) + ".jpg");
 		File file = new File(pathBuilder.toString());
 		file.getParentFile().mkdirs();
-		return FileProvider.getUriForFile(mXmppConnectionService,"eu.siacs.chat.files",file);
+		return FileProvider.getUriForFile(mXmppConnectionService,"eu.siacs.conversations.files",file);
 	}
 
 	public Avatar getPepAvatar(Uri image, int size, Bitmap.CompressFormat format) {

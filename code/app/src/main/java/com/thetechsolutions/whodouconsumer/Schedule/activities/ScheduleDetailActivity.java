@@ -509,57 +509,57 @@ public class ScheduleDetailActivity extends XmppActivity implements MethodGenera
     }
 
     public void sendMessage(String contactNumber, String message) {
-        String accountNumber = AppPreferences.getString(AppPreferences.PREF_USER_NUMBER) + "_c";
-        Log.e("prefilledJid ", " " + accountNumber + " " + contactNumber);
-
-        Jid accountJid = null;
-        try {
-
-            accountJid = Jid.fromString(accountNumber + "@" + Config.MAGIC_CREATE_DOMAIN);
-
-        } catch (InvalidJidException e) {
-            e.printStackTrace();
-        }
-        Jid contactJid = null;
-        try {
-            contactJid = Jid.fromString(contactNumber + "@" + Config.MAGIC_CREATE_DOMAIN);
-        } catch (InvalidJidException e) {
-            e.printStackTrace();
-        }
-        if (!xmppConnectionServiceBound) {
-            return;
-        }
-
-        final Account account = xmppConnectionService.findAccountByJid(accountJid);
-        if (account == null) {
-            return;
-        }
-
-        try {
-            final Contact contact = account.getRoster().getContact(contactJid);
-            Conversation conversation = null;
-            if (contact.showInRoster()) {
-
-                conversation = xmppConnectionService
-                        .findOrCreateConversation(contact.getAccount(),
-                                contact.getJid(), false);
-
-
-            } else {
-                xmppConnectionService.createContact(contact);
-                //    switchToConversation(contact);
-
-                conversation = xmppConnectionService
-                        .findOrCreateConversation(contact.getAccount(),
-                                contact.getJid(), false);
-                ///  switchToConversation(conversation);
-
-
-            }
-            sendMessage(conversation, message);
-        } catch (Exception e) {
-
-        }
+//        String accountNumber = AppPreferences.getString(AppPreferences.PREF_USER_NUMBER) + "_c";
+//        Log.e("prefilledJid ", " " + accountNumber + " " + contactNumber);
+//
+//        Jid accountJid = null;
+//        try {
+//
+//            accountJid = Jid.fromString(accountNumber + "@" + Config.MAGIC_CREATE_DOMAIN);
+//
+//        } catch (InvalidJidException e) {
+//            e.printStackTrace();
+//        }
+//        Jid contactJid = null;
+//        try {
+//            contactJid = Jid.fromString(contactNumber + "@" + Config.MAGIC_CREATE_DOMAIN);
+//        } catch (InvalidJidException e) {
+//            e.printStackTrace();
+//        }
+//        if (!xmppConnectionServiceBound) {
+//            return;
+//        }
+//
+//        final Account account = xmppConnectionService.findAccountByJid(accountJid);
+//        if (account == null) {
+//            return;
+//        }
+//
+//        try {
+//            final Contact contact = account.getRoster().getContact(contactJid);
+//            Conversation conversation = null;
+//            if (contact.showInRoster()) {
+//
+//                conversation = xmppConnectionService
+//                        .findOrCreateConversation(contact.getAccount(),
+//                                contact.getJid(), false);
+//
+//
+//            } else {
+//                xmppConnectionService.createContact(contact);
+//                //    switchToConversation(contact);
+//
+//                conversation = xmppConnectionService
+//                        .findOrCreateConversation(contact.getAccount(),
+//                                contact.getJid(), false);
+//                ///  switchToConversation(conversation);
+//
+//
+//            }
+//            sendMessage(conversation, message);
+//        } catch (Exception e) {
+//
+//        }
 
         return;
 
